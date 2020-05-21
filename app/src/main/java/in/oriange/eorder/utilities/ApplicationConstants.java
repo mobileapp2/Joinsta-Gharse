@@ -2,13 +2,13 @@ package in.oriange.eorder.utilities;
 
 public class ApplicationConstants {
 
-    public static final String PREFER_NAME = "JOINSTA";
+    public static final String PREFER_NAME = "EORDER";
     public static final String IS_USER_LOGIN = "IS_USER_LOGIN";
     public static final String KEY_LOGIN_INFO = "KEY_LOGIN_INFO";
     public static final String KEY_ANDROIDTOKETID = "KEY_ANDROIDTOKETID";
     public static final String IS_LOCATION_SET = "IS_LOCATION_SET";
     public static final String KEY_LOCATION_INFO = "KEY_LOCATION_INFO";
-    public static final String JOINSTA_PLAYSTORELINK = "https://play.google.com/store/apps/details?id=in.oriange.joinsta";
+    public static final String JOINSTA_PLAYSTORELINK = "https://play.google.com/store/apps/details?id=in.oriange.eorder";
     public static final String NUMVERIFY_ACCESS_TOKEN = "66471b999885e2c244a615e17aae423f";
 
     //CC AVENUE CONSTANTS
@@ -35,8 +35,8 @@ public class ApplicationConstants {
     private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/";
     public static final String IMAGE_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/images/";
 
-    //LIVE API LINK V16
-//    private static final String API_LINK = "https://joinsta.in/Api_v16/";
+    //LIVE API LINK V17
+//    private static final String API_LINK = "https://joinsta.in/Api_v17/";
 //    public static final String IMAGE_LINK = "https://joinsta.in/images/";
 
     public static final String NUMVERIFYAPI = "http://apilayer.net/api/validate";

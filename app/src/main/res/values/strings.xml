@@ -2,5 +2,5 @@
     <string name="app_name">eOrder</string>
 
     <string name="msgt_nointernetconnection">Please check your internet connection</string>
-
+    <string name="places_api_key">AIzaSyBqsk7EvFj-f7wQ2QtR9x8NZJ2IvfusP2o</string>
 </resources>

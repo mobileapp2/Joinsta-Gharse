@@ -80,5 +80,6 @@ dependencies {
     implementation 'com.veinhorn.scrollgalleryview:library:1.2.8'
     implementation 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     implementation 'com.github.sujithkanna:smileyrating:1.6.8'
+    implementation 'com.bignerdranch.android:simple-item-decoration:1.0.0'
     implementation project(':RecyclerBanner')
 }

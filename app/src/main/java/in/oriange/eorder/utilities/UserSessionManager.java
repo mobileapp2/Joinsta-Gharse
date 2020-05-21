@@ -11,6 +11,8 @@ import androidx.core.app.ActivityCompat;
 
 import java.util.HashMap;
 
+import in.oriange.eorder.activities.LoginActivity;
+
 public class UserSessionManager {
     private SharedPreferences pref;
     private Editor editor;
@@ -45,7 +47,7 @@ public class UserSessionManager {
 
     public void logoutUser() {
         cleanLoginInfo();
-        Intent i = new Intent(_context, Login_Activity.class);
+        Intent i = new Intent(_context, LoginActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         _context.startActivity(i);
