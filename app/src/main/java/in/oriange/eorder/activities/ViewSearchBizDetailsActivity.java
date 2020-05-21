@@ -49,7 +49,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
@@ -206,15 +205,10 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
             tv_name.setVisibility(View.GONE);
         }
 
-        if (!searchDetails.getType_description().trim().isEmpty() && !searchDetails.getSubtype_description().trim().isEmpty()) {
-            tv_nature.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
-        } else if (searchDetails.getType_description().trim().isEmpty() && searchDetails.getSubtype_description().trim().isEmpty()) {
+        if (!searchDetails.getTypeSubTypeName().equals(""))
+            tv_nature.setText(searchDetails.getTypeSubTypeName());
+        else
             tv_nature.setVisibility(View.GONE);
-        } else if (!searchDetails.getType_description().trim().isEmpty()) {
-            tv_nature.setText(searchDetails.getType_description());
-        } else if (!searchDetails.getSubtype_description().trim().isEmpty()) {
-            tv_nature.setText(searchDetails.getSubtype_description());
-        }
 
         if (!searchDetails.getDesignation().trim().isEmpty()) {
             tv_designation.setText(searchDetails.getDesignation());
@@ -270,13 +264,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
             cv_address.setVisibility(View.GONE);
         }
 
-//        if (searchDetails.getCommon_groups_count() > 0) {
-//            cv_mutual_groups.setVisibility(View.VISIBLE);
-//            tv_mutual_groups.setText(searchDetails.getCommon_groups_count() + " Mutual groups found");
-//        } else {
-            cv_mutual_groups.setVisibility(View.GONE);
-//            tv_mutual_groups.setText("");
-//        }
+        cv_mutual_groups.setVisibility(View.GONE);
 
         if (!searchDetails.getOrder_online().trim().isEmpty()) {
             cv_order_online.setVisibility(View.VISIBLE);
@@ -670,8 +658,8 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
                     sb.append("Business Name - " + searchDetails.getBusiness_name() + "\n");
                 }
 
-                if (!searchDetails.getSubtype_description().equals("")) {
-                    sb.append("Nature of Business - " + searchDetails.getType_description() + "/" + searchDetails.getSubtype_description() + "\n");
+                if (!searchDetails.getTypeSubTypeName().equals("")) {
+                    sb.append("Nature of Business - " + searchDetails.getType_description() + "/" + searchDetails.getTypeSubTypeName() + "\n");
                 } else {
                     sb.append("Nature of Business - " + searchDetails.getType_description() + "\n");
                 }
@@ -749,7 +737,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void showMobileListDialog(final ArrayList<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> mobileList) {
+    private void showMobileListDialog(final List<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> mobileList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select mobile number to make a call");
         builderSingle.setCancelable(false);
@@ -777,7 +765,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void showWhatsAppListDialog(final ArrayList<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> mobileList) {
+    private void showWhatsAppListDialog(final List<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> mobileList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select mobile number");
         builderSingle.setCancelable(false);
@@ -805,7 +793,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    private void showLandlineListDialog(final ArrayList<SearchDetailsModel.ResultBean.BusinessesBean.LandlineBeanXX> landlineList) {
+    private void showLandlineListDialog(final List<SearchDetailsModel.ResultBean.BusinessesBean.LandlineBeanXX> landlineList) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select landline number to make a call");
         builderSingle.setCancelable(false);
@@ -830,29 +818,6 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
                         Uri.parse("tel:" + landlineList.get(which).getCountry_code() + landlineList.get(which).getLandline_number())));
             }
         });
-        builderSingle.show();
-    }
-
-    private void showCommonGroupList(final ArrayList<SearchDetailsModel.ResultBean.BusinessesBean.CommonGroupsDataBeanXX> groupList) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Mutual Groups");
-        builderSingle.setCancelable(false);
-
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
-
-        for (int i = 0; i < groupList.size(); i++)
-            arrayAdapter.add(groupList.get(i).getGroup_code() + " - " + groupList.get(i).getGroup_name());
-
-        builderSingle.setNegativeButton(
-                "Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builderSingle.setAdapter(arrayAdapter, null);
-
         builderSingle.show();
     }
 

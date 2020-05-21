@@ -43,9 +43,7 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
 
-    public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
-    public static ArrayList<SearchDetailsModel.ResultBean.ProfessionalsBean> professionalList;
-    public static ArrayList<SearchDetailsModel.ResultBean.EmployeesBean> employeeList;
+    public static List<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
     private String userId, mainCategoryTypeId, categoryTypeId, subCategoryTypeId;
 
     @Override
@@ -70,8 +68,6 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
 
         businessList = new ArrayList<>();
-        professionalList = new ArrayList<>();
-        employeeList = new ArrayList<>();
     }
 
     private void setDefault() {
@@ -108,6 +104,7 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getDetailsByLocation");
             obj.addProperty("user_id", userId);
+            obj.addProperty("search_term", "");
             obj.addProperty("location", params[0]);
             res = APICall.JSONAPICall(ApplicationConstants.SEARCHAPI, obj.toString());
             return res.trim();
@@ -122,16 +119,11 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
             try {
                 if (!result.equals("")) {
                     businessList = new ArrayList<>();
-                    professionalList = new ArrayList<>();
-                    employeeList = new ArrayList<>();
                     SearchDetailsModel pojoDetails = new Gson().fromJson(result, SearchDetailsModel.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
                         businessList = pojoDetails.getResult().getBusinesses();
-                        professionalList = pojoDetails.getResult().getProfessionals();
-                        employeeList = pojoDetails.getResult().getEmployees();
-
                         setDataToRecyclerView();
                     } else {
                         Utilities.showAlertDialog(context, "Categories not available", false);
@@ -258,23 +250,23 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
             case "1":
                 if (businessList.size() > 0) {
 
-                    if (!subCategoryTypeId.equals("NA")) {
-                        ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
-                        for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
-                            if (!bizdetails.getSub_type_id().equals(subCategoryTypeId)) {
-                                foundbiz.add(bizdetails);
-                            }
+//                    if (!subCategoryTypeId.equals("NA")) {
+//                        ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
+//                        for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
+//                            if (!bizdetails.getSub_type_id().equals(subCategoryTypeId)) {
+//                                foundbiz.add(bizdetails);
+//                            }
+//                        }
+//                        businessList.removeAll(foundbiz);
+//                    } else {
+                    ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
+                    for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
+                        if (!bizdetails.getType_id().equals(categoryTypeId)) {
+                            foundbiz.add(bizdetails);
                         }
-                        businessList.removeAll(foundbiz);
-                    } else {
-                        ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> foundbiz = new ArrayList<SearchDetailsModel.ResultBean.BusinessesBean>();
-                        for (SearchDetailsModel.ResultBean.BusinessesBean bizdetails : businessList) {
-                            if (!bizdetails.getType_id().equals(categoryTypeId)) {
-                                foundbiz.add(bizdetails);
-                            }
-                        }
-                        businessList.removeAll(foundbiz);
                     }
+                    businessList.removeAll(foundbiz);
+//                    }
 
                     if (businessList.size() == 0) {
                         ll_nopreview.setVisibility(View.VISIBLE);

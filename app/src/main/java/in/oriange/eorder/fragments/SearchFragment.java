@@ -30,6 +30,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.oriange.eorder.R;
 import in.oriange.eorder.adapters.SearchBusinessAdapter;
@@ -48,7 +49,7 @@ public class SearchFragment extends Fragment {
     private LinearLayout ll_nopreview;
     private EditText edt_search;
     private static SpinKitView progressBar;
-    public static ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
+    public static List<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
 
     private static String userId;
     private static String categoryTypeId;
@@ -146,7 +147,7 @@ public class SearchFragment extends Fragment {
 
                 StringBuilder tag = new StringBuilder();
                 if (businessDetails.getTag().get(0) != null)
-                    for (SearchDetailsModel.ResultBean.BusinessesBean.TagBeanXX tags : businessDetails.getTag().get(0)) {
+                    for (SearchDetailsModel.ResultBean.BusinessesBean.TagBean tags : businessDetails.getTag().get(0)) {
                         if (tags != null)
                             tag.append(tags.getTag_name());
                     }
@@ -181,6 +182,7 @@ public class SearchFragment extends Fragment {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getDetailsByLocation");
             obj.addProperty("user_id", userId);
+            obj.addProperty("search_term", "");
             obj.addProperty("location", params[0]);
             res = APICall.JSONAPICall(ApplicationConstants.SEARCHAPI, obj.toString());
             return res.trim();

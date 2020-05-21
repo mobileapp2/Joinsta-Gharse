@@ -101,27 +101,16 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
                 }
 
             } else {
-                if (!searchDetails.getType_description().isEmpty() && !searchDetails.getSubtype_description().isEmpty()) {
-                    holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
-                } else if (searchDetails.getType_description().isEmpty() && searchDetails.getSubtype_description().isEmpty()) {
+                if (!searchDetails.getTypeSubTypeName().equals(""))
+                    holder.tv_subheading.setText(searchDetails.getTypeSubTypeName());
+                else
                     holder.tv_subheading.setVisibility(View.GONE);
-                } else if (!searchDetails.getType_description().isEmpty()) {
-                    holder.tv_subheading.setText(searchDetails.getType_description());
-                } else if (!searchDetails.getSubtype_description().isEmpty()) {
-                    holder.tv_subheading.setText(searchDetails.getSubtype_description());
-                }
             }
         } else {
-            if (!searchDetails.getType_description().isEmpty() && !searchDetails.getSubtype_description().isEmpty()) {
-                holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
-            } else if (searchDetails.getType_description().isEmpty() && searchDetails.getSubtype_description().isEmpty()) {
+            if (!searchDetails.getTypeSubTypeName().equals(""))
+                holder.tv_subheading.setText(searchDetails.getTypeSubTypeName());
+            else
                 holder.tv_subheading.setVisibility(View.GONE);
-            } else if (!searchDetails.getType_description().isEmpty()) {
-                holder.tv_subheading.setText(searchDetails.getType_description());
-            } else if (!searchDetails.getSubtype_description().isEmpty()) {
-                holder.tv_subheading.setText(searchDetails.getSubtype_description());
-            }
-
         }
 
         if (!searchDetails.getOffer_count().equals("0")) {
