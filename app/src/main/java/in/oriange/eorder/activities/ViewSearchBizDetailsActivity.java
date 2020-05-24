@@ -10,13 +10,13 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,20 +24,28 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -50,58 +58,56 @@ import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Objects;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.eorder.R;
-import in.oriange.eorder.fragments.SearchFragment;
 import in.oriange.eorder.models.RatingAndReviewModel;
 import in.oriange.eorder.models.SearchDetailsModel;
 import in.oriange.eorder.utilities.APICall;
 import in.oriange.eorder.utilities.ApplicationConstants;
-import in.oriange.eorder.utilities.CalculateDistanceTime;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.CALL_PHONE;
-import static in.oriange.eorder.activities.MainDrawerActivity.startLocationUpdates;
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
-import static in.oriange.eorder.utilities.Utilities.isLocationEnabled;
 import static in.oriange.eorder.utilities.Utilities.provideCallPremission;
-import static in.oriange.eorder.utilities.Utilities.provideLocationAccess;
-import static in.oriange.eorder.utilities.Utilities.turnOnLocation;
 
-public class ViewSearchBizDetailsActivity extends AppCompatActivity {
+public class ViewSearchBizDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
+    private CoordinatorLayout cl_root;
     private ImageView imv_image;
     private ProgressBar progressBar;
-    private CheckBox cb_like;
-    private ImageView imv_share;
+    private FloatingActionButton btn_share, btn_cart;
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
-    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_tax_alias, tv_pan, tv_gst, tv_accholder_name,
-            tv_bank_alias, tv_bank_name, tv_acc_no, tv_ifsc, tv_mutual_groups, tv_order_online,
-            tv_total_rating, tv_total_reviews;
-    private RelativeLayout rl_rating;
-    private RatingBar rb_feedback_stars, rb_post_rating;
-    private Button btn_enquire, btn_caldist;
-    private CardView cv_tabs, cv_contact_details, cv_address, cv_tax, cv_bank, cv_mutual_groups, cv_order_online,
-            cv_post_review;
+    private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_total_rating;
+    private RatingBar rb_post_rating;
+    private CardView cv_tabs, cv_contact_details, cv_address, cv_post_review, cv_add, cv_enquire, cv_offers;
     private TagContainerLayout container_tags;
     private RecyclerView rv_mobilenos;
+    private GoogleMap mMap;
+    private SupportMapFragment mapFragment;
 
     private SearchDetailsModel.ResultBean.BusinessesBean searchDetails;
-    private String userId, isFav, typeFrom, name, mobile, countryCode;
+    private String userId, typeFrom, name, mobile, countryCode;
 
     private JSONArray emailJsonArray;
     private LocalBroadcastManager localBroadcastManager;
+    private Menu collapsedMenu;
+    private boolean appBarExpanded = true;
+    private Toolbar toolbar;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_viewsearch_bizdetails);
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         init();
         setDefault();
@@ -115,23 +121,24 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        cl_root = findViewById(R.id.cl_root);
+        toolbar = findViewById(R.id.anim_toolbar);
+        collapsingToolbar = findViewById(R.id.collapsing_toolbar);
         ll_nopreview = findViewById(R.id.ll_nopreview);
         ll_direction = findViewById(R.id.ll_direction);
         ll_mobile = findViewById(R.id.ll_mobile);
         ll_whatsapp = findViewById(R.id.ll_whatsapp);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
-        cb_like = findViewById(R.id.cb_like);
         imv_image = findViewById(R.id.imv_image);
         progressBar = findViewById(R.id.progressBar);
         cv_tabs = findViewById(R.id.cv_tabs);
         cv_contact_details = findViewById(R.id.cv_contact_details);
         cv_address = findViewById(R.id.cv_address);
-        cv_tax = findViewById(R.id.cv_tax);
-        cv_bank = findViewById(R.id.cv_bank);
-        cv_mutual_groups = findViewById(R.id.cv_mutual_groups);
-        cv_order_online = findViewById(R.id.cv_order_online);
         cv_post_review = findViewById(R.id.cv_post_review);
+        cv_add = findViewById(R.id.cv_add);
+        cv_enquire = findViewById(R.id.cv_enquire);
+        cv_offers = findViewById(R.id.cv_offers);
 
         tv_name = findViewById(R.id.tv_name);
         tv_nature = findViewById(R.id.tv_nature);
@@ -139,27 +146,11 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         tv_email = findViewById(R.id.tv_email);
         tv_website = findViewById(R.id.tv_website);
         tv_address = findViewById(R.id.tv_address);
-        tv_tax_alias = findViewById(R.id.tv_tax_alias);
-        tv_pan = findViewById(R.id.tv_pan);
-        tv_gst = findViewById(R.id.tv_gst);
-        tv_accholder_name = findViewById(R.id.tv_accholder_name);
-        tv_bank_alias = findViewById(R.id.tv_bank_alias);
-        tv_bank_name = findViewById(R.id.tv_bank_name);
-        tv_acc_no = findViewById(R.id.tv_acc_no);
-        tv_ifsc = findViewById(R.id.tv_ifsc);
-        tv_mutual_groups = findViewById(R.id.tv_mutual_groups);
-        tv_order_online = findViewById(R.id.tv_order_online);
-
         tv_total_rating = findViewById(R.id.tv_total_rating);
-        tv_total_reviews = findViewById(R.id.tv_total_reviews);
-        rl_rating = findViewById(R.id.rl_rating);
-        rb_feedback_stars = findViewById(R.id.rb_feedback_stars);
         rb_post_rating = findViewById(R.id.rb_post_rating);
 
-        imv_share = findViewById(R.id.imv_share);
-
-        btn_enquire = findViewById(R.id.btn_enquire);
-        btn_caldist = findViewById(R.id.btn_caldist);
+        btn_share = findViewById(R.id.btn_share);
+        btn_cart = findViewById(R.id.btn_cart);
         container_tags = findViewById(R.id.container_tags);
         rv_mobilenos = findViewById(R.id.rv_mobilenos);
         rv_mobilenos.setLayoutManager(new LinearLayoutManager(context));
@@ -181,6 +172,8 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
                             ll_nopreview.setVisibility(View.GONE);
                             imv_image.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
+//                            Utilities.changeStatusBar(context, getWindow());
+//                            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
                         }
 
                         @Override
@@ -196,13 +189,26 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
         }
 
-        if (searchDetails.getIsFavourite().equals("1"))
-            cb_like.setChecked(true);
-
-        if (!searchDetails.getBusiness_name().trim().isEmpty()) {
+        if (!searchDetails.getBusiness_name().trim().isEmpty())
             tv_name.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
-        } else {
+        else
             tv_name.setVisibility(View.GONE);
+
+        if (searchDetails.getTotal_number_review().equals("0")) {
+            tv_total_rating.setVisibility(View.GONE);
+        } else {
+            float averageRating = Float.parseFloat(searchDetails.getAvg_rating());
+            averageRating = Float.parseFloat(new DecimalFormat("#.#").format(averageRating));
+
+            tv_total_rating.setText(String.valueOf(averageRating) + "\u2605");
+            if (averageRating >= 4 && averageRating <= 5)
+                tv_total_rating.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
+            else if (averageRating >= 3 && averageRating <= 4.9)
+                tv_total_rating.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_orange));
+            else if (averageRating >= 2 && averageRating <= 3.9)
+                tv_total_rating.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_yellow));
+            else if (averageRating >= 1 && averageRating <= 1.9)
+                tv_total_rating.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
         }
 
         if (!searchDetails.getTypeSubTypeName().equals(""))
@@ -210,84 +216,52 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         else
             tv_nature.setVisibility(View.GONE);
 
-        if (!searchDetails.getDesignation().trim().isEmpty()) {
+        if (!searchDetails.getDesignation().trim().isEmpty())
             tv_designation.setText(searchDetails.getDesignation());
-        } else {
+        else
             tv_designation.setVisibility(View.GONE);
-        }
 
-        if ((searchDetails.getMobiles().get(0) == null) && searchDetails.getEmail().trim().isEmpty() && searchDetails.getWebsite().trim().isEmpty()) {
+        if (searchDetails.getSubTypesTagsList("2").size() != 0)
+            container_tags.setTags(searchDetails.getSubTypesTagsList("2"));
+        else
+            cv_tabs.setVisibility(View.GONE);
+
+        if ((searchDetails.getMobiles().get(0) == null || searchDetails.getMobiles().get(0).size() != 0)
+                && searchDetails.getEmail().trim().isEmpty()
+                && searchDetails.getWebsite().trim().isEmpty()) {
             cv_contact_details.setVisibility(View.GONE);
         } else {
-
-            if (searchDetails.getMobiles().get(0) != null) {
-                if (searchDetails.getMobiles().get(0).size() > 0) {
+            if (searchDetails.getMobiles().get(0) != null)
+                if (searchDetails.getMobiles().get(0).size() > 0)
                     rv_mobilenos.setAdapter(new MobileNumbersAdapter(searchDetails.getMobiles().get(0)));
-                } else {
+                else
                     rv_mobilenos.setVisibility(View.GONE);
-                }
-            } else {
+            else
                 rv_mobilenos.setVisibility(View.GONE);
-            }
 
-            if (!searchDetails.getEmail().trim().isEmpty()) {
+            if (!searchDetails.getEmail().trim().isEmpty())
                 tv_email.setText(searchDetails.getEmail());
-            } else {
+            else
                 tv_email.setVisibility(View.GONE);
-            }
 
-            if (!searchDetails.getWebsite().trim().isEmpty()) {
+
+            if (!searchDetails.getWebsite().trim().isEmpty())
                 tv_website.setText(searchDetails.getWebsite());
-            } else {
+            else
                 tv_website.setVisibility(View.GONE);
-            }
         }
 
-        if (searchDetails.getTag().get(0) != null) {
-            if (searchDetails.getTag().get(0).size() > 0) {
-                for (int i = 0; i < searchDetails.getTag().get(0).size(); i++) {
-
-                    if (!searchDetails.getTag().get(0).get(i).getTag_name().trim().equals("")) {
-                        container_tags.addTag(searchDetails.getTag().get(0).get(i).getTag_name());
-                    }
-                }
-            } else {
-                cv_tabs.setVisibility(View.GONE);
-            }
-        } else {
-            cv_tabs.setVisibility(View.GONE);
-        }
-
-        if (!searchDetails.getAddress().trim().isEmpty()) {
-            tv_address.setText(searchDetails.getAddress());
-        } else {
+        if (searchDetails.getAddress().trim().isEmpty() && (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty())) {
             cv_address.setVisibility(View.GONE);
-        }
-
-        cv_mutual_groups.setVisibility(View.GONE);
-
-        if (!searchDetails.getOrder_online().trim().isEmpty()) {
-            cv_order_online.setVisibility(View.VISIBLE);
-            tv_order_online.setText(searchDetails.getOrder_online());
         } else {
-            cv_order_online.setVisibility(View.GONE);
+            if (!searchDetails.getAddress().trim().isEmpty())
+                tv_address.setText(searchDetails.getAddress());
+            else
+                tv_address.setVisibility(View.GONE);
         }
 
-        if (searchDetails.getTotal_number_review().equals("0")) {
-            rl_rating.setVisibility(View.GONE);
-        } else {
-            rl_rating.setVisibility(View.VISIBLE);
-            float averageRating = Float.parseFloat(searchDetails.getAvg_rating());
-            averageRating = Float.parseFloat(new DecimalFormat("#.#").format(averageRating));
-
-            tv_total_rating.setText(String.valueOf(averageRating));
-            tv_total_reviews.setText("(" + searchDetails.getTotal_number_review() + ")");
-            rb_feedback_stars.setRating(averageRating);
-        }
-
-        if (!searchDetails.getRating_by_user().equals("0")) {
+        if (!searchDetails.getRating_by_user().equals("0"))
             cv_post_review.setVisibility(View.GONE);
-        }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("ViewSearchBizDetailsActivity");
@@ -295,7 +269,6 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
     }
 
     private void getSessionDetails() {
-
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
@@ -316,33 +289,6 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        cb_like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isFav = searchDetails.getIsFavourite();
-
-                if (cb_like.isChecked())
-                    isFav = "1";
-                else
-                    isFav = "0";
-
-                JsonObject mainObj = new JsonObject();
-
-                mainObj.addProperty("type", "createfav");
-                mainObj.addProperty("info_id", searchDetails.getId());
-                mainObj.addProperty("info_type", "1");
-                mainObj.addProperty("user_id", userId);
-                mainObj.addProperty("record_status_id", isFav);
-
-                if (Utilities.isNetworkAvailable(context)) {
-                    new SetFavourite().execute(mainObj.toString());
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-
-            }
-        });
-
         ll_direction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -450,51 +396,16 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
             }
         });
 
-        btn_caldist.setOnClickListener(new View.OnClickListener() {
+        mapFragment.getView().setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-
-                if (searchDetails.getLatitude().equals("") || searchDetails.getLongitude().equals("")) {
-                    return;
-                }
-
-                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-                    provideLocationAccess(context);
-                    return;
-                }
-
-                if (!isLocationEnabled(context)) {
-                    turnOnLocation(context);
-                    return;
-                }
-
-                if (MainDrawerActivity.latLng == null) {
-                    btn_caldist.setText(Html.fromHtml("<font color=\"#C62828\"> <b>Try again</b></font>"));
-                    return;
-                }
-
-                startLocationUpdates();
-
-                LatLng currentLocation = new LatLng(MainDrawerActivity.latLng.latitude, MainDrawerActivity.latLng.longitude);
-                LatLng destinationLocation = new LatLng(Double.parseDouble(searchDetails.getLatitude()), Double.parseDouble(searchDetails.getLongitude()));
-
-                CalculateDistanceTime distance_task = new CalculateDistanceTime(context);
-
-                distance_task.getDirectionsUrl(currentLocation, destinationLocation);
-
-                distance_task.setLoadListener(new CalculateDistanceTime.taskCompleteListener() {
-                    @Override
-                    public void taskCompleted(String[] time_distance) {
-                        btn_caldist.setText(time_distance[0]);
-//                        holder.tv_distance.setText(Html.fromHtml("<font color=\"#FFA000\"> <b>" + time_distance[0] + "</b></font> <font color=\"#616161\">from current location</font>"));
-
-                    }
-
-                });
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
+                startActivity(intent);
             }
         });
 
-        btn_enquire.setOnClickListener(new View.OnClickListener() {
+        cv_enquire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -649,70 +560,14 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
             }
         });
 
-        imv_share.setOnClickListener(new View.OnClickListener() {
+        btn_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StringBuilder sb = new StringBuilder();
-
-                if (!searchDetails.getBusiness_name().equals("")) {
-                    sb.append("Business Name - " + searchDetails.getBusiness_name() + "\n");
-                }
-
-                if (!searchDetails.getTypeSubTypeName().equals("")) {
-                    sb.append("Nature of Business - " + searchDetails.getType_description() + "/" + searchDetails.getTypeSubTypeName() + "\n");
-                } else {
-                    sb.append("Nature of Business - " + searchDetails.getType_description() + "\n");
-                }
-
-                if (searchDetails.getTag().get(0) != null)
-                    if (searchDetails.getTag().get(0).size() != 0) {
-                        StringBuilder tags = new StringBuilder();
-                        for (int i = 0; i < searchDetails.getTag().get(0).size(); i++) {
-                            tags.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
-                        }
-
-                        sb.append("Products - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
-                    }
-
-                if (!searchDetails.getAddress().equals("")) {
-                    sb.append("Address - " + searchDetails.getAddress() + "\n");
-                }
-
-                if (searchDetails.getMobiles().get(0) != null)
-                    if (searchDetails.getMobiles().get(0).size() != 0) {
-                        StringBuilder mobile = new StringBuilder();
-                        for (int i = 0; i < searchDetails.getMobiles().get(0).size(); i++) {
-                            mobile.append(searchDetails.getMobiles().get(0).get(i).getMobile_number() + ", ");
-                        }
-
-                        sb.append("Mobile - " + mobile.toString().substring(0, mobile.toString().length() - 2) + "\n");
-                    }
-
-                if (!searchDetails.getEmail().equals("")) {
-                    sb.append("Email - " + searchDetails.getEmail() + "\n");
-                }
-
-                if (!searchDetails.getLatitude().equals("") || !searchDetails.getLongitude().equals("")) {
-                    sb.append("Location - " + "https://www.google.com/maps/?q="
-                            + searchDetails.getLatitude() + "," + searchDetails.getLongitude() + "\n");
-
-                }
-
-                if (!searchDetails.getWebsite().equals("")) {
-                    sb.append("Website - " + searchDetails.getWebsite() + "\n");
-                }
-
-                String details = sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
-
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, details);
-                context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
-
+                shareDetails();
             }
         });
 
-        rl_rating.setOnClickListener(new View.OnClickListener() {
+        tv_total_rating.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (Utilities.isNetworkAvailable(context))
@@ -821,11 +676,28 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         builderSingle.show();
     }
 
-    public class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
+            Objects.requireNonNull(mapFragment.getView()).setVisibility(View.GONE);
+        } else {
+            LatLng latLng = new LatLng(Double.parseDouble(searchDetails.getLatitude().trim()),
+                    Double.parseDouble(searchDetails.getLongitude().trim()));
+            mMap.addMarker(new MarkerOptions().position(latLng));
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(latLng)
+                    .zoom(10).build();
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
+    }
+
+    private class MobileNumbersAdapter extends RecyclerView.Adapter<MobileNumbersAdapter.MyViewHolder> {
 
         private List<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> resultArrayList;
 
-        public MobileNumbersAdapter(List<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> resultArrayList) {
+        MobileNumbersAdapter(List<SearchDetailsModel.ResultBean.BusinessesBean.MobilesBeanXX> resultArrayList) {
             this.resultArrayList = resultArrayList;
         }
 
@@ -843,29 +715,26 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
 
             holder.tv_mobile.setText(searchDetails.getCountry_code() + searchDetails.getMobile_number());
 
-            holder.tv_mobile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setMessage("Are you sure you want to make a call?");
-                    builder.setTitle("Alert");
-                    builder.setIcon(R.drawable.icon_call);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            startActivity(new Intent(Intent.ACTION_CALL,
-                                    Uri.parse("tel:" + searchDetails.getCountry_code() + searchDetails.getMobile_number())));
-                        }
-                    });
-                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
-                }
+            holder.tv_mobile.setOnClickListener(v -> {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setMessage("Are you sure you want to make a call?");
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.icon_call);
+                builder.setCancelable(false);
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        startActivity(new Intent(Intent.ACTION_CALL,
+                                Uri.parse("tel:" + searchDetails.getCountry_code() + searchDetails.getMobile_number())));
+                    }
+                });
+                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertD = builder.create();
+                alertD.show();
             });
         }
 
@@ -887,56 +756,6 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         @Override
         public int getItemViewType(int position) {
             return position;
-        }
-    }
-
-    private class SetFavourite extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            res = APICall.JSONAPICall(ApplicationConstants.FAVOURITEAPI, params[0]);
-            return res.trim();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            String type = "", message = "";
-            try {
-                pd.dismiss();
-                if (!result.equals("")) {
-                    JSONObject mainObj = new JSONObject(result);
-                    type = mainObj.getString("type");
-                    message = mainObj.getString("message");
-                    if (type.equalsIgnoreCase("success")) {
-
-                        if (typeFrom.equals("1")) {               //  1 = from search
-                            int position = SearchFragment.businessList.indexOf(searchDetails);
-                            SearchFragment.businessList.get(position).setIsFavourite(isFav);
-                        } else if (typeFrom.equals("2")) {        // 2 = from favorite
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragment"));
-                        } else if (typeFrom.equals("3")) {        // 3 = from home
-                            int position = BizProfEmpDetailsListActivity.businessList.indexOf(searchDetails);
-                            BizProfEmpDetailsListActivity.businessList.get(position).setIsFavourite(isFav);
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragment"));
-                        }
-                    } else {
-                        cb_like.setChecked(false);
-                    }
-                }
-            } catch (Exception e) {
-                cb_like.setChecked(false);
-                e.printStackTrace();
-            }
         }
     }
 
@@ -1048,22 +867,86 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
 
+    private void shareDetails() {
+        StringBuilder sb = new StringBuilder();
+
+        if (!searchDetails.getBusiness_name().equals("")) {
+            sb.append("Business Name - " + searchDetails.getBusiness_name() + "\n");
+        }
+
+        if (!searchDetails.getTypeSubTypeName().equals("")) {
+            sb.append("Nature of Business - " + searchDetails.getType_description() + "/" + searchDetails.getTypeSubTypeName() + "\n");
+        } else {
+            sb.append("Nature of Business - " + searchDetails.getType_description() + "\n");
+        }
+
+        if (searchDetails.getTag().get(0) != null)
+            if (searchDetails.getTag().get(0).size() != 0) {
+                StringBuilder tags = new StringBuilder();
+                for (int i = 0; i < searchDetails.getTag().get(0).size(); i++) {
+                    tags.append(searchDetails.getTag().get(0).get(i).getTag_name() + ", ");
+                }
+
+                sb.append("Products - " + tags.toString().substring(0, tags.toString().length() - 2) + "\n");
+            }
+
+        if (!searchDetails.getAddress().equals("")) {
+            sb.append("Address - " + searchDetails.getAddress() + "\n");
+        }
+
+        if (searchDetails.getMobiles().get(0) != null)
+            if (searchDetails.getMobiles().get(0).size() != 0) {
+                StringBuilder mobile = new StringBuilder();
+                for (int i = 0; i < searchDetails.getMobiles().get(0).size(); i++) {
+                    mobile.append(searchDetails.getMobiles().get(0).get(i).getMobile_number() + ", ");
+                }
+
+                sb.append("Mobile - " + mobile.toString().substring(0, mobile.toString().length() - 2) + "\n");
+            }
+
+        if (!searchDetails.getEmail().equals("")) {
+            sb.append("Email - " + searchDetails.getEmail() + "\n");
+        }
+
+        if (!searchDetails.getLatitude().equals("") || !searchDetails.getLongitude().equals("")) {
+            sb.append("Location - " + "https://www.google.com/maps/?q="
+                    + searchDetails.getLatitude() + "," + searchDetails.getLongitude() + "\n");
+
+        }
+
+        if (!searchDetails.getWebsite().equals("")) {
+            sb.append("Website - " + searchDetails.getWebsite() + "\n");
+        }
+
+        String details = sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+
+        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, details);
+        context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+
+    }
+
     private void setUpToolbar() {
-        Toolbar toolbar = findViewById(R.id.anim_toolbar);
-        CollapsingToolbarLayout collapsingToolbar = findViewById(R.id.collapsing_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        AppBarLayout appBarLayout = findViewById(R.id.appbar);
 
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
-
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
+        appBarLayout.addOnOffsetChangedListener((appBarLayout1, verticalOffset) -> {
+            //  Vertical offset == 0 indicates appBar is fully expanded.
+            if (Math.abs(verticalOffset) > 200) {
+                appBarExpanded = false;
+                invalidateOptionsMenu();
+            } else {
+                appBarExpanded = true;
+                invalidateOptionsMenu();
             }
         });
 
-        collapsingToolbar.setTitle("");
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(view -> finish());
+
+//        collapsingToolbar.setTitle("");
     }
 
     @Override
@@ -1083,5 +966,49 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (collapsedMenu != null && (!appBarExpanded)) {
+//            cl_root.setFitsSystemWindows(true);
+//            cl_root.setFitsSystemWindows(false);
+//            cl_root.setPadding(0, 0, 0, 0);
+            toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+            collapsedMenu.add("Share")
+                    .setIcon(R.drawable.icon_share)
+                    .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            collapsingToolbar.setTitle(searchDetails.getBusiness_name());
+        } else {
+            //expanded
+//            cl_root.setFitsSystemWindows(false);
+//            cl_root.setPadding(0, 0, 0, 0);
+            collapsingToolbar.setTitle("");
+            toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        }
+        return super.onPrepareOptionsMenu(collapsedMenu);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+        collapsedMenu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            case R.id.action_settings:
+                return true;
+        }
+        if (item.getTitle() == "Share") {
+            shareDetails();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -1242,7 +1242,7 @@ public class AddBusinessActivity extends AppCompatActivity {
                 MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
                 if (addressList != null) {
                     latitude = addressList.getMap_location_lattitude();
-                    longitude = addressList.getAddress_line_one();
+                    longitude = addressList.getMap_location_logitude();
                     edt_address.setText(addressList.getAddress_line_one());
                     edt_country.setText(addressList.getCountry());
                     edt_state.setText(addressList.getState());

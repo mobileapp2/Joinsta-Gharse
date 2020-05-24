@@ -51,6 +51,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.NUMVERIFY_ACCESS_TOKEN;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.eorder.utilities.Utilities.loadJSONForCountryCode;
 
@@ -79,6 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void init() {
         context = RegisterActivity.this;
+        changeStatusBar(context, getWindow());
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
@@ -112,7 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        tv_tandc.setText(Html.fromHtml("I agree to your" + "<font color=\"#EF6C00\"> <b> Terms and Conditions </b> </font>"));
+        tv_tandc.setText(Html.fromHtml("I agree to your" + "<font color=\"#01579B\"> <b> Terms and Conditions </b> </font>"));
 
     }
 

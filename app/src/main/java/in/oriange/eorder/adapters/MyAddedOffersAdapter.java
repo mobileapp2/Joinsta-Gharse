@@ -126,11 +126,11 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
         }
 
 //        if (!offerDetails.getRecord_name().isEmpty() && !offerDetails.getSub_category().isEmpty()) {
-//            holder.tv_business_name.setText(Html.fromHtml("<font color=\"#EF6C00\"> <b>"+ offerDetails.getRecord_name() +"</b> </font>" + " (" + offerDetails.getSub_category() + ")"));
+//            holder.tv_business_name.setText(Html.fromHtml("<font color=\"#01579B\"> <b>"+ offerDetails.getRecord_name() +"</b> </font>" + " (" + offerDetails.getSub_category() + ")"));
 //        } else if (offerDetails.getRecord_name().isEmpty() && offerDetails.getSub_category().isEmpty()) {
 //            holder.tv_business_name.setVisibility(View.GONE);
 //        } else if (!offerDetails.getRecord_name().isEmpty()) {
-//            holder.tv_business_name.setText("<font color=\"#EF6C00\"> <b>"+ offerDetails.getRecord_name() +"</b> </font>");
+//            holder.tv_business_name.setText("<font color=\"#01579B\"> <b>"+ offerDetails.getRecord_name() +"</b> </font>");
 //        }
 
         holder.tv_title.setText(offerDetails.getTitle());
@@ -158,7 +158,7 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
             holder.tv_url.setVisibility(View.GONE);
         }
 
-        holder.tv_validity.setText(Html.fromHtml("Valid upto " + "<font color=\"#EF6C00\"> <b>" + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", offerDetails.getEnd_date()) + "</b> </font>"));
+        holder.tv_validity.setText(Html.fromHtml("Valid upto " + "<font color=\"#01579B\"> <b>" + changeDateFormat("yyyy-MM-dd", "dd-MMM-yyyy", offerDetails.getEnd_date()) + "</b> </font>"));
 
         if (!offerDetails.getPromo_code().equals("")) {
             holder.tv_promo_code.setText(offerDetails.getPromo_code());

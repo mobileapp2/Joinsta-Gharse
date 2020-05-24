@@ -272,7 +272,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                 holder.tv_total_product_price.setVisibility(View.GONE);
             }
 
-            holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
+            holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
 
             holder.btn_remove.setOnClickListener(v -> {
                 if (quantity[0] == 1) {
@@ -280,14 +280,14 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                 }
                 quantity[0] = quantity[0] - 1;
                 holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
-                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
+                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
                 updateProductQuantity(finalBusinessOwnerOrderDetails, productDetails, quantity[0]);
             });
 
             holder.btn_add.setOnClickListener(v -> {
                 quantity[0] = quantity[0] + 1;
                 holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
-                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
+                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
                 updateProductQuantity(finalBusinessOwnerOrderDetails, productDetails, quantity[0]);
             });
 

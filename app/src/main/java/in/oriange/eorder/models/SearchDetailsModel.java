@@ -590,14 +590,14 @@ public class SearchDetailsModel implements Serializable {
                 String subTypeNameStr = "";
 
                 for (SearchDetailsModel.ResultBean.BusinessesBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0)) {
-                    subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(", ");
+                    subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(" | ");
                 }
                 subTypeNameStr = subTypeNameSb.toString();
                 if (!subTypeNameStr.equals(""))
-                    subTypeNameStr = subTypeNameStr.substring(0, subTypeNameStr.length() - 2);
+                    subTypeNameStr = subTypeNameStr.substring(0, subTypeNameStr.length() - 3);
 
                 if (!getType_description().trim().isEmpty() && !subTypeNameStr.trim().isEmpty()) {
-                    return getType_description() + ", " + subTypeNameStr;
+                    return getType_description() + " | " + subTypeNameStr;
                 } else if (getType_description().trim().isEmpty() && subTypeNameStr.trim().isEmpty()) {
                     return "";
                 } else if (!getType_description().trim().isEmpty()) {
@@ -608,6 +608,41 @@ public class SearchDetailsModel implements Serializable {
                     return "";
                 }
 
+            }
+
+            public String getAddressCityPincode() {
+                if (!getAddress().trim().isEmpty()) {
+                    return getAddress().trim();
+                } else if (getAddress().trim().isEmpty() && !getCity().trim().isEmpty() && !getPincode().trim().isEmpty()) {
+                    return getCity().trim().isEmpty() + ", " + getPincode().trim().isEmpty();
+                } else if (getAddress().trim().isEmpty() && !getCity().trim().isEmpty() && getPincode().trim().isEmpty()) {
+                    return getCity().trim();
+                } else if (getAddress().trim().isEmpty() && getCity().trim().isEmpty() && !getPincode().trim().isEmpty()) {
+                    return getPincode().trim();
+                } else if (getAddress().trim().isEmpty() && getCity().trim().isEmpty() && getPincode().trim().isEmpty()) {
+                    return "";
+                } else {
+                    return "";
+                }
+            }
+
+            public List<String> getSubTypesTagsList(String type) {   //    type == 1 (return subtype and tags)  type == 2 (return tags only)
+                List<String> list = new ArrayList<>();
+
+                if (type.equals("1"))
+                    if (getSub_categories().get(0) != null)
+                        if (getSub_categories().get(0).size() > 0)
+                            for (SearchDetailsModel.ResultBean.BusinessesBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0))
+                                list.add(subCategoriesBean.getSubtype_description());
+
+                if (getTag().get(0) != null)
+                    if (getTag().get(0).size() > 0)
+                        for (SearchDetailsModel.ResultBean.BusinessesBean.TagBean tags : getTag().get(0))
+                            if (!tags.getTag_name().trim().equals(""))
+                                list.add(tags.getTag_name());
+
+
+                return list;
             }
 
             public static class MobilesBeanXX implements Serializable {

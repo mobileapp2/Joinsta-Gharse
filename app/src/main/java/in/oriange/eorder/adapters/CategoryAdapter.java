@@ -20,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,71 +63,34 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         final int position = holder.getAdapterPosition();
         final CategotyListModel categotyDetails = resultArrayList.get(position);
 
-        holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_builder1));
-
         holder.tv_categoty.setText(categotyDetails.getName());
 
-        holder.cv_main_row.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                setUpSubcategoryData(holder, categotyDetails);
-                context.startActivity(new Intent(context, BizProfEmpDetailsListActivity.class)
-                        .putExtra("mainCategoryTypeId", mainCategoryTypeId)
-                        .putExtra("categoryTypeId", categotyDetails.getId())
-                        .putExtra("subCategoryTypeId", "NA"));
-            }
+        holder.cv_main_row.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, BizProfEmpDetailsListActivity.class)
+                    .putExtra("mainCategoryTypeId", mainCategoryTypeId)
+                    .putExtra("categoryTypeId", categotyDetails.getId())
+                    .putExtra("subCategoryTypeId", "NA"));
         });
 
-//        holder.imv_arrow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                setUpSubcategoryData(holder, categotyDetails);
-//            }
-//        });
-
-        if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
-            Picasso.with(context)
-                    .load(categotyDetails.getCategory_icon().trim())
-                    .into(holder.imv_category, new Callback() {
-                        @Override
-                        public void onSuccess() {
-
-                        }
-
-                        @Override
-                        public void onError() {
-                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-                        }
-                    });
-        } else {
-            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-        }
+//        if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
+//            Picasso.with(context)
+//                    .load(categotyDetails.getCategory_icon().trim())
+//                    .into(holder.imv_category, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+//                        }
+//                    });
+//        } else {
+//            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+//        }
 
     }
-
-//    private void setUpSubcategoryData(MyViewHolder holder, CategotyListModel categotyDetails) {
-//        if (holder.rv_sub_catrgory.getVisibility() == View.VISIBLE ||
-//                holder.progressBar.getVisibility() == View.VISIBLE ||
-//                holder.tv_subcst_notavailable.getVisibility() == View.VISIBLE) {
-//            imv_arrow1 = holder.imv_arrow;
-//            holder.rv_sub_catrgory.setVisibility(View.GONE);
-//            holder.progressBar.setVisibility(View.GONE);
-//            holder.tv_subcst_notavailable.setVisibility(View.GONE);
-//            animateCollapse();
-//        } else {
-//            holder.cv_main_row.requestFocus();
-//            imv_arrow1 = holder.imv_arrow;
-//            rv_sub_catrgory1 = holder.rv_sub_catrgory;
-//            progressBar1 = holder.progressBar;
-//            tv_subcst_notavailable1 = holder.tv_subcst_notavailable;
-//            if (Utilities.isNetworkAvailable(context)) {
-//                new GetSubCategotyList().execute(categotyDetails.getId(), "1", mainCategoryTypeId);
-//            } else {
-//                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-//            }
-//            animateExpand();
-//        }
-//    }
 
     @Override
     public int getItemCount() {

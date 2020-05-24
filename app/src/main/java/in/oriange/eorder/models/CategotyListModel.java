@@ -20,6 +20,8 @@ public class CategotyListModel {
 
     private String created_by;
 
+    private String is_popular;
+
     private String category_icon;
 
     public String getUpdated_at() {
@@ -104,5 +106,17 @@ public class CategotyListModel {
 
     public void setCategory_icon(String category_icon) {
         this.category_icon = category_icon;
+    }
+
+    public String getIs_popular() {
+        if (is_popular != null) {
+            return is_popular;
+        } else {
+            return "0";
+        }
+    }
+
+    public void setIs_popular(String is_popular) {
+        this.is_popular = is_popular;
     }
 }

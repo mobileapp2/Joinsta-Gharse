@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lightGray"
+    android:background="@color/white"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="256dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
@@ -20,7 +21,7 @@
             android:background="@color/white"
             android:fitsSystemWindows="true"
             app:contentScrim="?colorPrimary"
-            app:expandedTitleMarginStart="12dp"
+            app:expandedTitleMarginStart="24dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <RelativeLayout
@@ -30,7 +31,8 @@
                 <LinearLayout
                     android:id="@+id/ll_nopreview"
                     android:layout_width="match_parent"
-                    android:layout_height="250dp"
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:visibility="gone">
@@ -38,7 +40,6 @@
                     <ImageView
                         android:layout_width="90dp"
                         android:layout_height="90dp"
-                        android:fitsSystemWindows="true"
                         android:src="@drawable/icon_nopreview" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -55,10 +56,10 @@
                 <ImageView
                     android:id="@+id/imv_image"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:fitsSystemWindows="true"
-                    android:scaleType="fitXY"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/icon_image_not_available"
                     android:visibility="gone" />
 
@@ -70,49 +71,21 @@
 
             </RelativeLayout>
 
+            <View
+                android:id="@+id/view_shadow"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="top"
+                android:background="@drawable/scrim"
+                android:fitsSystemWindows="true"/>
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/anim_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                android:fitsSystemWindows="false"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end">
-
-                <CheckBox
-                    android:id="@+id/cb_like"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="end"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/like_icon"
-                    android:button="@null"
-                    android:checked="false"
-                    android:stateListAnimator="@animator/scale" />
-
-                <ImageView
-                    android:id="@+id/imv_share"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_below="@id/cb_like"
-                    android:layout_gravity="end"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/icon_share" />
-
-            </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/imv_back"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="start"
-                android:layout_marginLeft="14dp"
-                android:layout_marginTop="12dp"
-                android:src="@drawable/icon_backarrow"
-                android:tint="@color/colorPrimary" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -124,11 +97,23 @@
         android:id="@+id/btn_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/icon_share"
+        android:tint="@color/white"
+        app:fabSize="normal"
+        app:layout_anchor="@+id/appbar"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
-        android:src="@drawable/icon_share"
-        android:tint="@color/white"
-        android:visibility="gone" />
+        android:src="@drawable/icon_cart"
+        android:tint="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

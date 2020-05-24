@@ -327,7 +327,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.list_grid_book_order_products, parent, false);
+            View view = inflater.inflate(R.layout.grid_book_order_products, parent, false);
             return new MyViewHolder(view);
         }
 
@@ -383,7 +383,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             }
 
 
-            holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
+            holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
 
             holder.cv_mainlayout.setOnClickListener(v -> {
                 showProductDetailsDialog(productDetails);
@@ -396,14 +396,14 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                         return;
                     }
                     quantity[0] = quantity[0] - 1;
-                    holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
+                    holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
 
                 }
             });
 
             holder.btn_add.setOnClickListener(v -> {
                 quantity[0] = quantity[0] + 1;
-                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#EF6C00\"> <b>" + quantity[0] + "</b></font>"));
+                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
             });
 
             holder.btn_addtocart.setOnClickListener(v -> findValidOrderId(productDetails, quantity[0]));
@@ -475,7 +475,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             rv_images.setAdapter(webBannerAdapter);
         }
 
-        tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
+        tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#01579B\"> <b>" + quantity + "</b></font>"));
         tv_productname.setText(productDetails.getName());
         tv_productprice.setText("₹" + productDetails.getSelling_price() + " / " + productDetails.getUnit_of_measure());
         tv_productinfo.setText(productDetails.getDescription());
@@ -502,7 +502,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                 return;
             }
             quantity = quantity - 1;
-            tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
+            tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#01579B\"> <b>" + quantity + "</b></font>"));
 
             if (savedAmount <= 0) {
                 applicablePrice = maxRetailPrice * quantity;
@@ -519,7 +519,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
         imv_add.setOnClickListener(v -> {
             quantity = quantity + 1;
-            tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#EF6C00\"> <b>" + quantity + "</b></font>"));
+            tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#01579B\"> <b>" + quantity + "</b></font>"));
 
             if (savedAmount <= 0) {
                 applicablePrice = maxRetailPrice * quantity;

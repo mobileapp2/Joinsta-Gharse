@@ -47,6 +47,7 @@ import in.oriange.eorder.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.isLocationEnabled;
 
 public class MainDrawerActivity extends AppCompatActivity {
@@ -108,6 +109,8 @@ public class MainDrawerActivity extends AppCompatActivity {
     }
 
     private void init() {
+        changeStatusBar(context, getWindow());
+
         bottomNavigation = findViewById(R.id.bottomNavigation);
         view_pager = findViewById(R.id.view_pager);
         view_pager.setOffscreenPageLimit(4);
@@ -158,11 +161,11 @@ public class MainDrawerActivity extends AppCompatActivity {
         bottomNavigation.addItem(bot5);
 
         bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#EEEEEE"));
-        bottomNavigation.setAccentColor(Color.parseColor("#FFA000"));
+        bottomNavigation.setAccentColor(Color.parseColor("#7B1FA2"));
         bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
         bottomNavigation.setForceTint(true);
         bottomNavigation.setTranslucentNavigationEnabled(true);
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
 
         bottomNavigation.setOnTabSelectedListener((position, wasSelected) -> {
             if (currentFragment == null) {

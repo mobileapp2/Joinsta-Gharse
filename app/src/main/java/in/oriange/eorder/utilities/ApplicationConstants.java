@@ -94,7 +94,7 @@ public class ApplicationConstants {
     public static final String OFFICEAPI = API_LINK + "office.php";
     public static final String OFFICERATINGANDREVIEWAPI = API_LINK + "office_ratings_reviews.php";
     public static final String OFFICEREPORTISSUEAPI = API_LINK + "office_report_issues.php";
-    public static final String BOOKORDERAPI = API_LINK + "product.php";
+    public static final String BOOKORDERAPI = API_LINK + "order.php";
 
     public static final String VERSIONAPI = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/version.php";
 
