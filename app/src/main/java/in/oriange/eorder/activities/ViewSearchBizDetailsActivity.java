@@ -971,18 +971,12 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (collapsedMenu != null && (!appBarExpanded)) {
-//            cl_root.setFitsSystemWindows(true);
-//            cl_root.setFitsSystemWindows(false);
-//            cl_root.setPadding(0, 0, 0, 0);
             toolbar.setNavigationIcon(R.drawable.icon_backarrow);
             collapsedMenu.add("Share")
                     .setIcon(R.drawable.icon_share)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             collapsingToolbar.setTitle(searchDetails.getBusiness_name());
         } else {
-            //expanded
-//            cl_root.setFitsSystemWindows(false);
-//            cl_root.setPadding(0, 0, 0, 0);
             collapsingToolbar.setTitle("");
             toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         }

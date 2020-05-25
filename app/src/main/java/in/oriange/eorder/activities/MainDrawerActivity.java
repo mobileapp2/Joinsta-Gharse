@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -160,9 +159,9 @@ public class MainDrawerActivity extends AppCompatActivity {
         bottomNavigation.addItem(bot4);
         bottomNavigation.addItem(bot5);
 
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#EEEEEE"));
-        bottomNavigation.setAccentColor(Color.parseColor("#7B1FA2"));
-        bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
+        bottomNavigation.setDefaultBackgroundColor(getResources().getColor(R.color.lightGray));
+        bottomNavigation.setAccentColor(getResources().getColor(R.color.red));
+        bottomNavigation.setInactiveColor(getResources().getColor(R.color.red));
         bottomNavigation.setForceTint(true);
         bottomNavigation.setTranslucentNavigationEnabled(true);
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);

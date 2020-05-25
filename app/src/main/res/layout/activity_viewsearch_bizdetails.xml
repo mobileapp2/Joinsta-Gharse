@@ -77,7 +77,7 @@
                 android:layout_height="50dp"
                 android:layout_gravity="top"
                 android:background="@drawable/scrim"
-                android:fitsSystemWindows="true"/>
+                android:fitsSystemWindows="true" />
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/anim_toolbar"

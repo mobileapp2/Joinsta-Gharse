@@ -45,19 +45,19 @@ import in.oriange.eorder.models.CategotyListModel;
 import in.oriange.eorder.models.CategotyListPojo;
 import in.oriange.eorder.utilities.APICall;
 import in.oriange.eorder.utilities.ApplicationConstants;
-import in.oriange.eorder.utilities.LinearLayoutPagerManager;
+import in.oriange.eorder.utilities.SpacesItemDecoration;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
 public class HomeFragment extends Fragment {
 
     private Context context;
-    //    private AppCompatEditText edt_location;
+    private TextView tv_location;
     private UserSessionManager session;
     private RecyclerView rv_popular_category, rv_main_category;
-    private ImageButton ib_location, ib_notifications, ib_cart;
+    private ImageButton ib_notifications, ib_cart;
     private TextView tv_cart_count;
-    private LinearLayout ll_categories;
+    private LinearLayout ll_categories, ll_popular_categories, ll_main_categories;
     private EditText edt_search;
     private CardView cv_banner;
     private SliderView imageSlider;
@@ -84,15 +84,21 @@ public class HomeFragment extends Fragment {
         edt_search = rootView.findViewById(R.id.edt_search);
         progressBar = rootView.findViewById(R.id.progressBar);
         ll_categories = rootView.findViewById(R.id.ll_categories);
-        ib_location = rootView.findViewById(R.id.ib_location);
+        ll_popular_categories = rootView.findViewById(R.id.ll_popular_categories);
+        ll_main_categories = rootView.findViewById(R.id.ll_main_categories);
+        tv_location = rootView.findViewById(R.id.tv_location);
         ib_notifications = rootView.findViewById(R.id.ib_notifications);
         ib_cart = rootView.findViewById(R.id.ib_cart);
         tv_cart_count = rootView.findViewById(R.id.tv_cart_count);
         rv_popular_category = rootView.findViewById(R.id.rv_popular_category);
         rv_main_category = rootView.findViewById(R.id.rv_main_category);
-        rv_popular_category.setLayoutManager(new LinearLayoutPagerManager(context, LinearLayoutManager.HORIZONTAL, false, 4));
+
+//        rv_popular_category.setLayoutManager(new LinearLayoutPagerManager(context, LinearLayoutManager.HORIZONTAL, false, 4));
+        rv_popular_category.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         rv_popular_category.setHasFixedSize(true);
-        rv_main_category.setLayoutManager(new GridLayoutManager(context, 3));
+
+        rv_main_category.setLayoutManager(new GridLayoutManager(context, 4));
+        rv_main_category.addItemDecoration(new SpacesItemDecoration(4, 10, false));
 
     }
 
@@ -107,6 +113,13 @@ public class HomeFragment extends Fragment {
 
     private void getSessionDetails() {
         try {
+            UserSessionManager session = new UserSessionManager(context);
+            tv_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
             JSONObject json = user_info.getJSONObject(0);
@@ -117,7 +130,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setEventHandler() {
-        ib_location.setOnClickListener(v -> {
+        tv_location.setOnClickListener(v -> {
             startActivity(new Intent(context, SelectCityActivity.class)
                     .putExtra("requestCode", 0));
         });
@@ -147,6 +160,9 @@ public class HomeFragment extends Fragment {
             obj.addProperty("location", params[1]);
             res = APICall.JSONAPICall(ApplicationConstants.BANNERSAPI, obj.toString());
             return res.trim();
+        }
+
+        public GetBanners() {
         }
 
         @Override
@@ -212,22 +228,36 @@ public class HomeFragment extends Fragment {
             String type = "", message = "";
             try {
                 if (!result.equals("")) {
-                    ArrayList<CategotyListModel> categotyList = new ArrayList<>();
+                    ArrayList<CategotyListModel> popularCategotyList = new ArrayList<>();
+                    ArrayList<CategotyListModel> mainCategotyList = new ArrayList<>();
                     CategotyListPojo pojoDetails = new Gson().fromJson(result, CategotyListPojo.class);
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
-                        categotyList = pojoDetails.getResult();
+                        ArrayList<CategotyListModel> categotyList = pojoDetails.getResult();
                         if (categotyList.size() > 0) {
-                            rv_popular_category.setAdapter(new CategoryAdapter(context, categotyList, categoryTypeId));
-                            rv_main_category.setAdapter(new CategoryGridAdapter(context, categotyList, categoryTypeId));
-//                            Drawable horizontalDivider = ContextCompat.getDrawable(context, R.drawable.line_divider);
-//                            Drawable verticalDivider = ContextCompat.getDrawable(context, R.drawable.line_divider);
-//                            rv_main_category.addItemDecoration(new GridDividerItemDecoration(horizontalDivider, verticalDivider, 3));
+
+                            for (CategotyListModel categoryDetails : categotyList) {
+//                                if (categoryDetails.getIs_popular().equals("1"))
+                                popularCategotyList.add(categoryDetails);
+//                                else if (categoryDetails.getIs_popular().equals("0"))
+//                                    mainCategotyList.add(categoryDetails);
+                            }
+
+                            if (popularCategotyList.size() != 0) {
+                                rv_main_category.setAdapter(new CategoryGridAdapter(context, popularCategotyList, categoryTypeId));
+                                rv_popular_category.setAdapter(new CategoryAdapter(context, popularCategotyList, categoryTypeId));
+                            } else
+                                ll_popular_categories.setVisibility(View.GONE);
+
+//                            if (mainCategotyList.size() != 0)
+//                                rv_main_category.setAdapter(new CategoryGridAdapter(context, mainCategotyList, categoryTypeId));
+//                            else
+//                                ll_main_categories.setVisibility(View.GONE);
                         }
                     } else {
-                        rv_popular_category.setAdapter(new CategoryAdapter(context, categotyList, categoryTypeId));
-                        rv_main_category.setAdapter(new CategoryGridAdapter(context, categotyList, categoryTypeId));
+                        ll_popular_categories.setVisibility(View.GONE);
+                        ll_main_categories.setVisibility(View.GONE);
                         Utilities.showAlertDialog(context, "Categories not available", false);
                     }
                 }
