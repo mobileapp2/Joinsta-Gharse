@@ -28,8 +28,8 @@ public class ApplicationConstants {
     public static final String TRANSSTATUSURL = "https://meravahan.in/paytm/transaction_status.php";
 
     // BETA API LINK
-//    private static final String API_LINK = "https://gstkhata.com/joinsta/Api/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/joinsta/images/";
+//    private static final String API_LINK = "https://gstkhata.com/Joinsta eOrder/Api/";
+//    public static final String IMAGE_LINK = "https://gstkhata.com/Joinsta eOrder/images/";
 
 //    // BETA API LINK V2
 //    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/";
@@ -53,6 +53,8 @@ public class ApplicationConstants {
     public static final String MASTERAPI = API_LINK + "master.php";
     public static final String BUSINESSAPI = API_LINK + "business.php";
     public static final String ADDRESSAPI = API_LINK + "user_address.php";
+    public static final String VENDORAPI = API_LINK + "vendor.php";
+    public static final String CUSTOMERAPI = API_LINK + "customer.php";
     public static final String PROFESSIONALAPI = API_LINK + "professional.php";
     public static final String EMPLOYEEAPI = API_LINK + "employee.php";
     public static final String FAVOURITEAPI = API_LINK + "fav.php";
@@ -96,6 +98,7 @@ public class ApplicationConstants {
     public static final String OFFICERATINGANDREVIEWAPI = API_LINK + "office_ratings_reviews.php";
     public static final String OFFICEREPORTISSUEAPI = API_LINK + "office_report_issues.php";
     public static final String BOOKORDERAPI = API_LINK + "order.php";
+    public static final String PRODUCTSAPI = API_LINK + "product.php";
 
     public static final String VERSIONAPI = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/version.php";
 

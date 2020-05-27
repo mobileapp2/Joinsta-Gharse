@@ -44,7 +44,7 @@ public class OfferImageSliderAdapter extends SliderViewAdapter<OfferImageSliderA
         this.context = context;
         this.bannerList = bannerList;
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Offer Images");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Offer Images");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 

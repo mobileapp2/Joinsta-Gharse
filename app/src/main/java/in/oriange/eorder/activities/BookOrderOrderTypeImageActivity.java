@@ -104,7 +104,7 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
         imageList.add(new MasterModel("", ""));
         rvImages.setAdapter(new ImagesAdapter());
 
-        orderFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Book Order");
+        orderFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Book Order");
         if (!orderFileFolder.exists())
             orderFileFolder.mkdirs();
 
@@ -303,7 +303,7 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
                 + "Book Order/" + "uplimg.png";
 
         BufferedInputStream bis = null;

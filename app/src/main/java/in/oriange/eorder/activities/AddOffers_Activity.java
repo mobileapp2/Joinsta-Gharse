@@ -120,7 +120,7 @@ public class AddOffers_Activity extends AppCompatActivity {
         btn_save = findViewById(R.id.btn_save);
 
 
-        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Offer Images");
+        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Offer Images");
         if (!photoFileFolder.exists())
             photoFileFolder.mkdirs();
 
@@ -369,7 +369,7 @@ public class AddOffers_Activity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
                 + "Offer Images/" + "uplimg.png";
 
         BufferedInputStream bis = null;

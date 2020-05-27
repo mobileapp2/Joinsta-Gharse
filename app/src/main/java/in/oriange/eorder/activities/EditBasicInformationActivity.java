@@ -204,7 +204,7 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         landlineSessionList = new ArrayList<>();
         emailSessionList = new ArrayList<>();
 
-        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Basic Info");
+        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Basic Info");
         if (!profilPicFolder.exists()) {
             profilPicFolder.mkdirs();
         }
@@ -640,7 +640,7 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
                 + "Basic Info/" + "uplimg.png";
 
         BufferedInputStream bis = null;

@@ -48,11 +48,11 @@ public class SearchFragment extends Fragment {
     private RecyclerView rv_searchlist;
     private LinearLayout ll_nopreview;
     private EditText edt_search;
-    private static SpinKitView progressBar;
-    public static List<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
+    private SpinKitView progressBar;
+    private List<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
 
-    private static String userId;
-    private static String categoryTypeId;
+    private String userId;
+    private String categoryTypeId;
     private ProgressDialog pd;
 
     private LocalBroadcastManager localBroadcastManager;

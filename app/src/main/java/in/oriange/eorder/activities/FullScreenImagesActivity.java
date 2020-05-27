@@ -66,7 +66,7 @@ public class FullScreenImagesActivity extends AppCompatActivity {
         context = FullScreenImagesActivity.this;
         imageUrlList = new ArrayList<>();
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Images");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Images");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 

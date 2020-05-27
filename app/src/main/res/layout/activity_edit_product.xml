@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_toolbar_gradient"
+        android:theme="@style/AppTheme.NoActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="false"
+                android:focusable="false"
+                android:text="Edit Product"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                app:backgroundTint="@color/white" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Product Code" />
+
+                <EditText
+                    android:id="@+id/edt_code"
+                    style="@style/EditableEditText"
+                    android:inputType="textCapWords" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Product Name" />
+
+                <EditText
+                    android:id="@+id/edt_name"
+                    style="@style/EditableEditText"
+                    android:inputType="textCapWords" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Product Description" />
+
+                <EditText
+                    android:id="@+id/edt_description"
+                    style="@style/EditableEditText"
+                    android:inputType="textMultiLine|textCapSentences" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Product Category" />
+
+                <EditText
+                    android:id="@+id/edt_category"
+                    style="@style/SelectableEditText"
+                    android:hint="Select Product Category"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Unit of Measure" />
+
+                <EditText
+                    android:id="@+id/edt_unit_of_measure"
+                    style="@style/SelectableEditText"
+                    android:hint="Select Unit of Measure"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Max Retail Price (₹)" />
+
+                <EditText
+                    android:id="@+id/edt_max_retail_price"
+                    style="@style/EditableEditText"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Selling Price (₹)" />
+
+                <EditText
+                    android:id="@+id/edt_selling_price"
+                    style="@style/EditableEditText"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Stock" />
+
+                <EditText
+                    android:id="@+id/edt_stock"
+                    style="@style/EditableEditText"
+                    android:inputType="number" />
+
+            </LinearLayout>
+
+            <CheckBox
+                android:id="@+id/cb_is_in_stock"
+                style="@style/CheckBox"
+                android:text="Is product available in stock?" />
+
+            <CheckBox
+                android:id="@+id/cb_is_featured"
+                style="@style/CheckBox"
+                android:text="Is product featured?" />
+
+            <CheckBox
+                android:id="@+id/cb_is_show_in_list"
+                style="@style/CheckBox"
+                android:text="Show product in list?" />
+
+            <CheckBox
+                android:id="@+id/cb_is_inclusive_tax"
+                style="@style/CheckBox"
+                android:text="Is inclusive tax?" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Images" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Broucher" />
+
+                <EditText
+                    android:id="@+id/edt_brochure"
+                    style="@style/SelectableEditText"
+                    android:drawableRight="@drawable/icon_document"
+                    android:hint="Select Brochure"
+                    android:inputType="text" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <android.widget.Button
+        android:id="@+id/btn_save"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Update" />
+
+</LinearLayout>

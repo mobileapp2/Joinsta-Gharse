@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -71,6 +72,8 @@ public class MyAddressActivity extends AppCompatActivity {
     private void init() {
         context = MyAddressActivity.this;
         session = new UserSessionManager(context);
+
+        rvAddress.setLayoutManager(new LinearLayoutManager(context));
     }
 
     private void getSessionDetails() {
@@ -125,10 +128,9 @@ public class MyAddressActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getbusiness");
+            obj.addProperty("type", "getUserAddress");
             obj.addProperty("user_id", userId);
-            obj.addProperty("current_user_id", userId);
-            res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, obj.toString());
+            res = APICall.JSONAPICall(ApplicationConstants.ADDRESSAPI, obj.toString());
             return res.trim();
         }
 

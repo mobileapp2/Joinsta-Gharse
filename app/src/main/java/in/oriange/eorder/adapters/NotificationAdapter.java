@@ -87,7 +87,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             e.printStackTrace();
         }
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Notification Images");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Notification Images");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 

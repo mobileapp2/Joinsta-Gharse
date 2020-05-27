@@ -198,7 +198,7 @@ public class AddBusinessActivity extends AppCompatActivity {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
 
-        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta/" + "Business");
+        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Business");
         if (!profilPicFolder.exists())
             profilPicFolder.mkdirs();
 
@@ -1270,7 +1270,7 @@ public class AddBusinessActivity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
                 + "Business/" + "uplimg.png";
 
         BufferedInputStream bis = null;

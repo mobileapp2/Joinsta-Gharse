@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -103,12 +102,7 @@ public class AddAddressActivity extends AppCompatActivity {
     private void setEventListner() {
         btnSelect.setOnClickListener(v -> startActivityForResult(new Intent(context, PickMapLocationActivity.class), LOCATION_REQUEST));
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitData();
-            }
-        });
+        btnSave.setOnClickListener(v -> submitData());
     }
 
     private void submitData() {
@@ -196,16 +190,13 @@ public class AddAddressActivity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Address details submitted successfully");
+                        tv_title.setText("Address added successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
-                        btn_ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertD.dismiss();
-                                finish();
-                            }
+                        btn_ok.setOnClickListener(v -> {
+                            alertD.dismiss();
+                            finish();
                         });
                         alertD.show();
                     } else {

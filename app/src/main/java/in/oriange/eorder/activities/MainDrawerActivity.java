@@ -165,6 +165,7 @@ public class MainDrawerActivity extends AppCompatActivity {
         bottomNavigation.setForceTint(true);
         bottomNavigation.setTranslucentNavigationEnabled(true);
         bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
+//        bottomNavigation.setTitleTextSize(35.0f, 0);
 
         bottomNavigation.setOnTabSelectedListener((position, wasSelected) -> {
             if (currentFragment == null) {

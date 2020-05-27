@@ -33,6 +33,62 @@
         <item name="android:windowBackground">@color/white</item>
     </style>
 
+
+    <style name="SelectableEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_marginRight">3dp</item>
+        <item name="android:layout_marginBottom">7dp</item>
+        <item name="android:background">@drawable/bg_outline_edittext</item>
+        <item name="android:drawableRight">@drawable/icon_arrowdown</item>
+        <item name="android:paddingLeft">5dp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingRight">5dp</item>
+        <item name="android:paddingBottom">7dp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:focusable">false</item>
+        <item name="android:longClickable">false</item>
+    </style>
+
+    <style name="EditableEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="UnEditableEditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:focusable">false</item>
+        <item name="android:longClickable">false</item>
+        <item name="android:clickable">false</item>
+    </style>
+
+
+    <style name="TitleTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginRight">3dp</item>
+        <item name="android:textColor">@color/darkGray</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="CheckBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>\
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+
     //////////////////////////////////////////////////////////////////////////////////////////
 
 

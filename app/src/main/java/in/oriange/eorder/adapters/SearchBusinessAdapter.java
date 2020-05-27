@@ -1,5 +1,6 @@
 package in.oriange.eorder.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,17 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +33,8 @@ import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.eorder.R;
+import in.oriange.eorder.activities.AddCustomerActivity;
+import in.oriange.eorder.activities.AddVendorActivity;
 import in.oriange.eorder.activities.BookOrderOrderTypeSelectActivity;
 import in.oriange.eorder.activities.OffersForParticularRecordActivity;
 import in.oriange.eorder.activities.ViewSearchBizDetailsActivity;
@@ -106,7 +112,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         );
 
         holder.ll_add.setOnClickListener(v -> {
-
+            showContextMenu(v, searchDetails);
         });
 
         holder.ll_enquire.setOnClickListener(v -> {
@@ -165,154 +171,177 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         return position;
     }
 
+    @SuppressLint("RestrictedApi")
+    private void showContextMenu(View view, SearchDetailsModel.ResultBean.BusinessesBean searchDetails) {
+        PopupMenu popup = new PopupMenu(context, view);
+        popup.inflate(R.menu.menu_vendor_cudtomer);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_vendor:
+                    context.startActivity(new Intent(context, AddVendorActivity.class)
+                            .putExtra("businessCode", searchDetails.getBusiness_code())
+                            .putExtra("businessName", searchDetails.getBusiness_name())
+                            .putExtra("name", "")
+                            .putExtra("mobile", ""));
+                    break;
+                case R.id.menu_customer:
+                    context.startActivity(new Intent(context, AddCustomerActivity.class)
+                            .putExtra("businessCode", searchDetails.getBusiness_code())
+                            .putExtra("businessName", searchDetails.getBusiness_name())
+                            .putExtra("name", "")
+                            .putExtra("mobile", ""));
+                    break;
+            }
+            return false;
+        });
+
+        MenuPopupHelper menuHelper = new MenuPopupHelper(context, (MenuBuilder) popup.getMenu(), view);
+        menuHelper.setForceShowIcon(true);
+        menuHelper.show();
+    }
+
     private void openEnquiryDialog(SearchDetailsModel.ResultBean.BusinessesBean searchDetails) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_layout_enquiry, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setTitle("Enquiry");
         alertDialogBuilder.setView(promptView);
 
-        final MaterialEditText edt_name = promptView.findViewById(R.id.edt_name);
+        final EditText edt_name = promptView.findViewById(R.id.edt_name);
         final RadioGroup rg_communicationmode = promptView.findViewById(R.id.rg_communicationmode);
         final RadioButton rb_mobile = promptView.findViewById(R.id.rb_mobile);
         final RadioButton rb_email = promptView.findViewById(R.id.rb_email);
-        final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
-        final MaterialEditText edt_email = promptView.findViewById(R.id.edt_email);
-        final MaterialEditText edt_subject = promptView.findViewById(R.id.edt_subject);
+        final EditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
+        final LinearLayout ll_mobile = promptView.findViewById(R.id.ll_mobile);
+        final LinearLayout ll_email = promptView.findViewById(R.id.ll_email);
+        final EditText edt_email = promptView.findViewById(R.id.edt_email);
+        final EditText edt_subject = promptView.findViewById(R.id.edt_subject);
         final EditText edt_details = promptView.findViewById(R.id.edt_details);
         final Button btn_save = promptView.findViewById(R.id.btn_save);
+        final ImageButton ib_close = promptView.findViewById(R.id.ib_close);
 
         edt_name.setText(name);
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
-        rb_mobile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edt_mobile.setVisibility(View.VISIBLE);
-                edt_email.setVisibility(View.GONE);
+        rb_mobile.setOnClickListener(v -> {
+            ll_mobile.setVisibility(View.VISIBLE);
+            ll_email.setVisibility(View.GONE);
 
-                edt_email.setText("");
-
-                edt_mobile.setText("+" + countryCode + mobile);
-            }
+            edt_email.setText("");
+            edt_mobile.setText("+" + countryCode + mobile);
         });
 
-        rb_email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        rb_email.setOnClickListener(v -> {
 
-                edt_mobile.setVisibility(View.GONE);
-                edt_mobile.setText("");
+            ll_mobile.setVisibility(View.GONE);
+            edt_mobile.setText("");
 
-                if (emailJsonArray == null) {
-                    Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
-                    rg_communicationmode.clearCheck();
-                    return;
-                }
+            if (emailJsonArray == null) {
+                Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
+                rg_communicationmode.clearCheck();
+                return;
+            }
 
-                if (emailJsonArray.length() == 0) {
-                    Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
-                    rg_communicationmode.clearCheck();
-                    return;
+            if (emailJsonArray.length() == 0) {
+                Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
+                rg_communicationmode.clearCheck();
+                return;
 
-                }
+            }
 
-                try {
-                    for (int i = 0; i < emailJsonArray.length(); i++) {
-                        JSONObject emailObj = emailJsonArray.getJSONObject(0);
-                        if (emailObj.getString("is_primary").equals("1")) {
-                            if (emailObj.getString("email_verification").equals("1")) {
-                                if (emailObj.getString("email").equals("")) {
-                                    Utilities.showAlertDialogNormal(context, "Please update your primary email from Basic Information");
-                                    rg_communicationmode.clearCheck();
-                                    return;
-                                }
-
-                                edt_email.setText(emailObj.getString("email"));
-                            } else {
-                                Utilities.showAlertDialogNormal(context, "Please verify your primary email from Basic Information");
+            try {
+                for (int i = 0; i < emailJsonArray.length(); i++) {
+                    JSONObject emailObj = emailJsonArray.getJSONObject(0);
+                    if (emailObj.getString("is_primary").equals("1")) {
+                        if (emailObj.getString("email_verification").equals("1")) {
+                            if (emailObj.getString("email").equals("")) {
+                                Utilities.showAlertDialogNormal(context, "Please update your primary email from Basic Information");
                                 rg_communicationmode.clearCheck();
                                 return;
                             }
+
+                            edt_email.setText(emailObj.getString("email"));
                         } else {
-                            Utilities.showAlertDialogNormal(context, "Please set a primary email from Basic Information");
+                            Utilities.showAlertDialogNormal(context, "Please verify your primary email from Basic Information");
                             rg_communicationmode.clearCheck();
                             return;
                         }
+                    } else {
+                        Utilities.showAlertDialogNormal(context, "Please set a primary email from Basic Information");
+                        rg_communicationmode.clearCheck();
+                        return;
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Utilities.showAlertDialogNormal(context, "We have made some changes related to user email, please kindly logout and login again to refresh your session");
-                    rg_communicationmode.clearCheck();
-                    return;
-
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Utilities.showAlertDialogNormal(context, "We have made some changes related to user email, please kindly logout and login again to refresh your session");
+                rg_communicationmode.clearCheck();
+                return;
 
-                edt_email.setVisibility(View.VISIBLE);
+            }
 
+            ll_email.setVisibility(View.VISIBLE);
+
+        });
+
+        btn_save.setOnClickListener(v -> {
+
+            if (edt_name.getText().toString().trim().isEmpty()) {
+                edt_name.setError("Please enter name");
+                edt_name.requestFocus();
+                return;
+            }
+
+            if (rb_mobile.isChecked()) {
+                if (edt_mobile.getText().toString().trim().isEmpty()) {
+                    edt_mobile.setError("Please enter valid mobile");
+                    edt_mobile.requestFocus();
+                    return;
+                }
+                edt_email.setText("");
+            } else if (rb_email.isChecked()) {
+                if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
+                    edt_email.setError("Please enter valid email");
+                    edt_email.requestFocus();
+                    return;
+                }
+                edt_mobile.setText("");
+            } else {
+                Utilities.showMessage("Please select communication mode", context, 2);
+                return;
+            }
+
+            if (edt_subject.getText().toString().trim().isEmpty()) {
+                edt_subject.setError("Please enter subject");
+                edt_subject.requestFocus();
+                return;
+            }
+
+            if (edt_details.getText().toString().trim().isEmpty()) {
+                edt_details.setError("Please enter details");
+                edt_details.requestFocus();
+                return;
+            }
+
+            if (Utilities.isNetworkAvailable(context)) {
+                alertD.dismiss();
+                new SendEnquiryDetails().execute(
+                        userId,
+                        edt_name.getText().toString().trim(),
+                        edt_mobile.getText().toString().trim(),
+                        edt_email.getText().toString().trim(),
+                        edt_subject.getText().toString().trim(),
+                        edt_details.getText().toString().trim(),
+                        "1",
+                        searchDetails.getId()
+
+                );
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
 
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (edt_name.getText().toString().trim().isEmpty()) {
-                    edt_name.setError("Please enter name");
-                    edt_name.requestFocus();
-                    return;
-                }
-
-                if (rb_mobile.isChecked()) {
-                    if (edt_mobile.getText().toString().trim().isEmpty()) {
-                        edt_mobile.setError("Please enter valid mobile");
-                        edt_mobile.requestFocus();
-                        return;
-                    }
-                    edt_email.setText("");
-                } else if (rb_email.isChecked()) {
-                    if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
-                        edt_email.setError("Please enter valid email");
-                        edt_email.requestFocus();
-                        return;
-                    }
-                    edt_mobile.setText("");
-                } else {
-                    Utilities.showMessage("Please select communication mode", context, 2);
-                    return;
-                }
-
-                if (edt_subject.getText().toString().trim().isEmpty()) {
-                    edt_subject.setError("Please enter subject");
-                    edt_subject.requestFocus();
-                    return;
-                }
-
-                if (edt_details.getText().toString().trim().isEmpty()) {
-                    edt_details.setError("Please enter details");
-                    edt_details.requestFocus();
-                    return;
-                }
-
-                if (Utilities.isNetworkAvailable(context)) {
-                    alertD.dismiss();
-                    new SendEnquiryDetails().execute(
-                            userId,
-                            edt_name.getText().toString().trim(),
-                            edt_mobile.getText().toString().trim(),
-                            edt_email.getText().toString().trim(),
-                            edt_subject.getText().toString().trim(),
-                            edt_details.getText().toString().trim(),
-                            "1",
-                            searchDetails.getId()
-
-                    );
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
+        ib_close.setOnClickListener(v -> alertD.dismiss());
 
         alertD.show();
     }

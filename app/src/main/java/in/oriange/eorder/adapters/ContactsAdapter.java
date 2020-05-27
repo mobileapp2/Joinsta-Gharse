@@ -1,17 +1,25 @@
 package in.oriange.eorder.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import in.oriange.eorder.R;
+import in.oriange.eorder.activities.AddCustomerActivity;
+import in.oriange.eorder.activities.AddVendorActivity;
 import in.oriange.eorder.models.ContactsModel;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyViewHolder> {
@@ -40,6 +48,8 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         holder.tv_initial.setText(contactsModel.getInitLetter());
         holder.tv_name.setText(contactsModel.getName());
         holder.tv_mobile.setText(contactsModel.getPhoneNo());
+
+        holder.cv_main_layout.setOnClickListener(v -> showContextMenu(v, contactsModel));
     }
 
     @Override
@@ -49,10 +59,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
+        private CardView cv_main_layout;
         private TextView tv_initial, tv_name, tv_mobile;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            cv_main_layout = itemView.findViewById(R.id.cv_main_layout);
             tv_initial = itemView.findViewById(R.id.tv_initial);
             tv_name = itemView.findViewById(R.id.tv_name);
             tv_mobile = itemView.findViewById(R.id.tv_mobile);
@@ -62,5 +74,35 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+
+    @SuppressLint("RestrictedApi")
+    private void showContextMenu(View view, ContactsModel contactsModel) {
+        PopupMenu popup = new PopupMenu(context, view);
+        popup.inflate(R.menu.menu_vendor_cudtomer);
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_vendor:
+                    context.startActivity(new Intent(context, AddVendorActivity.class)
+                            .putExtra("businessCode", "")
+                            .putExtra("businessName", "")
+                            .putExtra("name", contactsModel.getName())
+                            .putExtra("mobile", contactsModel.getPhoneNo()));
+                    break;
+                case R.id.menu_customer:
+                    context.startActivity(new Intent(context, AddCustomerActivity.class)
+                            .putExtra("businessCode", "")
+                            .putExtra("businessName", "")
+                            .putExtra("name", contactsModel.getName())
+                            .putExtra("mobile", contactsModel.getPhoneNo()));
+                    break;
+            }
+            return false;
+        });
+
+        MenuPopupHelper menuHelper = new MenuPopupHelper(context, (MenuBuilder) popup.getMenu(), view);
+        menuHelper.setForceShowIcon(true);
+        menuHelper.show();
     }
 }

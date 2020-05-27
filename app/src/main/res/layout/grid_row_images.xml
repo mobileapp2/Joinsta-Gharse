@@ -40,7 +40,7 @@
                 android:layout_height="fill_parent"
                 android:padding="40dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/icon_add_orange" />
+                android:src="@drawable/icon_camera" />
 
         </RelativeLayout>
 

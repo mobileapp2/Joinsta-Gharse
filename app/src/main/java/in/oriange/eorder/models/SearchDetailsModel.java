@@ -600,9 +600,9 @@ public class SearchDetailsModel implements Serializable {
                     return getType_description() + " | " + subTypeNameStr;
                 } else if (getType_description().trim().isEmpty() && subTypeNameStr.trim().isEmpty()) {
                     return "";
-                } else if (!getType_description().trim().isEmpty()) {
+                } else if (!getType_description().trim().isEmpty() && subTypeNameStr.trim().isEmpty()) {
                     return getType_description();
-                } else if (!subTypeNameStr.trim().isEmpty()) {
+                } else if (getType_description().trim().isEmpty() && !subTypeNameStr.trim().isEmpty()) {
                     return subTypeNameStr;
                 } else {
                     return "";

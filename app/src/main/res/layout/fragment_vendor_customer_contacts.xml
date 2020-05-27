@@ -6,47 +6,40 @@
     android:background="@color/lightGray"
     android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:minHeight="?attr/actionBarSize"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.ogaclejapan.smarttablayout.SmartTabLayout
+            android:id="@+id/tabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark">
+            android:layout_height="40dp"
+            android:clipToPadding="false"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            app:stl_customTabTextLayoutId="@layout/custom_tab"
+            app:stl_defaultTabTextAllCaps="false"
+            app:stl_defaultTabTextColor="@color/black"
+            app:stl_defaultTabTextHorizontalPadding="18dp"
+            app:stl_distributeEvenly="true"
+            app:stl_dividerColor="@android:color/transparent"
+            app:stl_dividerThickness="0dp"
+            app:stl_indicatorColor="@color/colorPrimary"
+            app:stl_indicatorCornerRadius="18dp"
+            app:stl_indicatorGravity="center"
+            app:stl_indicatorInterpolation="smart"
+            app:stl_indicatorThickness="36dp"
+            app:stl_underlineColor="@android:color/transparent"
+            app:stl_underlineThickness="0dp" />
 
-            <com.ogaclejapan.smarttablayout.SmartTabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:clipToPadding="false"
-                android:paddingLeft="4dp"
-                android:paddingRight="4dp"
-                app:stl_customTabTextLayoutId="@layout/custom_tab"
-                app:stl_defaultTabTextAllCaps="false"
-                app:stl_defaultTabTextColor="@color/black"
-                app:stl_defaultTabTextHorizontalPadding="18dp"
-                app:stl_distributeEvenly="true"
-                app:stl_dividerColor="@android:color/transparent"
-                app:stl_dividerThickness="0dp"
-                app:stl_indicatorColor="@color/colorPrimary"
-                app:stl_indicatorCornerRadius="18dp"
-                app:stl_indicatorGravity="center"
-                app:stl_indicatorInterpolation="smart"
-                app:stl_indicatorThickness="36dp"
-                app:stl_underlineColor="@android:color/transparent"
-                app:stl_underlineThickness="0dp" />
-
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
+    </androidx.appcompat.widget.Toolbar>
 
     <in.oriange.eorder.utilities.NonSwipeableViewPager
         android:id="@+id/viewpager"

@@ -14,9 +14,9 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import in.oriange.eorder.R;
-import in.oriange.eorder.activities.AddAddressActivity;
 import in.oriange.eorder.activities.ContactUsActivity;
 import in.oriange.eorder.activities.EnquiriesActivity;
+import in.oriange.eorder.activities.MyAddressActivity;
 import in.oriange.eorder.activities.MyBusinessActivity;
 import in.oriange.eorder.activities.SettingsActivity;
 import in.oriange.eorder.activities.ViewBasicInformationActivity;
@@ -62,7 +62,7 @@ public class MoreFragment extends Fragment {
     private void setEventHandler() {
         cv_basicinfo.setOnClickListener(v -> startActivity(new Intent(context, ViewBasicInformationActivity.class)));
 
-        cv_myaddress.setOnClickListener(v -> startActivity(new Intent(context, AddAddressActivity.class)));
+        cv_myaddress.setOnClickListener(v -> startActivity(new Intent(context, MyAddressActivity.class)));
 
         cv_mybusiness.setOnClickListener(v -> startActivity(new Intent(context, MyBusinessActivity.class)));
 
