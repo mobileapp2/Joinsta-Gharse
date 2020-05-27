@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -35,6 +36,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class EditAddressActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
@@ -56,7 +59,21 @@ public class EditAddressActivity extends AppCompatActivity {
     @BindView(R.id.edt_country)
     EditText edtCountry;
     @BindView(R.id.btn_save)
-    Button btnSave;
+    MaterialButton btnSave;
+    @BindView(R.id.edt_name)
+    EditText edtName;
+    @BindView(R.id.ll_address)
+    LinearLayout llAddress;
+    @BindView(R.id.ll_pincode)
+    LinearLayout llPincode;
+    @BindView(R.id.ll_city)
+    LinearLayout llCity;
+    @BindView(R.id.ll_district)
+    LinearLayout llDistrict;
+    @BindView(R.id.ll_state)
+    LinearLayout llState;
+    @BindView(R.id.ll_country)
+    LinearLayout llCountry;
 
     private Context context;
     private UserSessionManager session;
@@ -82,6 +99,8 @@ public class EditAddressActivity extends AppCompatActivity {
         context = EditAddressActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        changeStatusBar(context, getWindow());
     }
 
     private void getSessionDetails() {
@@ -108,6 +127,7 @@ public class EditAddressActivity extends AppCompatActivity {
         edtDistrict.setText(addressDetails.getDistrict());
         edtPincode.setText(addressDetails.getPincode());
         edtArea.setText(addressDetails.getArea());
+        edtName.setText(addressDetails.getFull_name());
         edtCity.setText(addressDetails.getDistrict());
     }
 
@@ -123,6 +143,13 @@ public class EditAddressActivity extends AppCompatActivity {
     }
 
     private void submitData() {
+        if (edtName.getText().toString().trim().isEmpty()) {
+            edtName.setError("Please enter user name");
+            edtName.requestFocus();
+            edtName.getParent().requestChildFocus(edtName, edtName);
+            return;
+        }
+
         if (edtAddress.getText().toString().trim().isEmpty()) {
             edtAddress.setError("Please enter address");
             edtAddress.requestFocus();
@@ -149,6 +176,7 @@ public class EditAddressActivity extends AppCompatActivity {
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "updateUserAddress");
         mainObj.addProperty("id", addressDetails.getUser_address_id());
+        mainObj.addProperty("full_name", edtName.getText().toString().trim());
         mainObj.addProperty("area", edtArea.getText().toString().trim());
         mainObj.addProperty("address_line_one", edtAddress.getText().toString().trim());
         mainObj.addProperty("address_line_two", "");
@@ -258,7 +286,7 @@ public class EditAddressActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 }

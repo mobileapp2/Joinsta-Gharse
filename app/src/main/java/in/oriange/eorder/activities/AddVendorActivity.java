@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -34,6 +35,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.CountryCodeSelection;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
+
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class AddVendorActivity extends AppCompatActivity {
 
@@ -57,12 +60,12 @@ public class AddVendorActivity extends AppCompatActivity {
     EditText edtBusinessName;
     @BindView(R.id.ll_business_name)
     LinearLayout llBusinessName;
-    @BindView(R.id.btn_save)
-    Button btnSave;
     @BindView(R.id.edt_mobile)
     EditText edtMobile;
     @BindView(R.id.cb_is_prime_vendor)
     CheckBox cbIsPrimeVendor;
+    @BindView(R.id.btn_save)
+    MaterialButton btnSave;
 
     private Context context;
     private UserSessionManager session;
@@ -86,6 +89,8 @@ public class AddVendorActivity extends AppCompatActivity {
         context = AddVendorActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        changeStatusBar(context, getWindow());
     }
 
     private void getSessionDetails() {
@@ -116,7 +121,7 @@ public class AddVendorActivity extends AppCompatActivity {
             edtMobile.setText("");
         }
 
-        edtBusinessName.setText(getIntent().getStringExtra("businessName"));
+        edtBusinessCode.setText(getIntent().getStringExtra("businessCode"));
         edtBusinessName.setText(getIntent().getStringExtra("businessName"));
 
         if (edtBusinessCode.getText().toString().trim().isEmpty())
@@ -133,13 +138,6 @@ public class AddVendorActivity extends AppCompatActivity {
     }
 
     private void submitData() {
-        if (edtCode.getText().toString().trim().isEmpty()) {
-            edtCode.setError("Please enter vendor code");
-            edtCode.requestFocus();
-            edtCode.getParent().requestChildFocus(edtCode, edtCode);
-            return;
-        }
-
         if (edtName.getText().toString().trim().isEmpty()) {
             edtName.setError("Please enter vendor name");
             edtName.requestFocus();
@@ -250,7 +248,7 @@ public class AddVendorActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 }

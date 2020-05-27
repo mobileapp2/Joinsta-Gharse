@@ -34,6 +34,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class AddAddressActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
@@ -52,10 +54,12 @@ public class AddAddressActivity extends AppCompatActivity {
     EditText edtState;
     @BindView(R.id.edt_country)
     EditText edtCountry;
-    @BindView(R.id.btn_save)
-    Button btnSave;
     @BindView(R.id.edt_address)
     EditText edtAddress;
+    @BindView(R.id.btn_save)
+    MaterialButton btnSave;
+    @BindView(R.id.edt_name)
+    EditText edtName;
 
     private Context context;
     private UserSessionManager session;
@@ -80,6 +84,8 @@ public class AddAddressActivity extends AppCompatActivity {
         context = AddAddressActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        changeStatusBar(context, getWindow());
     }
 
     private void getSessionDetails() {
@@ -106,6 +112,13 @@ public class AddAddressActivity extends AppCompatActivity {
     }
 
     private void submitData() {
+        if (edtName.getText().toString().trim().isEmpty()) {
+            edtName.setError("Please enter user name");
+            edtName.requestFocus();
+            edtName.getParent().requestChildFocus(edtName, edtName);
+            return;
+        }
+
         if (edtAddress.getText().toString().trim().isEmpty()) {
             edtAddress.setError("Please enter address");
             edtAddress.requestFocus();
@@ -131,6 +144,7 @@ public class AddAddressActivity extends AppCompatActivity {
 
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "addUserAddress");
+        mainObj.addProperty("full_name", edtName.getText().toString().trim());
         mainObj.addProperty("area", edtArea.getText().toString().trim());
         mainObj.addProperty("address_line_one", edtAddress.getText().toString().trim());
         mainObj.addProperty("address_line_two", "");
@@ -237,7 +251,7 @@ public class AddAddressActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 }

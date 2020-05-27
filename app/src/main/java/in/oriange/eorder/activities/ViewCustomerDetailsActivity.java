@@ -33,6 +33,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class ViewCustomerDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
@@ -76,6 +78,8 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
         context = ViewCustomerDetailsActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        changeStatusBar(context, getWindow());
     }
 
     private void getSessionDetails() {
@@ -94,11 +98,11 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
     private void setDefault() {
         customersDetails = (CustomerModel.ResultBean) getIntent().getSerializableExtra("customersDetails");
 
-        tvName.setText(customersDetails.getCustomer_code() + " - " + customersDetails.getName());
+        tvName.setText(customersDetails.getCustomerCodeName());
         tvCity.setText(customersDetails.getCity());
 
         if (!customersDetails.getBusiness_name().equals(""))
-            tvBusinessCodeName.setText("Business: " + customersDetails.getBusiness_code() + " - " + customersDetails.getBusiness_name());
+            tvBusinessCodeName.setText("Business - " + customersDetails.getBusiness_code() + " | " + customersDetails.getBusiness_name());
         else
             tvBusinessCodeName.setVisibility(View.GONE);
 
@@ -137,7 +141,6 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
                 "mailto", customersDetails.getEmail(), null));
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -227,7 +230,7 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 }

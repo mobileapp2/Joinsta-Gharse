@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -34,6 +35,8 @@ import in.oriange.eorder.utilities.APICall;
 import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
+
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class EditVendorActivity extends AppCompatActivity {
 
@@ -62,7 +65,7 @@ public class EditVendorActivity extends AppCompatActivity {
     @BindView(R.id.cb_is_prime_vendor)
     CheckBox cbIsPrimeVendor;
     @BindView(R.id.btn_save)
-    Button btnSave;
+    MaterialButton btnSave;
 
     private Context context;
     private UserSessionManager session;
@@ -87,6 +90,8 @@ public class EditVendorActivity extends AppCompatActivity {
         context = EditVendorActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        changeStatusBar(context, getWindow());
     }
 
     private void getSessionDetails() {
@@ -123,13 +128,6 @@ public class EditVendorActivity extends AppCompatActivity {
     }
 
     private void submitData() {
-        if (edtCode.getText().toString().trim().isEmpty()) {
-            edtCode.setError("Please enter vendor code");
-            edtCode.requestFocus();
-            edtCode.getParent().requestChildFocus(edtCode, edtCode);
-            return;
-        }
-
         if (edtName.getText().toString().trim().isEmpty()) {
             edtName.setError("Please enter vendor name");
             edtName.requestFocus();
@@ -241,7 +239,7 @@ public class EditVendorActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 

@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_toolbar_gradient"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -28,7 +28,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="Vendor Details"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
 
@@ -71,9 +71,8 @@
                         android:clickable="false"
                         android:focusable="false"
                         android:longClickable="false"
-                        android:text="Business Details"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -163,7 +162,7 @@
                 android:paddingTop="5dp"
                 android:paddingRight="10dp"
                 android:paddingBottom="5dp"
-                android:text="Prime Customer"
+                android:text="Prime Vendor"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />

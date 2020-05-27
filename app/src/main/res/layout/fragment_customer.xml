@@ -127,13 +127,8 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:src="@drawable/icon_add"
-            android:tint="@color/white" />
+            style="@style/FloatingActionButton"
+            android:src="@drawable/icon_add" />
 
     </FrameLayout>
 

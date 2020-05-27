@@ -33,6 +33,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class ViewVendorDetailsActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
@@ -58,7 +60,6 @@ public class ViewVendorDetailsActivity extends AppCompatActivity {
     private String userId;
     private VendorModel.ResultBean vendorDetails;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +77,8 @@ public class ViewVendorDetailsActivity extends AppCompatActivity {
         context = ViewVendorDetailsActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        changeStatusBar(context, getWindow());
     }
 
     private void getSessionDetails() {
@@ -94,7 +97,7 @@ public class ViewVendorDetailsActivity extends AppCompatActivity {
     private void setDefault() {
         vendorDetails = (VendorModel.ResultBean) getIntent().getSerializableExtra("vendorDetails");
 
-        tvName.setText(vendorDetails.getVendor_code() + " - " + vendorDetails.getName());
+        tvName.setText(vendorDetails.getVendorCodeName());
         tvCity.setText(vendorDetails.getCity());
 
         if (!vendorDetails.getBusiness_name().equals(""))
@@ -137,7 +140,6 @@ public class ViewVendorDetailsActivity extends AppCompatActivity {
                 "mailto", vendorDetails.getEmail(), null));
         startActivity(Intent.createChooser(emailIntent, "Send email..."));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -227,7 +229,7 @@ public class ViewVendorDetailsActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 }

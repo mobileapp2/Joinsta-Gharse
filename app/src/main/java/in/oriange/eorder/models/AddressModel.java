@@ -60,6 +60,7 @@ public class AddressModel implements Serializable {
 
         private String user_address_id;
         private String user_id;
+        private String full_name;
         private String Area;
         private String Latitude;
         private String Langtitude;
@@ -87,6 +88,18 @@ public class AddressModel implements Serializable {
 
         public void setUser_id(String user_id) {
             this.user_id = user_id;
+        }
+
+        public String getFull_name() {
+            if (full_name != null) {
+                return full_name;
+            } else {
+                return "";
+            }
+        }
+
+        public void setFull_name(String full_name) {
+            this.full_name = full_name;
         }
 
         public String getArea() {

@@ -40,12 +40,11 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/button_focusfilled_orange"
                 android:gravity="center"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:text="Prime Vendor"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="Prime"
                 android:textColor="@color/white"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textSize="14sp"/>
 
         </LinearLayout>
 

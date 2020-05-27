@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -99,7 +100,7 @@ public class AddProductActivity extends AppCompatActivity {
     @BindView(R.id.edt_brochure)
     EditText edtBrochure;
     @BindView(R.id.btn_save)
-    Button btnSave;
+    MaterialButton btnSave;
 
     private Context context;
     private UserSessionManager session;
@@ -693,7 +694,7 @@ public class AddProductActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 

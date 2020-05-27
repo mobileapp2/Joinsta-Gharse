@@ -39,7 +39,7 @@ public class CustomerModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
          * id : 5
          * customer_code : C8942
@@ -192,6 +192,20 @@ public class CustomerModel implements Serializable {
 
         public void setUpdated_at(String updated_at) {
             this.updated_at = updated_at;
+        }
+
+        public String getCustomerCodeName() {
+            if (!getCustomer_code().trim().isEmpty() && !getName().trim().isEmpty()) {
+                return getCustomer_code() + " | " + getName();
+            } else if (getCustomer_code().trim().isEmpty() && getName().trim().isEmpty()) {
+                return "";
+            } else if (!getCustomer_code().trim().isEmpty() && getName().trim().isEmpty()) {
+                return getCustomer_code();
+            } else if (getCustomer_code().trim().isEmpty() && !getName().trim().isEmpty()) {
+                return getName();
+            } else {
+                return "";
+            }
         }
     }
 }

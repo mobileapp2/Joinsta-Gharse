@@ -48,7 +48,7 @@
         <item name="android:paddingRight">5dp</item>
         <item name="android:paddingBottom">7dp</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:focusable">false</item>
         <item name="android:longClickable">false</item>
     </style>
@@ -57,14 +57,16 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="UnEditableEditText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingTop">7dp</item>
         <item name="android:focusable">false</item>
         <item name="android:longClickable">false</item>
         <item name="android:clickable">false</item>
@@ -86,6 +88,16 @@
         <item name="android:layout_height">wrap_content</item>\
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">end|bottom</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="backgroundTint">@color/white</item>
+        <item name="android:tint">@color/colorPrimary</item>
     </style>
 
 

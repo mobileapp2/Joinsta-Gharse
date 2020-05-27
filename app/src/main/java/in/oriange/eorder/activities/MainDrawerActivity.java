@@ -147,7 +147,7 @@ public class MainDrawerActivity extends AppCompatActivity {
 
         AHBottomNavigationItem bot1 = new AHBottomNavigationItem("Home", R.drawable.icon_home, R.color.colorPrimaryDark);
         AHBottomNavigationItem bot2 = new AHBottomNavigationItem("Search", R.drawable.icon_search, R.color.colorPrimaryDark);
-        AHBottomNavigationItem bot3 = new AHBottomNavigationItem("Vendor/Customer", R.drawable.icon_group, R.color.colorPrimaryDark);
+        AHBottomNavigationItem bot3 = new AHBottomNavigationItem("Contacts", R.drawable.icon_group, R.color.colorPrimaryDark);
         AHBottomNavigationItem bot4 = new AHBottomNavigationItem("My Orders", R.drawable.icon_cart_256, R.color.colorPrimaryDark);
         AHBottomNavigationItem bot5 = new AHBottomNavigationItem("More", R.drawable.icon_more_1, R.color.colorPrimaryDark);
 
@@ -161,10 +161,10 @@ public class MainDrawerActivity extends AppCompatActivity {
 
         bottomNavigation.setDefaultBackgroundColor(getResources().getColor(R.color.lightGray));
         bottomNavigation.setAccentColor(getResources().getColor(R.color.red));
-        bottomNavigation.setInactiveColor(getResources().getColor(R.color.red));
+        bottomNavigation.setInactiveColor(getResources().getColor(R.color.darkGray));
         bottomNavigation.setForceTint(true);
         bottomNavigation.setTranslucentNavigationEnabled(true);
-        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.SHOW_WHEN_ACTIVE);
+        bottomNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
 //        bottomNavigation.setTitleTextSize(35.0f, 0);
 
         bottomNavigation.setOnTabSelectedListener((position, wasSelected) -> {

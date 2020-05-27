@@ -40,7 +40,6 @@ import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class AddCustomerActivity extends AppCompatActivity {
 
-
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.edt_code)
@@ -66,9 +65,7 @@ public class AddCustomerActivity extends AppCompatActivity {
     @BindView(R.id.cb_is_prime_customer)
     CheckBox cbIsPrimeCustomer;
     @BindView(R.id.btn_save)
-    Button btnSave;
-    @BindView(R.id.btn_save_1)
-    MaterialButton btnSave1;
+    MaterialButton btnSave;
 
     private Context context;
     private UserSessionManager session;
@@ -138,17 +135,10 @@ public class AddCustomerActivity extends AppCompatActivity {
     private void setEventListner() {
         tvCountrycode.setOnClickListener(v -> new CountryCodeSelection(context, tvCountrycode));
 
-        btnSave1.setOnClickListener(v -> submitData());
+        btnSave.setOnClickListener(v -> submitData());
     }
 
     private void submitData() {
-        if (edtCode.getText().toString().trim().isEmpty()) {
-            edtCode.setError("Please enter customer code");
-            edtCode.requestFocus();
-            edtCode.getParent().requestChildFocus(edtCode, edtCode);
-            return;
-        }
-
         if (edtName.getText().toString().trim().isEmpty()) {
             edtName.setError("Please enter customer name");
             edtName.requestFocus();

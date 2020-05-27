@@ -356,7 +356,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:gravity="center"
-                android:text="Details are not availabile for this category"
+                android:text="Details are not available for this category"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
