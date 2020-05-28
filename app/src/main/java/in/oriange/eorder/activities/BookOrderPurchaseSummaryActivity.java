@@ -168,8 +168,8 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
             customerBusinessId = businessDetails.getId();
             tvBusinessName.setText(businessDetails.getBusiness_code() + " - " + businessDetails.getBusiness_name());
-            if (!businessDetails.getSubtype_description().isEmpty())
-                tvBusinessTypeSubtype.setText(businessDetails.getType_description() + ", " + businessDetails.getSubtype_description());
+            if (!businessDetails.getTypeSubTypeName().isEmpty())
+                tvBusinessTypeSubtype.setText(businessDetails.getTypeSubTypeName());
             else
                 tvBusinessTypeSubtype.setText(businessDetails.getType_description());
         }

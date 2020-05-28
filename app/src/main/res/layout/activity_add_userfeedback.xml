@@ -8,7 +8,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -26,10 +26,24 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="Add Your Feedback"
-                android:textColor="@color/white"
+                android:text="Feedback"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:strokeColor="@color/colorPrimary" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -123,22 +137,9 @@
                         android:numStars="5"
                         android:rating="5" />
 
-
                 </LinearLayout>
 
-
             </androidx.cardview.widget.CardView>
-
-            <android.widget.Button
-                android:id="@+id/btn_save"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_weight="0.5"
-                android:background="@drawable/button_background_filled"
-                android:text="Submit"
-                android:textColor="@color/white" />
 
         </LinearLayout>
 

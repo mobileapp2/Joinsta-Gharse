@@ -52,11 +52,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
         <activity
-            android:name=".activities.AddBusinessActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden" />
-        <activity
             android:name=".activities.MyBusinessActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
@@ -107,11 +102,6 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
         <activity
-            android:name=".activities.EditBusinessActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
             android:name=".activities.UserFeedbackActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
@@ -121,12 +111,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize|adjustPan" />
-        <activity
-            android:name=".activities.ViewMyBizDetailsActivity"
-            android:label=""
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".activities.AddReportIssueActivity"
             android:label=""
@@ -316,6 +300,21 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.ViewVendorDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.AddBusinessActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.EditBusinessActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.ViewMyBizDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />

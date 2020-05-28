@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import in.oriange.eorder.R;
 import in.oriange.eorder.adapters.MyAddedBusinessAdapter;
@@ -33,6 +34,8 @@ import in.oriange.eorder.utilities.APICall;
 import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
+
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class MyBusinessActivity extends AppCompatActivity {
 
@@ -47,7 +50,7 @@ public class MyBusinessActivity extends AppCompatActivity {
     private LinearLayout ll_nopreview;
     private String userId;
 
-    private ArrayList<GetBusinessModel.ResultBean> businessList;
+    private List<GetBusinessModel.ResultBean> businessList;
     private LocalBroadcastManager localBroadcastManager;
 
     @Override
@@ -65,6 +68,7 @@ public class MyBusinessActivity extends AppCompatActivity {
     private void init() {
         context = MyBusinessActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         btn_add = findViewById(R.id.btn_add);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         progressBar = findViewById(R.id.progressBar);
@@ -180,7 +184,7 @@ public class MyBusinessActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

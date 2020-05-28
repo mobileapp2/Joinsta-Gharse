@@ -13,26 +13,20 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,17 +40,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -69,13 +62,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 import in.oriange.eorder.R;
 import in.oriange.eorder.models.BizProfEmpProfileDesignationsModel;
 import in.oriange.eorder.models.CategotyListModel;
 import in.oriange.eorder.models.CategotyListPojo;
-import in.oriange.eorder.models.ContryCodeModel;
 import in.oriange.eorder.models.GetBusinessModel;
 import in.oriange.eorder.models.GetTagsListModel;
 import in.oriange.eorder.models.MapAddressListModel;
@@ -84,6 +78,7 @@ import in.oriange.eorder.models.SubCategotyListPojo;
 import in.oriange.eorder.models.TagsListModel;
 import in.oriange.eorder.utilities.APICall;
 import in.oriange.eorder.utilities.ApplicationConstants;
+import in.oriange.eorder.utilities.CountryCodeSelection;
 import in.oriange.eorder.utilities.MultipartUtility;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
@@ -91,53 +86,96 @@ import in.oriange.eorder.utilities.Utilities;
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.eorder.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.eorder.utilities.PermissionUtil.doesAppNeedPermissions;
-import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
-import static in.oriange.eorder.utilities.Utilities.loadJSONForCountryCode;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class EditBusinessActivity extends AppCompatActivity {
+
+    @BindView(R.id.btn_save)
+    MaterialButton btnSave;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.imv_photo1)
+    ImageView imvPhoto1;
+    @BindView(R.id.imv_photo2)
+    ImageView imvPhoto2;
+    @BindView(R.id.edt_name)
+    EditText edtName;
+    @BindView(R.id.edt_nature)
+    EditText edtNature;
+    @BindView(R.id.edt_subtype)
+    EditText edtSubtype;
+    @BindView(R.id.edt_designation)
+    EditText edtDesignation;
+    @BindView(R.id.edt_tag)
+    AutoCompleteTextView edtTag;
+    @BindView(R.id.btn_add_tag)
+    Button btnAddTag;
+    @BindView(R.id.tag_container)
+    TagContainerLayout tagContainer;
+    @BindView(R.id.btn_add_mobile)
+    Button btnAddMobile;
+    @BindView(R.id.ll_mobile)
+    LinearLayout llMobile;
+    @BindView(R.id.btn_add_landline)
+    Button btnAddLandline;
+    @BindView(R.id.ll_landline)
+    LinearLayout llLandline;
+    @BindView(R.id.edt_email)
+    EditText edtEmail;
+    @BindView(R.id.edt_website)
+    EditText edtWebsite;
+    @BindView(R.id.btn_select)
+    MaterialButton btnSelectAddress;
+    @BindView(R.id.edt_address)
+    EditText edtAddress;
+    @BindView(R.id.edt_pincode)
+    EditText edtPincode;
+    @BindView(R.id.edt_city)
+    EditText edtCity;
+    @BindView(R.id.edt_district)
+    EditText edtDistrict;
+    @BindView(R.id.edt_state)
+    EditText edtState;
+    @BindView(R.id.edt_country)
+    EditText edtCountry;
+    @BindView(R.id.cb_is_enquiry_available)
+    CheckBox cbIsEnquiryAvailable;
+    @BindView(R.id.cb_is_pick_up_available)
+    CheckBox cbIsPickUpAvailable;
+    @BindView(R.id.cb_is_home_delivery_available)
+    CheckBox cbIsHomeDeliveryAvailable;
+    @BindView(R.id.cb_show_in_search)
+    CheckBox cbShowInSearch;
+    @BindView(R.id.sv_scroll)
+    ScrollView svScroll;
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private ScrollView sv_scroll;
-    private ProgressBar progressBar;
-    private ImageView imv_photo1, imv_photo2;
-    private MaterialEditText edt_name, edt_nature, edt_subtype, edt_designation, edt_mobile, edt_landline,
-            edt_email, edt_website, edt_order_online, edt_select_area, edt_address, edt_pincode, edt_city, edt_district, edt_state, edt_country,
-            edt_tax_alias, edt_pan, edt_gst, edt_accholdername, edt_bank_alias, edt_bank_name, edt_ifsc, edt_account_no;
-    private AutoCompleteTextView edt_tag;
-    private LinearLayout ll_mobile, ll_landline;
-    private TextView tv_countrycode_mobile, tv_countrycode_landline;
-    private ImageButton ib_add_mobile, ib_add_landline, imv_show_hide_tax, imv_show_hide_bank;
-    private LinearLayout ll_tax_details, ll_bank_details;
-    private TagContainerLayout tag_container;
-    private Button btn_save, btn_add_tag;
-    private Switch sw_isvisible;
 
     private ArrayList<CategotyListModel> categotyList;
+    private ArrayList<SubCategotyListModel> subCategoryList;
     private ArrayList<GetTagsListModel.ResultBean> tagsListFromAPI;
     private ArrayList<TagsListModel> tagsListTobeSubmitted;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
-    private ArrayList<String> mobileList, landlineList;
-    private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray;
-    private ArrayList<ContryCodeModel> countryCodeList;
+    private JsonArray mobileJSONArray, landlineJSONArray, tagJSONArray, subCategoryJsonArray;
 
-    private String userId, imageUrl = "", imageName = "", categoryId = "0", subCategoryId = "0", latitude = "", longitude = "";
+    private String userId, imageName = "", categoryId = "", latitude = "", longitude = "";
     private Uri photoURI;
-    private final int CAMERA_REQUEST = 100;
-    private final int GALLERY_REQUEST = 200;
-    private File file, photoFileToUpload, profilPicFolder;
+    private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200, LOCATION_REQUEST = 300;
+    private File file, profilPicFolder;
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
-    private static TextView tv_selected_forconcode = null;
-
     private GetBusinessModel.ResultBean searchDetails;
-    private static AlertDialog countryCodeDialog;
+    private CheckBox cb_select_all;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_business);
+        ButterKnife.bind(this);
 
         init();
         getSessionDetails();
@@ -150,56 +188,9 @@ public class EditBusinessActivity extends AppCompatActivity {
         context = EditBusinessActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-
-        sv_scroll = findViewById(R.id.sv_scroll);
-        progressBar = findViewById(R.id.progressBar);
-        imv_photo1 = findViewById(R.id.imv_photo1);
-        imv_photo2 = findViewById(R.id.imv_photo2);
-        edt_name = findViewById(R.id.edt_name);
-        edt_nature = findViewById(R.id.edt_nature);
-        edt_subtype = findViewById(R.id.edt_subtype);
-        edt_designation = findViewById(R.id.edt_designation);
-        edt_mobile = findViewById(R.id.edt_mobile);
-        edt_landline = findViewById(R.id.edt_landline);
-        edt_email = findViewById(R.id.edt_email);
-        edt_website = findViewById(R.id.edt_website);
-        edt_order_online = findViewById(R.id.edt_order_online);
-        edt_select_area = findViewById(R.id.edt_select_area);
-        edt_address = findViewById(R.id.edt_address);
-        edt_pincode = findViewById(R.id.edt_pincode);
-        edt_city = findViewById(R.id.edt_city);
-        edt_district = findViewById(R.id.edt_district);
-        edt_state = findViewById(R.id.edt_state);
-        edt_country = findViewById(R.id.edt_country);
-        edt_tag = findViewById(R.id.edt_tag);
-        edt_tax_alias = findViewById(R.id.edt_tax_alias);
-        edt_pan = findViewById(R.id.edt_pan);
-        edt_gst = findViewById(R.id.edt_gst);
-        edt_accholdername = findViewById(R.id.edt_accholdername);
-        edt_bank_alias = findViewById(R.id.edt_bank_alias);
-        edt_bank_name = findViewById(R.id.edt_bank_name);
-        edt_ifsc = findViewById(R.id.edt_ifsc);
-        edt_account_no = findViewById(R.id.edt_account_no);
-        sw_isvisible = findViewById(R.id.sw_isvisible);
-        imv_show_hide_tax = findViewById(R.id.imv_show_hide_tax);
-        imv_show_hide_bank = findViewById(R.id.imv_show_hide_bank);
-        ll_tax_details = findViewById(R.id.ll_tax_details);
-        ll_bank_details = findViewById(R.id.ll_bank_details);
-
-        tag_container = findViewById(R.id.tag_container);
-        tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
-        tv_countrycode_landline = findViewById(R.id.tv_countrycode_landline);
-
-        ll_mobile = findViewById(R.id.ll_mobile);
-        ll_landline = findViewById(R.id.ll_landline);
-
-        ib_add_mobile = findViewById(R.id.ib_add_mobile);
-        ib_add_landline = findViewById(R.id.ib_add_landline);
-
-        btn_add_tag = findViewById(R.id.btn_add_tag);
-        btn_save = findViewById(R.id.btn_save);
-
+        changeStatusBar(context, getWindow());
         categotyList = new ArrayList<>();
+        subCategoryList = new ArrayList<>();
         tagsListTobeSubmitted = new ArrayList<>();
         tagsListFromAPI = new ArrayList<>();
         mobileLayoutsList = new ArrayList<>();
@@ -207,8 +198,7 @@ public class EditBusinessActivity extends AppCompatActivity {
         mobileJSONArray = new JsonArray();
         landlineJSONArray = new JsonArray();
         tagJSONArray = new JsonArray();
-        mobileList = new ArrayList<>();
-        landlineList = new ArrayList<>();
+        subCategoryJsonArray = new JsonArray();
 
         profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Business");
         if (!profilPicFolder.exists())
@@ -216,10 +206,7 @@ public class EditBusinessActivity extends AppCompatActivity {
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            builder.detectFileUriExposure();
-        }
-
+        builder.detectFileUriExposure();
     }
 
     private void getSessionDetails() {
@@ -235,24 +222,6 @@ public class EditBusinessActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
-
-        try {
-            JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
-            countryCodeList = new ArrayList<>();
-
-            for (int i = 0; i < m_jArry.length(); i++) {
-                JSONObject jo_inside = m_jArry.getJSONObject(i);
-                countryCodeList.add(new ContryCodeModel(
-                        jo_inside.getString("name"),
-                        jo_inside.getString("dial_code"),
-                        jo_inside.getString("code")
-                ));
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         searchDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
         if (!searchDetails.getImage_url().trim().isEmpty()) {
@@ -260,112 +229,107 @@ public class EditBusinessActivity extends AppCompatActivity {
             String url = IMAGE_LINK + "" + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url();
             Picasso.with(context)
                     .load(url)
-                    .into(imv_photo1, new Callback() {
+                    .into(imvPhoto1, new Callback() {
                         @Override
                         public void onSuccess() {
-                            imv_photo1.setVisibility(View.VISIBLE);
+                            imvPhoto1.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
-                            imv_photo2.setVisibility(View.GONE);
+                            imvPhoto2.setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onError() {
-                            imv_photo2.setVisibility(View.VISIBLE);
+                            imvPhoto2.setVisibility(View.VISIBLE);
                             progressBar.setVisibility(View.GONE);
-                            imv_photo1.setVisibility(View.GONE);
+                            imvPhoto1.setVisibility(View.GONE);
                         }
                     });
         } else {
-            imv_photo2.setVisibility(View.VISIBLE);
+            imvPhoto2.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-            imv_photo1.setVisibility(View.GONE);
+            imvPhoto1.setVisibility(View.GONE);
         }
 
-        edt_name.setText(searchDetails.getBusiness_name());
-        edt_nature.setText(searchDetails.getType_description());
-        edt_subtype.setText(searchDetails.getSubtype_description());
-        edt_designation.setText(searchDetails.getDesignation());
-        edt_email.setText(searchDetails.getEmail());
-        edt_website.setText(searchDetails.getWebsite());
-        edt_order_online.setText(searchDetails.getOrder_online());
-        edt_select_area.setText(searchDetails.getLandmark());
-        edt_address.setText(searchDetails.getAddress());
-        edt_pincode.setText(searchDetails.getPincode());
-        edt_city.setText(searchDetails.getCity());
-        edt_district.setText(searchDetails.getDistrict());
-        edt_state.setText(searchDetails.getState());
-        edt_country.setText(searchDetails.getCountry());
-        edt_tax_alias.setText(searchDetails.getTax_alias());
-        edt_pan.setText(searchDetails.getPan_number());
-        edt_gst.setText(searchDetails.getGst_number());
-        edt_accholdername.setText(searchDetails.getAccount_holder_name());
-        edt_bank_alias.setText(searchDetails.getBank_alias());
-        edt_bank_name.setText(searchDetails.getBank_name());
-        edt_ifsc.setText(searchDetails.getIfsc_code());
-        edt_account_no.setText(searchDetails.getAccount_no());
+        edtName.setText(searchDetails.getBusiness_name());
+        edtNature.setText(searchDetails.getType_description());
 
-        if (searchDetails.getIs_visible().equals("1")) {
-            sw_isvisible.setChecked(true);
+        StringBuilder subTypeNameSb = new StringBuilder();
+        String subTypeNameStr = "";
+
+        for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : searchDetails.getSub_categories().get(0)) {
+            subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(", ");
+            subCategoryJsonArray.add(subCategoriesBean.getSub_type_id());
         }
+        subTypeNameStr = subTypeNameSb.toString();
+        if (!subTypeNameStr.equals(""))
+            edtSubtype.setText(subTypeNameStr.substring(0, subTypeNameStr.length() - 2));
 
-        ArrayList<GetBusinessModel.ResultBean.TagBean> tagsList = new ArrayList<>();
+        edtDesignation.setText(searchDetails.getDesignation());
+        edtEmail.setText(searchDetails.getEmail());
+        edtWebsite.setText(searchDetails.getWebsite());
+        edtAddress.setText(searchDetails.getAddress());
+        edtPincode.setText(searchDetails.getPincode());
+        edtCity.setText(searchDetails.getCity());
+        edtDistrict.setText(searchDetails.getDistrict());
+        edtState.setText(searchDetails.getState());
+        edtCountry.setText(searchDetails.getCountry());
+
+        List<GetBusinessModel.ResultBean.TagBean> tagsList = new ArrayList<>();
         tagsList = searchDetails.getTag().get(0);
 
         if (tagsList != null)
             if (tagsList.size() > 0)
                 for (int i = 0; i < tagsList.size(); i++) {
-
                     if (!tagsList.get(i).getTag_name().trim().equals("")) {
                         tagsListTobeSubmitted.add(new TagsListModel(tagsList.get(i).getTag_id(), tagsList.get(i).getTag_name(), tagsList.get(i).getIs_approved()));
-                        tag_container.addTag(tagsList.get(i).getTag_name());
+                        tagContainer.addTag(tagsList.get(i).getTag_name());
                     }
                 }
 
-        ArrayList<GetBusinessModel.ResultBean.MobilesBean> mobilesList = new ArrayList<>();
-        mobilesList = searchDetails.getMobiles().get(0);
+        List<GetBusinessModel.ResultBean.MobilesBean> mobilesList = searchDetails.getMobiles().get(0);
 
         if (mobilesList != null)
             if (mobilesList.size() > 0)
                 for (int i = 0; i < mobilesList.size(); i++) {
-                    if (i == mobilesList.size() - 1) {
-                        edt_mobile.setText(mobilesList.get(i).getMobile_number());
-                        tv_countrycode_mobile.setText(mobilesList.get(i).getCountry_code());
-                    } else {
-                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_mobile1, null);
-                        LinearLayout ll = (LinearLayout) rowView;
-                        mobileLayoutsList.add(ll);
-                        ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
-                        ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number());
-                        ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(mobilesList.get(i).getCountry_code());
-                    }
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
+                    LinearLayout ll = (LinearLayout) rowView;
+                    mobileLayoutsList.add(ll);
+                    llMobile.addView(rowView, llMobile.getChildCount() - 1);
+                    ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number());
+                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(mobilesList.get(i).getCountry_code());
                 }
 
-        ArrayList<GetBusinessModel.ResultBean.LandlineBean> landlineList = new ArrayList<>();
-        landlineList = searchDetails.getLandline().get(0);
+        List<GetBusinessModel.ResultBean.LandlineBean> landlineList = searchDetails.getLandline().get(0);
 
         if (landlineList != null)
             if (landlineList.size() > 0)
                 for (int i = 0; i < landlineList.size(); i++) {
-                    if (i == landlineList.size() - 1) {
-                        edt_landline.setText(landlineList.get(i).getLandline_number());
-                        tv_countrycode_landline.setText(landlineList.get(i).getCountry_code());
-                    } else {
-                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_landline1, null);
-                        LinearLayout ll = (LinearLayout) rowView;
-                        landlineLayoutsList.add(ll);
-                        ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
+                    LinearLayout ll = (LinearLayout) rowView;
+                    landlineLayoutsList.add(ll);
+                    llLandline.addView(rowView, llLandline.getChildCount() - 1);
 
-                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number());
-                        ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(landlineList.get(i).getCountry_code());
-                    }
+                    ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number());
+                    ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(landlineList.get(i).getCountry_code());
                 }
 
         categoryId = searchDetails.getType_id();
-        subCategoryId = searchDetails.getSub_type_id();
         latitude = searchDetails.getLatitude();
         longitude = searchDetails.getLongitude();
+
+        if (searchDetails.getIs_visible().equals("1"))
+            cbShowInSearch.setChecked(true);
+
+        if (searchDetails.getIs_enquiry_available().equals("1"))
+            cbIsEnquiryAvailable.setChecked(true);
+
+        if (searchDetails.getIs_pick_up_available().equals("1"))
+            cbIsPickUpAvailable.setChecked(true);
+
+        if (searchDetails.getIs_home_delivery_available().equals("1"))
+            cbIsHomeDeliveryAvailable.setChecked(true);
 
         if (!searchDetails.getImage_url().isEmpty()) {
             Uri uri = Uri.parse(searchDetails.getImage_url());
@@ -378,7 +342,7 @@ public class EditBusinessActivity extends AppCompatActivity {
     }
 
     private void setEventListner() {
-        imv_photo1.setOnClickListener(new View.OnClickListener() {
+        imvPhoto1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Utilities.isNetworkAvailable(context)) {
@@ -393,7 +357,7 @@ public class EditBusinessActivity extends AppCompatActivity {
             }
         });
 
-        imv_photo2.setOnClickListener(new View.OnClickListener() {
+        imvPhoto2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Utilities.isNetworkAvailable(context)) {
@@ -408,7 +372,7 @@ public class EditBusinessActivity extends AppCompatActivity {
             }
         });
 
-        edt_nature.setOnClickListener(new View.OnClickListener() {
+        edtNature.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (categotyList.size() == 0) {
@@ -423,29 +387,31 @@ public class EditBusinessActivity extends AppCompatActivity {
             }
         });
 
-        edt_subtype.setOnClickListener(new View.OnClickListener() {
+        edtSubtype.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (edt_nature.getText().toString().trim().isEmpty()) {
-                    edt_nature.setError("Please select the nature of business");
-                    edt_nature.requestFocus();
+                if (edtNature.getText().toString().trim().isEmpty()) {
+                    edtNature.setError("Please select the nature of business");
+                    edtNature.requestFocus();
                     return;
                 }
 
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetSubCategotyList().execute(categoryId, "1", "1");
+                if (subCategoryList.size() == 0) {
+                    if (Utilities.isNetworkAvailable(context)) {
+                        new GetSubCategotyList().execute(categoryId, "1", "1");
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
                 } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    showSubCategoryListDialog();
                 }
-
             }
         });
 
-        edt_designation.setOnClickListener(new View.OnClickListener() {
+        edtDesignation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if (Utilities.isNetworkAvailable(context)) {
                     new GetDesignationList().execute("1");
                 } else {
@@ -455,56 +421,34 @@ public class EditBusinessActivity extends AppCompatActivity {
             }
         });
 
-        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
+        btnAddMobile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContryCodeDialog("1");
+                addMobileLayout();
             }
         });
 
-        tv_countrycode_landline.setOnClickListener(new View.OnClickListener() {
+        btnAddLandline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showContryCodeDialog("2");
+                addLandlineLayout();
             }
         });
 
-        ib_add_mobile.setOnClickListener(new View.OnClickListener() {
+        btnSelectAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_mobile1, null);
-                LinearLayout ll = (LinearLayout) rowView;
-                mobileLayoutsList.add(ll);
-                ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
+                startActivityForResult(new Intent(context, PickMapLocationActivity.class), LOCATION_REQUEST);
             }
         });
 
-        ib_add_landline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_landline1, null);
-                LinearLayout ll = (LinearLayout) rowView;
-                landlineLayoutsList.add(ll);
-                ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-            }
-        });
-
-        edt_select_area.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivityForResult(new Intent(context, PickMapLocationActivity.class), 10001);
-            }
-        });
-
-        btn_add_tag.setOnClickListener(new View.OnClickListener() {
+        btnAddTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (edt_tag.getText().toString().trim().isEmpty()) {
-                    edt_tag.setError("Please enter tag");
-                    edt_tag.requestFocus();
+                if (edtTag.getText().toString().trim().isEmpty()) {
+                    edtTag.setError("Please enter tag");
+                    edtTag.requestFocus();
                     return;
                 }
 
@@ -512,7 +456,7 @@ public class EditBusinessActivity extends AppCompatActivity {
 
                 for (TagsListModel tagObj : tagsListTobeSubmitted) {
 
-                    if (tagObj.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
+                    if (tagObj.getTag_name().equalsIgnoreCase(edtTag.getText().toString().trim())) {
                         isTagSelected = true;
                         break;
 
@@ -525,7 +469,7 @@ public class EditBusinessActivity extends AppCompatActivity {
                     boolean isTagPresent = false;
 
                     for (GetTagsListModel.ResultBean tagObj : tagsListFromAPI) {
-                        if (tagObj.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
+                        if (tagObj.getTag_name().equalsIgnoreCase(edtTag.getText().toString().trim())) {
 
                             tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
 
@@ -536,20 +480,20 @@ public class EditBusinessActivity extends AppCompatActivity {
                     }
 
                     if (!isTagPresent) {
-                        tagsListTobeSubmitted.add(new TagsListModel("0", edt_tag.getText().toString().trim(), "0"));
+                        tagsListTobeSubmitted.add(new TagsListModel("0", edtTag.getText().toString().trim(), "0"));
                     }
 
-                    tag_container.addTag(edt_tag.getText().toString().trim());
+                    tagContainer.addTag(edtTag.getText().toString().trim());
                 } else {
                     Utilities.showMessage("Tag already added", context, 2);
                 }
 
-                edt_tag.setText("");
+                edtTag.setText("");
 
             }
         });
 
-        tag_container.setOnTagClickListener(new TagView.OnTagClickListener() {
+        tagContainer.setOnTagClickListener(new TagView.OnTagClickListener() {
             @Override
             public void onTagClick(int position, String text) {
 
@@ -567,14 +511,14 @@ public class EditBusinessActivity extends AppCompatActivity {
 
             @Override
             public void onTagCrossClick(int position) {
-                if (position < tag_container.getChildCount()) {
-                    tag_container.removeTag(position);
+                if (position < tagContainer.getChildCount()) {
+                    tagContainer.removeTag(position);
                     tagsListTobeSubmitted.remove(position);
                 }
             }
         });
 
-        edt_tag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        edtTag.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -585,7 +529,7 @@ public class EditBusinessActivity extends AppCompatActivity {
                 boolean isTagSelected = false;
 
                 for (TagsListModel tagObj1 : tagsListTobeSubmitted) {
-                    if (tagObj1.getTag_name().equalsIgnoreCase(edt_tag.getText().toString().trim())) {
+                    if (tagObj1.getTag_name().equalsIgnoreCase(edtTag.getText().toString().trim())) {
                         isTagSelected = true;
                         break;
 
@@ -594,56 +538,16 @@ public class EditBusinessActivity extends AppCompatActivity {
 
                 if (!isTagSelected) {
                     tagsListTobeSubmitted.add(new TagsListModel(tagObj.getTagid(), tagObj.getTag_name(), tagObj.getIs_approved()));
-                    tag_container.addTag(edt_tag.getText().toString().trim());
+                    tagContainer.addTag(edtTag.getText().toString().trim());
                 } else {
                     Utilities.showMessage("Tag already added", context, 2);
                 }
 
-                edt_tag.setText("");
+                edtTag.setText("");
             }
         });
 
-        imv_show_hide_tax.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sv_scroll.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        sv_scroll.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                }, 1);
-
-                if (ll_tax_details.getVisibility() == View.VISIBLE) {
-                    Utilities.animateCollapse(imv_show_hide_tax);
-                    ll_tax_details.setVisibility(View.GONE);
-                } else {
-                    Utilities.animateExpand(imv_show_hide_tax);
-                    ll_tax_details.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        imv_show_hide_bank.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sv_scroll.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        sv_scroll.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                }, 1);
-
-                if (ll_bank_details.getVisibility() == View.VISIBLE) {
-                    Utilities.animateCollapse(imv_show_hide_bank);
-                    ll_bank_details.setVisibility(View.GONE);
-                } else {
-                    Utilities.animateExpand(imv_show_hide_bank);
-                    ll_bank_details.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-
-        btn_save.setOnClickListener(new View.OnClickListener() {
+        btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submitData();
@@ -681,19 +585,35 @@ public class EditBusinessActivity extends AppCompatActivity {
         alertD.show();
     }
 
-    public void removeMobileLayoutBiz(View v) {
-        ll_mobile.removeView((View) v.getParent());
+    public void removeMobileLayout(View v) {
+        llMobile.removeView((View) v.getParent());
         mobileLayoutsList.remove(v.getParent());
     }
 
-    public void removeLandlineLayoutBiz(View view) {
-        ll_landline.removeView((View) view.getParent());
+    private void addMobileLayout() {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
+        LinearLayout ll = (LinearLayout) rowView;
+        mobileLayoutsList.add(ll);
+        llMobile.addView(rowView, llMobile.getChildCount() - 1);
+    }
+
+    private void addLandlineLayout() {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
+        LinearLayout ll = (LinearLayout) rowView;
+        landlineLayoutsList.add(ll);
+        llLandline.addView(rowView, llLandline.getChildCount() - 1);
+    }
+
+    public void removeLandlineLayout(View view) {
+        llLandline.removeView((View) view.getParent());
         landlineLayoutsList.remove(view.getParent());
     }
 
-    public void selectContryCodeBiz(View v) {
-        tv_selected_forconcode = (TextView) v;
-        showContryCodeDialog("3");
+    public void selectContryCode(View v) {
+        TextView tv_country_code = (TextView) v;
+        new CountryCodeSelection(context, tv_country_code);
     }
 
     private class GetTagsList extends AsyncTask<String, Void, String> {
@@ -733,7 +653,7 @@ public class EditBusinessActivity extends AppCompatActivity {
 
                         ArrayAdapter<GetTagsListModel.ResultBean> adapter = new ArrayAdapter<GetTagsListModel.ResultBean>(
                                 context, R.layout.list_row, tagsListFromAPI);
-                        edt_tag.setAdapter(adapter);
+                        edtTag.setAdapter(adapter);
 
                     } else {
                         Utilities.showAlertDialog(context, message, false);
@@ -809,23 +729,15 @@ public class EditBusinessActivity extends AppCompatActivity {
             arrayAdapter.add(String.valueOf(categotyList.get(i).getName()));
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                CategotyListModel categoty = categotyList.get(which);
-                edt_nature.setText(categoty.getName());
-                categoryId = categoty.getId();
-                edt_subtype.setText("");
-            }
+        builderSingle.setAdapter(arrayAdapter, (dialog, which) -> {
+            CategotyListModel categoty = categotyList.get(which);
+            edtNature.setText(categoty.getName());
+            categoryId = categoty.getId();
+            edtSubtype.setText("");
+            subCategoryList.clear();
+            subCategoryJsonArray = new JsonArray();
         });
         builderSingle.show();
     }
@@ -862,15 +774,14 @@ public class EditBusinessActivity extends AppCompatActivity {
                     SubCategotyListPojo pojoDetails = new Gson().fromJson(result, SubCategotyListPojo.class);
                     type = pojoDetails.getType();
                     message = pojoDetails.getMessage();
-
+                    subCategoryList.clear();
                     if (type.equalsIgnoreCase("success")) {
-                        ArrayList<SubCategotyListModel> subCategoryList = pojoDetails.getResult();
+                        subCategoryList = pojoDetails.getResult();
                         if (subCategoryList.size() > 0) {
-                            showSubCategoryListDialog(subCategoryList);
+                            showSubCategoryListDialog();
                         }
                     } else {
                         Utilities.showAlertDialog(context, "Subtype not available", false);
-
                     }
                 }
             } catch (Exception e) {
@@ -880,35 +791,131 @@ public class EditBusinessActivity extends AppCompatActivity {
         }
     }
 
-    private void showSubCategoryListDialog(final ArrayList<SubCategotyListModel> subCategoryList) {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Subtype");
-        builderSingle.setCancelable(false);
+    private void showSubCategoryListDialog() {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_check_list, null);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        builder.setView(view);
+        builder.setTitle("Select Subtype");
+        builder.setCancelable(false);
+
+        RecyclerView rv_checklist = view.findViewById(R.id.rv_checklist);
+        cb_select_all = view.findViewById(R.id.cb_select_all);
+        rv_checklist.setLayoutManager(new LinearLayoutManager(context));
+        rv_checklist.setAdapter(new SubCategoryAdapter());
+
+        boolean areAllLabsChecked = true;
 
         for (int i = 0; i < subCategoryList.size(); i++) {
-            arrayAdapter.add(String.valueOf(subCategoryList.get(i).getName()));
+            if (!subCategoryList.get(i).isChecked()) {
+                areAllLabsChecked = false;
+                break;
+            }
         }
 
-        builderSingle.setNegativeButton(
-                "Cancel",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+        cb_select_all.setChecked(areAllLabsChecked);
 
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                SubCategotyListModel subCategoty = subCategoryList.get(which);
-                edt_subtype.setText(subCategoty.getName());
-                subCategoryId = subCategoty.getId();
-            }
+        cb_select_all.setOnClickListener(v -> {
+            if (cb_select_all.isChecked())
+                for (int i = 0; i < subCategoryList.size(); i++)
+                    subCategoryList.get(i).setChecked(true);
+            else
+                for (int i = 0; i < subCategoryList.size(); i++)
+                    subCategoryList.get(i).setChecked(false);
+
+            rv_checklist.setAdapter(new SubCategoryAdapter());
         });
-        builderSingle.show();
+
+        builder.setPositiveButton("Select", (dialog, which) -> {
+            subCategoryJsonArray = new JsonArray();
+            edtSubtype.setText("");
+
+            StringBuilder selectedSubCategories = new StringBuilder();
+
+            for (SubCategotyListModel sample : subCategoryList) {
+                if (sample.isChecked()) {
+                    selectedSubCategories.append(sample.getName()).append(", ");
+                    subCategoryJsonArray.add(sample.getId());
+                }
+            }
+
+            if (selectedSubCategories.toString().length() != 0) {
+                String selectedLabsStr = selectedSubCategories.substring(0, selectedSubCategories.toString().length() - 2);
+                edtSubtype.setText(selectedLabsStr);
+            }
+
+            if (cb_select_all.isChecked())
+                edtSubtype.setText("All subtypes selected");
+        });
+
+        builder.setNegativeButton("clear", (dialog, which) -> {
+            for (int i = 0; i < subCategoryList.size(); i++)
+                subCategoryList.get(i).setChecked(false);
+
+            cb_select_all.setChecked(false);
+            edtSubtype.setText("");
+            subCategoryJsonArray = new JsonArray();
+        });
+
+        builder.create().show();
+    }
+
+    private class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.MyViewHolder> {
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_checklist, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+            final int position = holder.getAdapterPosition();
+
+            holder.cb_select.setText(subCategoryList.get(position).getName());
+
+            if (subCategoryList.get(position).isChecked()) {
+                holder.cb_select.setChecked(true);
+            }
+
+            holder.cb_select.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                subCategoryList.get(position).setChecked(isChecked);
+
+                boolean areAllLabsChecked = true;
+
+                for (int i = 0; i < subCategoryList.size(); i++) {
+                    if (!subCategoryList.get(i).isChecked()) {
+                        areAllLabsChecked = false;
+                        break;
+                    }
+                }
+
+                cb_select_all.setChecked(areAllLabsChecked);
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return subCategoryList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private CheckBox cb_select;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                cb_select = view.findViewById(R.id.cb_select);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
     }
 
     private class GetDesignationList extends AsyncTask<String, Void, String> {
@@ -982,165 +989,28 @@ public class EditBusinessActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 BizProfEmpProfileDesignationsModel.ResultBean designation = designationList.get(which);
-                edt_designation.setText(designation.getDesignation_name());
+                edtDesignation.setText(designation.getDesignation_name());
             }
         });
         builderSingle.show();
     }
 
-    private void showContryCodeDialog(final String type) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builder.setView(view);
-        builder.setTitle("Select Country");
-        builder.setCancelable(false);
-
-        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
-        EditText edt_search = view.findViewById(R.id.edt_search);
-        rv_country.setLayoutManager(new LinearLayoutManager(context));
-        rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
-
-        edt_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence query, int start, int before, int count) {
-
-                if (query.toString().isEmpty()) {
-                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
-                    return;
-                }
-
-                if (countryCodeList.size() == 0) {
-                    rv_country.setVisibility(View.GONE);
-                    return;
-                }
-
-                if (!query.toString().equals("")) {
-                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
-                    for (ContryCodeModel countryDetails : countryCodeList) {
-
-                        String countryToBeSearched = countryDetails.getName().toLowerCase();
-
-                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
-                            searchedCountryList.add(countryDetails);
-                        }
-                    }
-                    rv_country.setAdapter(new CountryCodeAdapter(searchedCountryList, type));
-                } else {
-                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        countryCodeDialog = builder.create();
-        countryCodeDialog.show();
-    }
-
-    private class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.MyViewHolder> {
-
-        private ArrayList<ContryCodeModel> countryCodeList;
-        private String type;
-
-        public CountryCodeAdapter(ArrayList<ContryCodeModel> countryCodeList, String type) {
-            this.countryCodeList = countryCodeList;
-            this.type = type;
-        }
-
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.list_row_1, parent, false);
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, final int pos) {
-            final int position = holder.getAdapterPosition();
-
-            holder.tv_name.setText(countryCodeList.get(position).getName());
-
-            holder.tv_name.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (type.equals("1")) {
-                        tv_countrycode_mobile.setText(countryCodeList.get(position).getDial_code());
-                    } else if (type.equals("2")) {
-                        tv_countrycode_landline.setText(countryCodeList.get(position).getDial_code());
-                    } else if (type.equals("3")) {
-                        tv_selected_forconcode.setText(countryCodeList.get(position).getDial_code());
-                    }
-                    countryCodeDialog.dismiss();
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return countryCodeList.size();
-        }
-
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-            private TextView tv_name;
-
-            public MyViewHolder(@NonNull View view) {
-                super(view);
-                tv_name = view.findViewById(R.id.tv_name);
-            }
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return position;
-        }
-    }
-
     private void submitData() {
-        mobileList = new ArrayList<>();
-        landlineList = new ArrayList<>();
         mobileJSONArray = new JsonArray();
         landlineJSONArray = new JsonArray();
         tagJSONArray = new JsonArray();
 
-        if (edt_name.getText().toString().trim().isEmpty()) {
-            edt_name.setError("Please enter the name of business");
-            edt_name.requestFocus();
-            edt_name.getParent().requestChildFocus(edt_name, edt_name);
+        if (edtName.getText().toString().trim().isEmpty()) {
+            edtName.setError("Please enter the name of business");
+            edtName.requestFocus();
+            edtName.getParent().requestChildFocus(edtName, edtName);
             return;
         }
 
-        if (edt_nature.getText().toString().trim().isEmpty()) {
-            edt_nature.setError("Please select the nature of business");
-            edt_nature.requestFocus();
-            edt_nature.getParent().requestChildFocus(edt_nature, edt_nature);
+        if (edtNature.getText().toString().trim().isEmpty()) {
+            Utilities.showMessage("Please select the nature of business", context, 2);
             return;
         }
-
-//        if (edt_subtype.getText().toString().trim().isEmpty()) {
-//            edt_subtype.setError("Please select subtype");
-//            edt_subtype.requestFocus();
-//            return;
-//        }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().isEmpty()) {
@@ -1149,15 +1019,6 @@ public class EditBusinessActivity extends AppCompatActivity {
                     (mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).requestFocus();
                     return;
                 }
-            }
-        }
-
-        if (!edt_mobile.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                edt_mobile.setError("Please enter valid mobile number");
-                edt_mobile.requestFocus();
-                edt_mobile.getParent().requestChildFocus(edt_mobile, edt_mobile);
-                return;
             }
         }
 
@@ -1171,87 +1032,37 @@ public class EditBusinessActivity extends AppCompatActivity {
             }
         }
 
-        if (!edt_landline.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
-                edt_landline.setError("Please enter valid landline number");
-                edt_landline.requestFocus();
-                edt_landline.getParent().requestChildFocus(edt_landline, edt_landline);
+        if (!edtEmail.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isEmailValid(edtEmail.getText().toString().trim())) {
+                edtEmail.setError("Please enter valid email");
+                edtEmail.requestFocus();
+                edtEmail.getParent().requestChildFocus(edtEmail, edtEmail);
                 return;
             }
         }
 
-        if (!edt_email.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
-                edt_email.setError("Please enter valid email");
-                edt_email.requestFocus();
-                edt_email.getParent().requestChildFocus(edt_email, edt_email);
+        if (!edtWebsite.getText().toString().trim().isEmpty()) {
+            if (!Utilities.isWebsiteValid(edtWebsite.getText().toString().trim())) {
+                edtWebsite.setError("Please enter valid website");
+                edtWebsite.requestFocus();
                 return;
             }
         }
 
-        if (!edt_website.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isWebsiteValid(edt_website.getText().toString().trim())) {
-                edt_website.setError("Please enter valid website");
-                edt_website.requestFocus();
+        if (!edtPincode.getText().toString().trim().isEmpty()) {
+            if (edtPincode.getText().toString().trim().length() != 6) {
+                edtPincode.setError("Please enter pincode");
+                edtPincode.requestFocus();
+                edtPincode.getParent().requestChildFocus(edtPincode, edtPincode);
                 return;
             }
         }
 
-//        if (!edt_order_online.getText().toString().trim().isEmpty()) {
-//            if (!Utilities.isWebsiteValid(edt_order_online.getText().toString().trim())) {
-//                edt_order_online.setError("Please enter valid url");
-//                edt_order_online.requestFocus();
-//                return;
-//            }
-//        }
-
-//        if (edt_select_area.getText().toString().trim().isEmpty()) {
-//            edt_select_area.setError("Please select area");
-//            edt_select_area.requestFocus();
-//            return;
-//        }
-
-        if (!edt_pincode.getText().toString().trim().isEmpty()) {
-            if (edt_pincode.getText().toString().trim().length() != 6) {
-                edt_pincode.setError("Please enter pincode");
-                edt_pincode.requestFocus();
-                edt_pincode.getParent().requestChildFocus(edt_pincode, edt_pincode);
-                return;
-            }
-        }
-
-        if (edt_city.getText().toString().trim().isEmpty()) {
-            edt_city.setError("Please select area");
-            edt_city.requestFocus();
-            edt_city.getParent().requestChildFocus(edt_city, edt_city);
+        if (edtCity.getText().toString().trim().isEmpty()) {
+            edtCity.setError("Please select area");
+            edtCity.requestFocus();
+            edtCity.getParent().requestChildFocus(edtCity, edtCity);
             return;
-        }
-
-        if (!edt_pan.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isValidPanNum(edt_pan.getText().toString().trim())) {
-                edt_pan.setError("Please enter valid PAN ");
-                edt_pan.requestFocus();
-                edt_pan.getParent().requestChildFocus(edt_pan, edt_pan);
-                return;
-            }
-        }
-
-        if (!edt_gst.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isGSTValid(edt_gst.getText().toString().trim())) {
-                edt_gst.setError("Please enter valid GST number");
-                edt_gst.requestFocus();
-                edt_gst.getParent().requestChildFocus(edt_gst, edt_gst);
-                return;
-            }
-        }
-
-        if (!edt_ifsc.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isIfscValid(edt_ifsc.getText().toString().trim())) {
-                edt_ifsc.setError("Please enter valid IFSC code");
-                edt_ifsc.requestFocus();
-                edt_ifsc.getParent().requestChildFocus(edt_gst, edt_ifsc);
-                return;
-            }
         }
 
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
@@ -1263,13 +1074,6 @@ public class EditBusinessActivity extends AppCompatActivity {
             }
         }
 
-        if (!edt_mobile.getText().toString().trim().isEmpty()) {
-            JsonObject mobileJSONObj = new JsonObject();
-            mobileJSONObj.addProperty("mobile", edt_mobile.getText().toString().trim());
-            mobileJSONObj.addProperty("country_code", tv_countrycode_mobile.getText().toString());
-            mobileJSONArray.add(mobileJSONObj);
-        }
-
         for (int i = 0; i < landlineLayoutsList.size(); i++) {
             if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().equals("")) {
                 JsonObject landlineJSONObj = new JsonObject();
@@ -1277,13 +1081,6 @@ public class EditBusinessActivity extends AppCompatActivity {
                 landlineJSONObj.addProperty("country_code", ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).getText().toString());
                 landlineJSONArray.add(landlineJSONObj);
             }
-        }
-
-        if (!edt_landline.getText().toString().trim().isEmpty()) {
-            JsonObject landlineJSONObj = new JsonObject();
-            landlineJSONObj.addProperty("landlinenumbers", edt_landline.getText().toString());
-            landlineJSONObj.addProperty("country_code", tv_countrycode_landline.getText().toString().trim());
-            landlineJSONArray.add(landlineJSONObj);
         }
 
         for (int i = 0; i < tagsListTobeSubmitted.size(); i++) {
@@ -1294,61 +1091,57 @@ public class EditBusinessActivity extends AppCompatActivity {
             tagJSONArray.add(tagsJSONObj);
         }
 
+        String isVisible = cbShowInSearch.isChecked() ? "1" : "0";
+        String isEnquiryAvailable = cbIsEnquiryAvailable.isChecked() ? "1" : "0";
+        String isPickUpAvailable = cbIsPickUpAvailable.isChecked() ? "1" : "0";
+        String isHomeDeliveryAvailable = cbIsHomeDeliveryAvailable.isChecked() ? "1" : "0";
+
         JsonObject mainObj = new JsonObject();
 
-        String isVisible = "0";
-
-        if (sw_isvisible.isChecked()) {
-            isVisible = "1";
-        }
-
         mainObj.addProperty("type", "updatebusiness");
-        mainObj.addProperty("address", edt_address.getText().toString().trim());
-        mainObj.addProperty("business_name", edt_name.getText().toString().trim());
-        mainObj.addProperty("district", edt_district.getText().toString().trim());
-        mainObj.addProperty("state", edt_state.getText().toString().trim());
-        mainObj.addProperty("city", edt_city.getText().toString().trim());
-        mainObj.addProperty("country", edt_country.getText().toString().trim());
-        mainObj.addProperty("pincode", edt_pincode.getText().toString().trim());
+        mainObj.addProperty("address", edtAddress.getText().toString().trim());
+        mainObj.addProperty("business_name", edtName.getText().toString().trim());
+        mainObj.addProperty("district", edtDistrict.getText().toString().trim());
+        mainObj.addProperty("state", edtState.getText().toString().trim());
+        mainObj.addProperty("city", edtCity.getText().toString().trim());
+        mainObj.addProperty("country", edtCountry.getText().toString().trim());
+        mainObj.addProperty("pincode", edtPincode.getText().toString().trim());
         mainObj.addProperty("longitude", longitude);
         mainObj.addProperty("latitude", latitude);
-        mainObj.addProperty("landmark", edt_select_area.getText().toString().trim());
-        mainObj.addProperty("locality", edt_city.getText().toString().trim());
-        mainObj.addProperty("email", edt_email.getText().toString().trim());
-        mainObj.addProperty("designation", edt_designation.getText().toString().trim());
+        mainObj.addProperty("landmark", "");
+        mainObj.addProperty("locality", edtCity.getText().toString().trim());
+        mainObj.addProperty("email", edtEmail.getText().toString().trim());
+        mainObj.addProperty("designation", edtDesignation.getText().toString().trim());
         mainObj.addProperty("record_statusid", "1");
-        mainObj.addProperty("website", edt_website.getText().toString().trim());
-        mainObj.addProperty("order_online", edt_order_online.getText().toString().trim());
+        mainObj.addProperty("website", edtWebsite.getText().toString().trim());
+        mainObj.addProperty("order_online", "");
         mainObj.addProperty("image_url", imageName);
-        mainObj.addProperty("busi_type_id", "2");
         mainObj.addProperty("type_id", categoryId);
-        mainObj.addProperty("sub_type_id", subCategoryId);
-        mainObj.addProperty("type_description", edt_nature.getText().toString().trim());
-        mainObj.addProperty("subtype_description", edt_subtype.getText().toString().trim());
-        mainObj.addProperty("created_by", userId);
-        mainObj.addProperty("updated_by", userId);
+        mainObj.add("sub_categories", subCategoryJsonArray);
+        mainObj.addProperty("user_id", userId);
         mainObj.addProperty("business_id", searchDetails.getId());
-        mainObj.addProperty("is_active", "0");
-        mainObj.addProperty("is_deleted", "0");
         mainObj.addProperty("organization_name", "");
         mainObj.addProperty("other_details", "");
-        mainObj.addProperty("tax_name", edt_tax_alias.getText().toString().trim());
-        mainObj.addProperty("tax_alias", edt_tax_alias.getText().toString().trim());
-        mainObj.addProperty("pan_number", edt_pan.getText().toString().trim());
-        mainObj.addProperty("gst_number", edt_gst.getText().toString().trim());
+        mainObj.addProperty("tax_name", "");
+        mainObj.addProperty("tax_alias", "");
+        mainObj.addProperty("pan_number", "");
+        mainObj.addProperty("gst_number", "");
         mainObj.addProperty("tax_status", "online");
-        mainObj.addProperty("account_holder_name", edt_accholdername.getText().toString().trim());
-        mainObj.addProperty("alias", edt_bank_alias.getText().toString().trim());
-        mainObj.addProperty("bank_name", edt_bank_name.getText().toString().trim());
-        mainObj.addProperty("ifsc_code", edt_ifsc.getText().toString().trim());
-        mainObj.addProperty("account_no", edt_account_no.getText().toString().trim());
+        mainObj.addProperty("account_holder_name", "");
+        mainObj.addProperty("alias", "");
+        mainObj.addProperty("bank_name", "");
+        mainObj.addProperty("ifsc_code", "");
+        mainObj.addProperty("account_no", "");
         mainObj.addProperty("status", "online");
         mainObj.addProperty("is_visible", isVisible);
+        mainObj.addProperty("is_enquiry_available", isEnquiryAvailable);
+        mainObj.addProperty("is_pick_up_available", isPickUpAvailable);
+        mainObj.addProperty("is_home_delivery_available", isHomeDeliveryAvailable);
         mainObj.add("mobile_number", mobileJSONArray);
         mainObj.add("landline_number", landlineJSONArray);
         mainObj.add("tag_name", tagJSONArray);
 
-        Log.i("EDITBUSINESS", mainObj.toString());
+        Log.i("ADDBUSINESS", mainObj.toString());
 
         if (Utilities.isNetworkAvailable(context)) {
             new EditBusiness().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
@@ -1372,24 +1165,21 @@ public class EditBusinessActivity extends AppCompatActivity {
                 CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditBusinessActivity.this);
             }
 
-            if (requestCode == 10001) {
+            if (requestCode == LOCATION_REQUEST) {
                 MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
                 if (addressList != null) {
                     latitude = addressList.getMap_location_lattitude();
-                    longitude = addressList.getAddress_line_one();
-                    edt_address.setText(addressList.getAddress_line_one());
-                    edt_country.setText(addressList.getCountry());
-                    edt_state.setText(addressList.getState());
-                    edt_district.setText(addressList.getDistrict());
-                    edt_pincode.setText(addressList.getPincode());
-                    edt_select_area.setText(addressList.getName());
-                    edt_city.setText(addressList.getDistrict());
+                    longitude = addressList.getMap_location_logitude();
+                    edtAddress.setText(addressList.getAddress_line_one());
+                    edtCountry.setText(addressList.getCountry());
+                    edtState.setText(addressList.getState());
+                    edtDistrict.setText(addressList.getDistrict());
+                    edtPincode.setText(addressList.getPincode());
+                    edtCity.setText(addressList.getDistrict());
                 } else {
                     Utilities.showMessage("Address not found, please try again", context, 3);
                 }
             }
-
-
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -1431,7 +1221,7 @@ public class EditBusinessActivity extends AppCompatActivity {
             }
         }
 
-        photoFileToUpload = new File(destinationFile);
+        File photoFileToUpload = new File(destinationFile);
         new UploadImage().execute(photoFileToUpload);
 
     }
@@ -1478,15 +1268,14 @@ public class EditBusinessActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
-                        imageUrl = jsonObject.getString("document_url");
+                        String imageUrl = jsonObject.getString("document_url");
                         imageName = jsonObject.getString("name");
 
                         if (!imageUrl.equals("")) {
                             Picasso.with(context)
                                     .load(imageUrl)
-                                    .into(imv_photo1);
-                            imv_photo1.setVisibility(View.VISIBLE);
-                            imv_photo2.setVisibility(View.GONE);
+                                    .into(imvPhoto1);
+                            imvPhoto2.setVisibility(View.GONE);
                         }
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
@@ -1538,7 +1327,7 @@ public class EditBusinessActivity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Business details updated successfully");
+                        tv_title.setText("Business details submitted successfully");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -1560,6 +1349,13 @@ public class EditBusinessActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void setUpToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        toolbar.setNavigationOnClickListener(view -> finish());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -1600,45 +1396,8 @@ public class EditBusinessActivity extends AppCompatActivity {
                     alertD.show();
                 }
             }
-
         }
     }
 
-    private void setUpToolbar() {
-        Toolbar mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        hideSoftKeyboard(EditBusinessActivity.this);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menus_save, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_save:
-                submitData();
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }

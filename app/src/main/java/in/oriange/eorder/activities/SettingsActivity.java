@@ -30,6 +30,7 @@ import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.getMd5;
 import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
 
@@ -57,6 +58,9 @@ public class SettingsActivity extends AppCompatActivity {
         context = SettingsActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
+
+        changeStatusBar(context, getWindow());
+
         cv_password = findViewById(R.id.cv_password);
         cv_invite = findViewById(R.id.cv_invite);
         cv_feedback = findViewById(R.id.cv_feedback);

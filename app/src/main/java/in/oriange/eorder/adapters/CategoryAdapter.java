@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,23 +74,23 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
                     .putExtra("subCategoryTypeId", "NA"));
         });
 
-//        if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
-//            Picasso.with(context)
-//                    .load(categotyDetails.getCategory_icon().trim())
-//                    .into(holder.imv_category, new Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-//                        }
-//                    });
-//        } else {
-//            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-//        }
+        if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
+            Picasso.with(context)
+                    .load(categotyDetails.getCategory_icon().trim())
+                    .into(holder.imv_category, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+                        }
+                    });
+        } else {
+            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+        }
 
     }
 

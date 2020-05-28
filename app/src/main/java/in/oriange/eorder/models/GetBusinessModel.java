@@ -2,12 +2,19 @@ package in.oriange.eorder.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GetBusinessModel implements Serializable {
 
+    /**
+     * type : success
+     * message : Business data returned successfully!
+     * result : [{"id":"15","order_online":"","business_code":"L00015","address":"Sawe Wadi, Latur, Maharashtra 413512, India","city":"Latur","country":"India","business_name":"Ramesh Fruits","district":"Latur","pincode":"413512","longitude":"76.58651239999999","latitude":"18.3988026","landmark":"","locality":"Latur","state":"Maharashtra","designation":"Project Manager","email":"fruits@email.com","website":"www.rameshfruits.com","record_statusid":"1","is_verified":"0","created_at":"2020-05-28 13:31:51","updated_at":"2020-05-28 13:31:51","is_enquiry_available":"1","created_by":"10","updated_by":"10","type_description":"Fruits & Vegetable","IsFavourite":"0","UserIsFavourite":"0","image_url":"uplimg-20200528075734.png","bank_id":"15","account_holder_name":"","bank_alias":"","bank_name":"","ifsc_code":"","account_no":"","bank_status":"online","tax_id":"15","tax_name":"","tax_alias":"","pan_number":"","gst_number":"","tax_status":"online","is_visible":"1","is_pick_up_available":"1","is_home_delivery_available":"1","can_book_order":"0","type_id":"6","avg_rating":0,"review_title_by_user":"","review_description_by_user":"","rating_by_user":0,"total_number_review":"0","offer_count":0,"mobiles":[[{"id":"19","mobile_number":"8143818678","country_code":"+91"},{"id":"20","mobile_number":"8649464643","country_code":"+91"}]],"landline":[[{"id":"19","landline_number":"8986494659","country_code":"+213"}]],"sub_categories":[[{"sub_type_id":"55","subtype_description":"Dealer/Distributor"},{"sub_type_id":"58","subtype_description":"Franchisee"}]],"tag":[[{"id":"33","tag_id":"716","tag_name":"fruits","is_approved":"1"},{"id":"34","tag_id":"187","tag_name":"Vegetables","is_approved":"1"}]]},{"id":"14","order_online":"","business_code":"L00013","address":"Latur, Maharashtra, India","city":"Latur","country":"India","business_name":"Test","district":"Latur","pincode":"413531","longitude":"76.562221","latitude":"18.4087934","landmark":"","locality":"Latur","state":"Maharashtra","designation":"Proprietor","email":"","website":"","record_statusid":"1","is_verified":"0","created_at":"2020-05-27 22:44:30","updated_at":"2020-05-27 22:44:30","is_enquiry_available":"1","created_by":"10","updated_by":"10","type_description":"Food and Restaurant","IsFavourite":"0","UserIsFavourite":"0","image_url":"","bank_id":"14","account_holder_name":"","bank_alias":"","bank_name":"","ifsc_code":"","account_no":"","bank_status":"online","tax_id":"14","tax_name":"","tax_alias":"","pan_number":"","gst_number":"","tax_status":"online","is_visible":"1","is_pick_up_available":"1","is_home_delivery_available":"1","can_book_order":"0","type_id":"121","avg_rating":0,"review_title_by_user":"","review_description_by_user":"","rating_by_user":0,"total_number_review":"0","offer_count":0,"mobiles":[[{"id":"18","mobile_number":"8164983948","country_code":"+91"}]],"landline":[[{"id":"18","landline_number":"0256481378","country_code":"+91"}]],"sub_categories":[[{"sub_type_id":"42","subtype_description":"Hotel"}]],"tag":[[{"id":"32","tag_id":"193","tag_name":"book hotel online","is_approved":"1"}]]},{"id":"7","order_online":"","business_code":"L00007","address":"Zilla Parishad, Netaji Nagar, Latur, Maharashtra 413531","city":"Latur","country":"India","business_name":"Test","district":"Latur","pincode":"413531","longitude":"76.561982","latitude":"18.4087934","landmark":"","locality":"Latur","state":"Maharashtra","designation":"Proprietor","email":"","website":"","record_statusid":"1","is_verified":"0","created_at":"2020-05-21 13:16:13","updated_at":"2020-05-21 13:16:13","is_enquiry_available":"1","created_by":"10","updated_by":"10","type_description":"Food and Restaurant","IsFavourite":"0","UserIsFavourite":"0","image_url":"","bank_id":"7","account_holder_name":"","bank_alias":"","bank_name":"","ifsc_code":"","account_no":"","bank_status":"online","tax_id":"7","tax_name":"","tax_alias":"","pan_number":"","gst_number":"","tax_status":"online","is_visible":"1","is_pick_up_available":"1","is_home_delivery_available":"1","can_book_order":"0","type_id":"121","avg_rating":0,"review_title_by_user":"","review_description_by_user":"","rating_by_user":0,"total_number_review":"0","offer_count":0,"mobiles":[[{"id":"12","mobile_number":"8164983948","country_code":"+91"}]],"landline":[[{"id":"12","landline_number":"0256481378","country_code":"+91"}]],"sub_categories":[[{"sub_type_id":"42","subtype_description":"Hotel"}]],"tag":[[{"id":"15","tag_id":"193","tag_name":"book hotel online","is_approved":"1"}]]},{"id":"6","order_online":"","business_code":"L00006","address":"Zilla Parishad, Netaji Nagar, Latur, Maharashtra 413531","city":"Latur","country":"India","business_name":"Hotel Samarth","district":"Latur","pincode":"413531","longitude":"76.561982","latitude":"18.4087934","landmark":"","locality":"Latur","state":"Maharashtra","designation":"Proprietor","email":"hotellatur@gmail.com","website":"www.hotellatur.com","record_statusid":"1","is_verified":"1","created_at":"2020-05-21 12:52:31","updated_at":"2020-05-21 12:52:31","is_enquiry_available":"1","created_by":"10","updated_by":"10","type_description":"Food and Restaurant","IsFavourite":"0","UserIsFavourite":"0","image_url":"table_with_food_top_view_900x700-20200524031709.jpg","bank_id":"6","account_holder_name":"","bank_alias":"","bank_name":"","ifsc_code":"","account_no":"","bank_status":"online","tax_id":"6","tax_name":"","tax_alias":"","pan_number":"","gst_number":"","tax_status":"online","is_visible":"1","is_pick_up_available":"1","is_home_delivery_available":"1","can_book_order":"1","type_id":"121","avg_rating":4,"review_title_by_user":"Nice hotel","review_description_by_user":"Djjsjakakka dkdkskks sks sks dkdkskks rjrejnw bwjb 4ir ejejekwk ejeejdnsjs","rating_by_user":"4","total_number_review":"1","offer_count":0,"mobiles":[[{"id":"16","mobile_number":"8164983948","country_code":"+91"}]],"landline":[[{"id":"16","landline_number":"0256481378","country_code":"+91"}]],"sub_categories":[[{"sub_type_id":"42","subtype_description":"Hotel"}]],"tag":[[{"id":"13","tag_id":"193","tag_name":"book hotel online","is_approved":"1"},{"id":"28","tag_id":"2108","tag_name":"cafe","is_approved":"0"},{"id":"29","tag_id":"2109","tag_name":"restaurant","is_approved":"0"},{"id":"30","tag_id":"2110","tag_name":"home delivery","is_approved":"0"}]]}]
+     */
+
     private String type;
     private String message;
-    private ArrayList<ResultBean> result;
+    private List<ResultBean> result;
 
     public String getType() {
         return type;
@@ -25,17 +32,76 @@ public class GetBusinessModel implements Serializable {
         this.message = message;
     }
 
-    public ArrayList<ResultBean> getResult() {
+    public List<ResultBean> getResult() {
         return result;
     }
 
-    public void setResult(ArrayList<ResultBean> result) {
+    public void setResult(List<ResultBean> result) {
         this.result = result;
     }
 
     public static class ResultBean implements Serializable {
+        /**
+         * id : 15
+         * order_online :
+         * business_code : L00015
+         * address : Sawe Wadi, Latur, Maharashtra 413512, India
+         * city : Latur
+         * country : India
+         * business_name : Ramesh Fruits
+         * district : Latur
+         * pincode : 413512
+         * longitude : 76.58651239999999
+         * latitude : 18.3988026
+         * landmark :
+         * locality : Latur
+         * state : Maharashtra
+         * designation : Project Manager
+         * email : fruits@email.com
+         * website : www.rameshfruits.com
+         * record_statusid : 1
+         * is_verified : 0
+         * created_at : 2020-05-28 13:31:51
+         * updated_at : 2020-05-28 13:31:51
+         * is_enquiry_available : 1
+         * created_by : 10
+         * updated_by : 10
+         * type_description : Fruits & Vegetable
+         * IsFavourite : 0
+         * UserIsFavourite : 0
+         * image_url : uplimg-20200528075734.png
+         * bank_id : 15
+         * account_holder_name :
+         * bank_alias :
+         * bank_name :
+         * ifsc_code :
+         * account_no :
+         * bank_status : online
+         * tax_id : 15
+         * tax_name :
+         * tax_alias :
+         * pan_number :
+         * gst_number :
+         * tax_status : online
+         * is_visible : 1
+         * is_pick_up_available : 1
+         * is_home_delivery_available : 1
+         * can_book_order : 0
+         * type_id : 6
+         * avg_rating : 0
+         * review_title_by_user :
+         * review_description_by_user :
+         * rating_by_user : 0
+         * total_number_review : 0
+         * offer_count : 0
+         * mobiles : [[{"id":"19","mobile_number":"8143818678","country_code":"+91"},{"id":"20","mobile_number":"8649464643","country_code":"+91"}]]
+         * landline : [[{"id":"19","landline_number":"8986494659","country_code":"+213"}]]
+         * sub_categories : [[{"sub_type_id":"55","subtype_description":"Dealer/Distributor"},{"sub_type_id":"58","subtype_description":"Franchisee"}]]
+         * tag : [[{"id":"33","tag_id":"716","tag_name":"fruits","is_approved":"1"},{"id":"34","tag_id":"187","tag_name":"Vegetables","is_approved":"1"}]]
+         */
 
         private String id;
+        private String order_online;
         private String business_code;
         private String address;
         private String city;
@@ -55,11 +121,9 @@ public class GetBusinessModel implements Serializable {
         private String is_verified;
         private String created_at;
         private String updated_at;
-        private String type_id;
-        private String sub_type_id;
+        private String is_enquiry_available;
         private String created_by;
         private String updated_by;
-        private String subtype_description;
         private String type_description;
         private String IsFavourite;
         private String UserIsFavourite;
@@ -78,17 +142,20 @@ public class GetBusinessModel implements Serializable {
         private String gst_number;
         private String tax_status;
         private String is_visible;
-        private String offer_count;
-        private String order_online;
+        private String is_pick_up_available;
+        private String is_home_delivery_available;
+        private String can_book_order;
+        private String type_id;
         private String avg_rating;
         private String review_title_by_user;
         private String review_description_by_user;
         private String rating_by_user;
         private String total_number_review;
-        private String can_book_order;
-        private ArrayList<ArrayList<MobilesBean>> mobiles;
-        private ArrayList<ArrayList<LandlineBean>> landline;
-        private ArrayList<ArrayList<TagBean>> tag;
+        private String offer_count;
+        private List<List<MobilesBean>> mobiles;
+        private List<List<LandlineBean>> landline;
+        private List<List<SubCategoriesBean>> sub_categories;
+        private List<List<TagBean>> tag;
         private boolean isChecked;
 
         public String getId() {
@@ -99,20 +166,20 @@ public class GetBusinessModel implements Serializable {
             this.id = id;
         }
 
+        public String getOrder_online() {
+            return order_online;
+        }
+
+        public void setOrder_online(String order_online) {
+            this.order_online = order_online;
+        }
+
         public String getBusiness_code() {
             return business_code;
         }
 
         public void setBusiness_code(String business_code) {
             this.business_code = business_code;
-        }
-
-        public String getIs_verified() {
-            return is_verified;
-        }
-
-        public void setIs_verified(String is_verified) {
-            this.is_verified = is_verified;
         }
 
         public String getAddress() {
@@ -235,6 +302,14 @@ public class GetBusinessModel implements Serializable {
             this.record_statusid = record_statusid;
         }
 
+        public String getIs_verified() {
+            return is_verified;
+        }
+
+        public void setIs_verified(String is_verified) {
+            this.is_verified = is_verified;
+        }
+
         public String getCreated_at() {
             return created_at;
         }
@@ -251,20 +326,12 @@ public class GetBusinessModel implements Serializable {
             this.updated_at = updated_at;
         }
 
-        public String getType_id() {
-            return type_id;
+        public String getIs_enquiry_available() {
+            return is_enquiry_available;
         }
 
-        public void setType_id(String type_id) {
-            this.type_id = type_id;
-        }
-
-        public String getSub_type_id() {
-            return sub_type_id;
-        }
-
-        public void setSub_type_id(String sub_type_id) {
-            this.sub_type_id = sub_type_id;
+        public void setIs_enquiry_available(String is_enquiry_available) {
+            this.is_enquiry_available = is_enquiry_available;
         }
 
         public String getCreated_by() {
@@ -281,14 +348,6 @@ public class GetBusinessModel implements Serializable {
 
         public void setUpdated_by(String updated_by) {
             this.updated_by = updated_by;
-        }
-
-        public String getSubtype_description() {
-            return subtype_description;
-        }
-
-        public void setSubtype_description(String subtype_description) {
-            this.subtype_description = subtype_description;
         }
 
         public String getType_description() {
@@ -315,8 +374,8 @@ public class GetBusinessModel implements Serializable {
             }
         }
 
-        public void setUserIsFavourite(String userIsFavourite) {
-            UserIsFavourite = userIsFavourite;
+        public void setUserIsFavourite(String UserIsFavourite) {
+            this.UserIsFavourite = UserIsFavourite;
         }
 
         public String getImage_url() {
@@ -328,11 +387,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getBank_id() {
-            if (bank_id != null) {
-                return bank_id;
-            } else {
-                return "";
-            }
+            return bank_id;
         }
 
         public void setBank_id(String bank_id) {
@@ -340,11 +395,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getAccount_holder_name() {
-            if (account_holder_name != null) {
-                return account_holder_name;
-            } else {
-                return "";
-            }
+            return account_holder_name;
         }
 
         public void setAccount_holder_name(String account_holder_name) {
@@ -352,11 +403,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getBank_alias() {
-            if (bank_alias != null) {
-                return bank_alias;
-            } else {
-                return "";
-            }
+            return bank_alias;
         }
 
         public void setBank_alias(String bank_alias) {
@@ -364,11 +411,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getBank_name() {
-            if (bank_name != null) {
-                return bank_name;
-            } else {
-                return "";
-            }
+            return bank_name;
         }
 
         public void setBank_name(String bank_name) {
@@ -376,11 +419,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getIfsc_code() {
-            if (ifsc_code != null) {
-                return ifsc_code;
-            } else {
-                return "";
-            }
+            return ifsc_code;
         }
 
         public void setIfsc_code(String ifsc_code) {
@@ -388,11 +427,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getAccount_no() {
-            if (account_no != null) {
-                return account_no;
-            } else {
-                return "";
-            }
+            return account_no;
         }
 
         public void setAccount_no(String account_no) {
@@ -400,11 +435,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getBank_status() {
-            if (bank_status != null) {
-                return bank_status;
-            } else {
-                return "";
-            }
+            return bank_status;
         }
 
         public void setBank_status(String bank_status) {
@@ -412,11 +443,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getTax_id() {
-            if (tax_id != null) {
-                return tax_id;
-            } else {
-                return "";
-            }
+            return tax_id;
         }
 
         public void setTax_id(String tax_id) {
@@ -424,11 +451,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getTax_name() {
-            if (tax_name != null) {
-                return tax_name;
-            } else {
-                return "";
-            }
+            return tax_name;
         }
 
         public void setTax_name(String tax_name) {
@@ -436,11 +459,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getTax_alias() {
-            if (tax_alias != null) {
-                return tax_alias;
-            } else {
-                return "";
-            }
+            return tax_alias;
         }
 
         public void setTax_alias(String tax_alias) {
@@ -448,11 +467,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getPan_number() {
-            if (pan_number != null) {
-                return pan_number;
-            } else {
-                return "";
-            }
+            return pan_number;
         }
 
         public void setPan_number(String pan_number) {
@@ -460,11 +475,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getGst_number() {
-            if (gst_number != null) {
-                return gst_number;
-            } else {
-                return "";
-            }
+            return gst_number;
         }
 
         public void setGst_number(String gst_number) {
@@ -472,11 +483,7 @@ public class GetBusinessModel implements Serializable {
         }
 
         public String getTax_status() {
-            if (tax_status != null) {
-                return tax_status;
-            } else {
-                return "";
-            }
+            return tax_status;
         }
 
         public void setTax_status(String tax_status) {
@@ -495,28 +502,40 @@ public class GetBusinessModel implements Serializable {
             this.is_visible = is_visible;
         }
 
-        public String getOffer_count() {
-            if (offer_count != null) {
-                return offer_count;
+        public String getIs_pick_up_available() {
+            return is_pick_up_available;
+        }
+
+        public void setIs_pick_up_available(String is_pick_up_available) {
+            this.is_pick_up_available = is_pick_up_available;
+        }
+
+        public String getIs_home_delivery_available() {
+            return is_home_delivery_available;
+        }
+
+        public void setIs_home_delivery_available(String is_home_delivery_available) {
+            this.is_home_delivery_available = is_home_delivery_available;
+        }
+
+        public String getCan_book_order() {
+            if (can_book_order != null) {
+                return can_book_order;
             } else {
                 return "0";
             }
         }
 
-        public void setOffer_count(String offer_count) {
-            this.offer_count = offer_count;
+        public void setCan_book_order(String can_book_order) {
+            this.can_book_order = can_book_order;
         }
 
-        public String getOrder_online() {
-            if (order_online != null) {
-                return order_online;
-            } else {
-                return "";
-            }
+        public String getType_id() {
+            return type_id;
         }
 
-        public void setOrder_online(String order_online) {
-            this.order_online = order_online;
+        public void setType_id(String type_id) {
+            this.type_id = type_id;
         }
 
         public String getAvg_rating() {
@@ -559,28 +578,16 @@ public class GetBusinessModel implements Serializable {
             this.total_number_review = total_number_review;
         }
 
-        public ArrayList<ArrayList<MobilesBean>> getMobiles() {
-            return mobiles;
+        public String getOffer_count() {
+            if (offer_count != null) {
+                return offer_count;
+            } else {
+                return "0";
+            }
         }
 
-        public void setMobiles(ArrayList<ArrayList<MobilesBean>> mobiles) {
-            this.mobiles = mobiles;
-        }
-
-        public ArrayList<ArrayList<LandlineBean>> getLandline() {
-            return landline;
-        }
-
-        public void setLandline(ArrayList<ArrayList<LandlineBean>> landline) {
-            this.landline = landline;
-        }
-
-        public ArrayList<ArrayList<TagBean>> getTag() {
-            return tag;
-        }
-
-        public void setTag(ArrayList<ArrayList<TagBean>> tag) {
-            this.tag = tag;
+        public void setOffer_count(String offer_count) {
+            this.offer_count = offer_count;
         }
 
         public boolean isChecked() {
@@ -591,20 +598,103 @@ public class GetBusinessModel implements Serializable {
             isChecked = checked;
         }
 
-        public String getCan_book_order() {
-            if (can_book_order != null) {
-                return can_book_order;
+        public List<List<MobilesBean>> getMobiles() {
+            return mobiles;
+        }
+
+        public void setMobiles(List<List<MobilesBean>> mobiles) {
+            this.mobiles = mobiles;
+        }
+
+        public List<List<LandlineBean>> getLandline() {
+            return landline;
+        }
+
+        public void setLandline(List<List<LandlineBean>> landline) {
+            this.landline = landline;
+        }
+
+        public List<List<SubCategoriesBean>> getSub_categories() {
+            return sub_categories;
+        }
+
+        public void setSub_categories(List<List<SubCategoriesBean>> sub_categories) {
+            this.sub_categories = sub_categories;
+        }
+
+        public List<List<TagBean>> getTag() {
+            return tag;
+        }
+
+        public String getTypeSubTypeName() {
+            StringBuilder subTypeNameSb = new StringBuilder();
+            String subTypeNameStr = "";
+
+            for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0)) {
+                subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(" | ");
+            }
+            subTypeNameStr = subTypeNameSb.toString();
+            if (!subTypeNameStr.equals(""))
+                subTypeNameStr = subTypeNameStr.substring(0, subTypeNameStr.length() - 3);
+
+            if (!getType_description().trim().isEmpty() && !subTypeNameStr.trim().isEmpty()) {
+                return getType_description() + " | " + subTypeNameStr;
+            } else if (getType_description().trim().isEmpty() && subTypeNameStr.trim().isEmpty()) {
+                return "";
+            } else if (!getType_description().trim().isEmpty() && subTypeNameStr.trim().isEmpty()) {
+                return getType_description();
+            } else if (getType_description().trim().isEmpty() && !subTypeNameStr.trim().isEmpty()) {
+                return subTypeNameStr;
             } else {
-                return "0";
+                return "";
+            }
+
+        }
+
+        public String getAddressCityPincode() {
+            if (!getAddress().trim().isEmpty()) {
+                return getAddress().trim();
+            } else if (getAddress().trim().isEmpty() && !getCity().trim().isEmpty() && !getPincode().trim().isEmpty()) {
+                return getCity().trim().isEmpty() + ", " + getPincode().trim().isEmpty();
+            } else if (getAddress().trim().isEmpty() && !getCity().trim().isEmpty() && getPincode().trim().isEmpty()) {
+                return getCity().trim();
+            } else if (getAddress().trim().isEmpty() && getCity().trim().isEmpty() && !getPincode().trim().isEmpty()) {
+                return getPincode().trim();
+            } else if (getAddress().trim().isEmpty() && getCity().trim().isEmpty() && getPincode().trim().isEmpty()) {
+                return "";
+            } else {
+                return "";
             }
         }
 
-        public void setCan_book_order(String can_book_order) {
-            this.can_book_order = can_book_order;
+        public List<String> getSubTypesTagsList(String type) {   //    type == 1 (return subtype and tags)  type == 2 (return tags only)
+            List<String> list = new ArrayList<>();
+
+            if (getTag().get(0) != null)
+                if (getTag().get(0).size() > 0)
+                    for (GetBusinessModel.ResultBean.TagBean tags : getTag().get(0))
+                        if (!tags.getTag_name().trim().equals(""))
+                            list.add(tags.getTag_name());
+
+            if (type.equals("1"))
+                if (getSub_categories().get(0) != null)
+                    if (getSub_categories().get(0).size() > 0)
+                        for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0))
+                            list.add(subCategoriesBean.getSubtype_description());
+
+            return list;
         }
 
+        public void setTag(List<List<TagBean>> tag) {
+            this.tag = tag;
+        }
 
         public static class MobilesBean implements Serializable {
+            /**
+             * id : 19
+             * mobile_number : 8143818678
+             * country_code : +91
+             */
 
             private String id;
             private String mobile_number;
@@ -648,6 +738,11 @@ public class GetBusinessModel implements Serializable {
         }
 
         public static class LandlineBean implements Serializable {
+            /**
+             * id : 19
+             * landline_number : 8986494659
+             * country_code : +213
+             */
 
             private String id;
             private String landline_number;
@@ -690,7 +785,39 @@ public class GetBusinessModel implements Serializable {
             }
         }
 
+        public static class SubCategoriesBean implements Serializable {
+            /**
+             * sub_type_id : 55
+             * subtype_description : Dealer/Distributor
+             */
+
+            private String sub_type_id;
+            private String subtype_description;
+
+            public String getSub_type_id() {
+                return sub_type_id;
+            }
+
+            public void setSub_type_id(String sub_type_id) {
+                this.sub_type_id = sub_type_id;
+            }
+
+            public String getSubtype_description() {
+                return subtype_description;
+            }
+
+            public void setSubtype_description(String subtype_description) {
+                this.subtype_description = subtype_description;
+            }
+        }
+
         public static class TagBean implements Serializable {
+            /**
+             * id : 33
+             * tag_id : 716
+             * tag_name : fruits
+             * is_approved : 1
+             */
 
             private String id;
             private String tag_id;
@@ -705,6 +832,14 @@ public class GetBusinessModel implements Serializable {
                 this.id = id;
             }
 
+            public String getTag_id() {
+                return tag_id;
+            }
+
+            public void setTag_id(String tag_id) {
+                this.tag_id = tag_id;
+            }
+
             public String getTag_name() {
                 if (tag_name == null) {
                     return "";
@@ -715,14 +850,6 @@ public class GetBusinessModel implements Serializable {
 
             public void setTag_name(String tag_name) {
                 this.tag_name = tag_name;
-            }
-
-            public String getTag_id() {
-                return tag_id;
-            }
-
-            public void setTag_id(String tag_id) {
-                this.tag_id = tag_id;
             }
 
             public String getIs_approved() {

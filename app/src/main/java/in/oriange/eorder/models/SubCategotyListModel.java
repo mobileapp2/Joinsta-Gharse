@@ -20,6 +20,8 @@ public class SubCategotyListModel {
 
     private String created_by;
 
+    private boolean isChecked;
+
     public String getUpdated_at() {
         return updated_at;
     }
@@ -92,4 +94,11 @@ public class SubCategotyListModel {
         this.created_by = created_by;
     }
 
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
 }

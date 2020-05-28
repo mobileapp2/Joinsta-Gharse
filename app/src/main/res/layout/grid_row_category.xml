@@ -27,7 +27,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
-                android:padding="7dp"
                 android:src="@drawable/img_dummy_1" />
 
             <TextView

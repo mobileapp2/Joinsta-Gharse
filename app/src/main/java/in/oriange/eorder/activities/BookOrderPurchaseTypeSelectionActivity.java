@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,7 +75,7 @@ public class BookOrderPurchaseTypeSelectionActivity extends AppCompatActivity {
     private UserSessionManager session;
     private String userId, businessOwnerId, orderType, orderText = "", customerBusinessId = "", orderImageArray = "";
 
-    public static ArrayList<GetBusinessModel.ResultBean> businessList;
+    public static List<GetBusinessModel.ResultBean> businessList;
     private GetBusinessModel.ResultBean businessDetails;
     private LocalBroadcastManager localBroadcastManager;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
@@ -292,8 +293,8 @@ public class BookOrderPurchaseTypeSelectionActivity extends AppCompatActivity {
 
             holder.tv_heading.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
 
-            if (!searchDetails.getSubtype_description().isEmpty())
-                holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
+            if (!searchDetails.getTypeSubTypeName().isEmpty())
+                holder.tv_subheading.setText(searchDetails.getTypeSubTypeName());
             else
                 holder.tv_subheading.setText(searchDetails.getType_description());
 

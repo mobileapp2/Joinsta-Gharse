@@ -238,22 +238,22 @@ public class HomeFragment extends Fragment {
                         if (categotyList.size() > 0) {
 
                             for (CategotyListModel categoryDetails : categotyList) {
-//                                if (categoryDetails.getIs_popular().equals("1"))
-                                popularCategotyList.add(categoryDetails);
-//                                else if (categoryDetails.getIs_popular().equals("0"))
-//                                    mainCategotyList.add(categoryDetails);
+                                if (categoryDetails.getIs_popular().equals("1"))
+                                    popularCategotyList.add(categoryDetails);
+                                else if (categoryDetails.getIs_popular().equals("0"))
+                                    mainCategotyList.add(categoryDetails);
                             }
 
                             if (popularCategotyList.size() != 0) {
-                                rv_main_category.setAdapter(new CategoryGridAdapter(context, popularCategotyList, categoryTypeId));
+//                                rv_main_category.setAdapter(new CategoryGridAdapter(context, popularCategotyList, categoryTypeId));
                                 rv_popular_category.setAdapter(new CategoryAdapter(context, popularCategotyList, categoryTypeId));
                             } else
                                 ll_popular_categories.setVisibility(View.GONE);
 
-//                            if (mainCategotyList.size() != 0)
-//                                rv_main_category.setAdapter(new CategoryGridAdapter(context, mainCategotyList, categoryTypeId));
-//                            else
-//                                ll_main_categories.setVisibility(View.GONE);
+                            if (mainCategotyList.size() != 0)
+                                rv_main_category.setAdapter(new CategoryGridAdapter(context, mainCategotyList, categoryTypeId));
+                            else
+                                ll_main_categories.setVisibility(View.GONE);
                         }
                     } else {
                         ll_popular_categories.setVisibility(View.GONE);

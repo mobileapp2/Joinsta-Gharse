@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -27,9 +28,23 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="Add Business"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:text="Save"
+                android:textAllCaps="false"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:strokeColor="@color/colorPrimary" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -88,71 +103,71 @@
                     android:orientation="vertical"
                     android:padding="5dp">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Business Details"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:layout_marginTop="5dp"
+                        android:orientation="vertical">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Name of Business *" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Name of Business"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        <EditText
+                            android:id="@+id/edt_name"
+                            style="@style/EditableEditText"
+                            android:inputType="textCapWords" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_nature"
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_arrowdown"
-                        android:focusable="false"
-                        android:hint="Nature of Business (e.g. Manufacturing)"
-                        android:longClickable="false"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        android:orientation="vertical">
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_subtype"
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Nature of Business *" />
+
+                        <EditText
+                            android:id="@+id/edt_nature"
+                            style="@style/SelectableEditText"
+                            android:hint="Select Nature of Business" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_arrowdown"
-                        android:focusable="false"
-                        android:hint="Subtype (e.g. Furniture)"
-                        android:longClickable="false"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        android:orientation="vertical">
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_designation"
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Subtype" />
+
+                        <EditText
+                            android:id="@+id/edt_subtype"
+                            style="@style/SelectableEditText"
+                            android:hint="Select Subtype" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_arrowdown"
-                        android:focusable="false"
-                        android:hint="Designation"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:longClickable="false"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Designation" />
+
+                        <EditText
+                            android:id="@+id/edt_designation"
+                            style="@style/SelectableEditText"
+                            android:hint="Select Designation" />
+
+                    </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -171,40 +186,35 @@
                     android:orientation="vertical"
                     android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Add Tags (Keywords of Product/Service)"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <AutoCompleteTextView
-                            android:id="@+id/edt_tag"
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.8"
-                            android:hint="Tag"
-                            android:inputType="textWebEditText|textNoSuggestions"
-                            android:textSize="16sp" />
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Tags" />
+
+                            <AutoCompleteTextView
+                                android:id="@+id/edt_tag"
+                                style="@style/EditableEditText" />
+
+                        </LinearLayout>
 
                         <android.widget.Button
                             android:id="@+id/btn_add_tag"
                             style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.2"
-                            android:text="ADD" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:text="Add"
+                            android:textAllCaps="false" />
 
                     </LinearLayout>
 
@@ -218,13 +228,13 @@
                         app:container_border_width="0dp"
                         app:container_enable_drag="true"
                         app:horizontal_interval="10dp"
-                        app:tag_background_color="@color/colorPrimary"
-                        app:tag_border_color="@color/colorPrimary"
+                        app:tag_background_color="@color/lightGray"
+                        app:tag_border_color="@color/lightGray"
                         app:tag_border_width="1dp"
                         app:tag_clickable="true"
-                        app:tag_cross_color="@color/white"
+                        app:tag_cross_color="@color/darkGray"
                         app:tag_enable_cross="true"
-                        app:tag_text_color="@color/white"
+                        app:tag_text_color="@color/darkGray"
                         app:tag_text_size="16sp"
                         app:tag_theme="none"
                         app:vertical_interval="10dp" />
@@ -246,73 +256,20 @@
                     android:orientation="vertical"
                     android:padding="5dp">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Contact Details"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
-
                     <LinearLayout
                         android:id="@+id/ll_mobile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-
-                            <TextView
-                                android:id="@+id/tv_countrycode_mobile"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.15"
-                                android:gravity="center"
-                                android:text="+91"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
-
-                            <View
-                                android:layout_width="0.7dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginBottom="10dp"
-                                android:background="@color/mediumGray" />
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/edt_mobile"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.75"
-                                android:hint="Mobile"
-                                android:inputType="number"
-                                android:maxLength="14"
-                                android:textSize="16sp"
-                                app:met_floatingLabel="highlight"
-                                app:met_textColorHint="@color/darkGray"
-                                app:met_underlineColor="@color/mediumGray" />
-
-                            <ImageButton
-                                android:id="@+id/ib_add_mobile"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical|end"
-                                android:layout_weight="0.1"
-                                android:background="?attr/selectableItemBackgroundBorderless"
-                                android:src="@drawable/icon_add"
-                                android:tint="@color/black" />
-
-                        </LinearLayout>
+                        <android.widget.Button
+                            android:id="@+id/btn_add_mobile"
+                            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="end"
+                            android:text="Add Mobile"
+                            android:textAllCaps="false" />
 
                     </LinearLayout>
 
@@ -322,358 +279,48 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_countrycode_landline"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.15"
-                                android:gravity="center"
-                                android:text="+91"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
-
-                            <View
-                                android:layout_width="0.7dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginBottom="10dp"
-                                android:background="@color/mediumGray" />
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/edt_landline"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.75"
-                                android:hint="Landline"
-                                android:inputType="number"
-                                android:maxLength="14"
-                                android:textSize="16sp"
-                                app:met_floatingLabel="highlight"
-                                app:met_textColorHint="@color/darkGray"
-                                app:met_underlineColor="@color/mediumGray" />
-
-                            <ImageButton
-                                android:id="@+id/ib_add_landline"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_gravity="center_vertical|end"
-                                android:layout_weight="0.1"
-                                android:background="?attr/selectableItemBackgroundBorderless"
-                                android:src="@drawable/icon_add"
-                                android:tint="@color/black" />
-
-                        </LinearLayout>
-
+                        <android.widget.Button
+                            android:id="@+id/btn_add_landline"
+                            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="end"
+                            android:text="Add Landline"
+                            android:textAllCaps="false" />
 
                     </LinearLayout>
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Email"
-                        android:inputType="textEmailAddress|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_website"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Website"
-                        android:inputType="textWebEditText|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_order_online"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Order Online"
-                        android:inputType="textWebEditText|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        android:visibility="gone"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="Address Details"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_select_area"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/icon_current_location"
-                        android:focusable="false"
-                        android:hint="Select Your Area"
-                        android:longClickable="false"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_address"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Address"
-                        android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_pincode"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Pincode"
-                        android:inputType="number"
-                        android:maxLength="6"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_city"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="City"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_district"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="District"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_state"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="State"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_country"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Country"
-                        android:inputType="textCapWords|textNoSuggestions"
-                        android:textColorHint="@color/colorAccent"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
-
-                <Switch
-                    android:id="@+id/sw_isvisible"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:padding="5dp"
-                    android:text="Is visible"
-                    android:textSize="16sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_texbank_notice"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="@color/colorPrimaryLight"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:longClickable="false"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:paddingBottom="5dp"
-                    android:text="Tax and bank details are confidential and are not visible to anyone."
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.85"
-                            android:padding="5dp"
-                            android:text="Tax Details (Optional)"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            style="@style/TitleTextView"
+                            android:text="Email" />
 
-                        <ImageButton
-                            android:id="@+id/imv_show_hide_tax"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical|end"
-                            android:layout_weight="0.15"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/icon_dropdown"
-                            android:tint="@color/black" />
+                        <EditText
+                            android:id="@+id/edt_email"
+                            style="@style/EditableEditText"
+                            android:inputType="textEmailAddress" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/ll_tax_details"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:orientation="vertical">
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary" />
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Website" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_tax_alias"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Alias"
-                            android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_pan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                            android:hint="PAN Number"
-                            android:inputType="textCapCharacters"
-                            android:maxLength="14"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_helperText="e.g - AAAPL1234C"
-                            app:met_helperTextAlwaysShown="true"
-                            app:met_helperTextColor="@color/helper_color"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_gst"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                            android:hint="GST Number"
-                            android:inputType="textCapCharacters"
-                            android:maxLength="15"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_helperText="e.g - 22AAAAA0000A1Z5"
-                            app:met_helperTextAlwaysShown="true"
-                            app:met_helperTextColor="@color/helper_color"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                        <EditText
+                            android:id="@+id/edt_website"
+                            style="@style/EditableEditText"
+                            android:inputType="textWebEditText|textNoSuggestions" />
 
                     </LinearLayout>
-
 
                 </LinearLayout>
 
@@ -682,7 +329,6 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 app:cardBackgroundColor="@android:color/white"
                 app:cardElevation="2dp"
                 app:cardUseCompatPadding="true">
@@ -693,120 +339,152 @@
                     android:orientation="vertical"
                     android:padding="5dp">
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_select"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/icon_current_location"
+                        android:text="Select From Map"
+                        android:textAllCaps="false"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        app:backgroundTint="@color/white"
+                        app:strokeColor="@color/colorPrimary" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.85"
-                            android:padding="5dp"
-                            android:text="Bank Details (Optional)"
-                            android:textColor="@color/black"
-                            android:textSize="18sp" />
+                            style="@style/TitleTextView"
+                            android:text="Address" />
 
-                        <ImageButton
-                            android:id="@+id/imv_show_hide_bank"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center_vertical|end"
-                            android:layout_weight="0.15"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/icon_dropdown"
-                            android:tint="@color/black" />
+                        <EditText
+                            android:id="@+id/edt_address"
+                            style="@style/EditableEditText"
+                            android:inputType="textMultiLine|textCapSentences" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/ll_bank_details"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
+                        android:orientation="vertical">
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
-                            android:background="@color/colorPrimary" />
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Pincode" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_accholdername"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Account Holder Name"
-                            android:inputType="textNoSuggestions|textCapWords"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_bank_alias"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Alias"
-                            android:inputType="textCapSentences|textMultiLine|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_bank_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Bank Name"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_ifsc"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
-                            android:hint="IFSC Code"
-                            android:inputType="textCapCharacters"
-                            android:maxLength="11"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_helperText="e.g - IFSC1234567"
-                            app:met_helperTextAlwaysShown="true"
-                            app:met_helperTextColor="@color/helper_color"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_account_no"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Account Number"
+                        <EditText
+                            android:id="@+id/edt_pincode"
+                            style="@style/EditableEditText"
                             android:inputType="number"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:maxLength="6" />
 
                     </LinearLayout>
 
-                    <android.widget.Button
-                        android:id="@+id/btn_save"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="0.5"
-                        android:background="@drawable/button_background_filled"
-                        android:text="Save"
-                        android:textColor="@color/white"
-                        android:visibility="gone" />
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="City *" />
+
+                        <EditText
+                            android:id="@+id/edt_city"
+                            style="@style/EditableEditText"
+                            android:inputType="textCapWords" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="District" />
+
+                        <EditText
+                            android:id="@+id/edt_district"
+                            style="@style/EditableEditText"
+                            android:inputType="textCapWords" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="State" />
+
+                        <EditText
+                            android:id="@+id/edt_state"
+                            style="@style/EditableEditText"
+                            android:inputType="textCapWords" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Country" />
+
+                        <EditText
+                            android:id="@+id/edt_country"
+                            style="@style/EditableEditText"
+                            android:inputType="textCapWords" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <CheckBox
+                        android:id="@+id/cb_is_enquiry_available"
+                        style="@style/CheckBox"
+                        android:text="Is enquiry available?" />
+
+                    <CheckBox
+                        android:id="@+id/cb_is_pick_up_available"
+                        style="@style/CheckBox"
+                        android:text="Is pick up at store available?" />
+
+                    <CheckBox
+                        android:id="@+id/cb_is_home_delivery_available"
+                        style="@style/CheckBox"
+                        android:text="Is home delivery available?" />
+
+                    <CheckBox
+                        android:id="@+id/cb_show_in_search"
+                        style="@style/CheckBox"
+                        android:text="Show business profile in search section?" />
 
                 </LinearLayout>
 

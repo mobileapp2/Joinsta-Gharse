@@ -10,8 +10,10 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.eorder.R;
 import in.oriange.eorder.activities.ViewMyBizDetailsActivity;
 import in.oriange.eorder.models.GetBusinessModel;
@@ -39,20 +41,23 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         final int position = holder.getAdapterPosition();
         final GetBusinessModel.ResultBean searchDetails = resultArrayList.get(position);
 
-        holder.tv_heading.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
+        holder.tv_business_name.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
+        holder.tv_address.setText(searchDetails.getAddressCityPincode());
 
-        if (!searchDetails.getSubtype_description().isEmpty())
-            holder.tv_subheading.setText(searchDetails.getType_description() + ", " + searchDetails.getSubtype_description());
-        else
-            holder.tv_subheading.setText(searchDetails.getType_description());
+        List<String> tagsList = searchDetails.getSubTypesTagsList("1");
+        List<String> topFiveTagsList = new ArrayList<>();
 
-        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, ViewMyBizDetailsActivity.class)
-                        .putExtra("searchDetails", searchDetails));
-            }
-        });
+        try {
+            for (int i = 0; i < 5; i++)
+                topFiveTagsList.add(tagsList.get(i));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        holder.container_tags.setTags(topFiveTagsList);
+
+        holder.cv_mainlayout.setOnClickListener(v -> context.startActivity(new Intent(context, ViewMyBizDetailsActivity.class)
+                .putExtra("searchDetails", searchDetails)));
 
     }
 
@@ -64,13 +69,15 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_heading, tv_subheading;
+        private TagContainerLayout container_tags;
+        private TextView tv_business_name, tv_address;
 
         public MyViewHolder(View view) {
             super(view);
-            tv_heading = view.findViewById(R.id.tv_heading);
-            tv_subheading = view.findViewById(R.id.tv_subheading);
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+            container_tags = view.findViewById(R.id.container_tags);
+            tv_business_name = view.findViewById(R.id.tv_business_name);
+            tv_address = view.findViewById(R.id.tv_address);
         }
     }
 

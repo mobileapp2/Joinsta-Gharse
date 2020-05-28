@@ -11,6 +11,9 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import in.oriange.eorder.R;
@@ -54,23 +57,23 @@ public class CategoryGridAdapter extends RecyclerView.Adapter<CategoryGridAdapte
             }
         });
 
-//        if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
-//            Picasso.with(context)
-//                    .load(categotyDetails.getCategory_icon().trim())
-//                    .into(holder.imv_category, new Callback() {
-//                        @Override
-//                        public void onSuccess() {
-//
-//                        }
-//
-//                        @Override
-//                        public void onError() {
-//                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-//                        }
-//                    });
-//        } else {
-//            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-//        }
+        if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
+            Picasso.with(context)
+                    .load(categotyDetails.getCategory_icon().trim())
+                    .into(holder.imv_category, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+                        }
+                    });
+        } else {
+            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+        }
 
     }
 

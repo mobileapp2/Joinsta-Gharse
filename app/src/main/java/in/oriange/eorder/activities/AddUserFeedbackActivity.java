@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -54,7 +55,7 @@ public class AddUserFeedbackActivity extends AppCompatActivity {
     private MaterialEditText edt_mobile;
     private EditText edt_feedback;
     private RatingBar rb_feedbackstars;
-    private Button btn_save;
+    private MaterialButton btn_save;
 
     private ArrayList<ContryCodeModel> countryCodeList;
     private String userId, name, mobile, countryCode;

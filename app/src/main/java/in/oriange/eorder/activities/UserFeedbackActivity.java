@@ -34,6 +34,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class UserFeedbackActivity extends AppCompatActivity {
 
     private Context context;
@@ -63,7 +65,7 @@ public class UserFeedbackActivity extends AppCompatActivity {
     private void init() {
         context = UserFeedbackActivity.this;
         session = new UserSessionManager(context);
-
+        changeStatusBar(context, getWindow());
         btn_add = findViewById(R.id.btn_add);
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);

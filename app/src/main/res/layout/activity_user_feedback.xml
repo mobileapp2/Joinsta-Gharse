@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -28,7 +28,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="Feedback"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
 
@@ -91,13 +91,8 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:src="@drawable/icon_add"
-            android:tint="@color/white" />
+            style="@style/FloatingActionButton"
+            android:src="@drawable/icon_add" />
 
     </FrameLayout>
 
