@@ -194,7 +194,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                            android:layout_weight="0.85"
                             android:orientation="vertical">
 
                             <TextView
@@ -210,9 +210,10 @@
                         <android.widget.Button
                             android:id="@+id/btn_add_tag"
                             style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                            android:layout_width="wrap_content"
-                            android:layout_height="40dp"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:layout_weight="0.15"
                             android:text="Add"
                             android:textAllCaps="false" />
 

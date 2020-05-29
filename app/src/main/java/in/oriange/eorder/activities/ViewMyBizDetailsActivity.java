@@ -256,55 +256,53 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
     }
 
     private void setEventHandler() {
-        imvShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shareDetails();
+        imvShare.setOnClickListener(v -> shareDetails());
+
+        tvEmail.setOnClickListener(v -> {
+            if (!searchDetails.getEmail().trim().isEmpty()) {
+                sendEmail();
+            } else {
+                Utilities.showMessage("Email not added", context, 2);
             }
         });
 
-        tvEmail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!searchDetails.getEmail().trim().isEmpty()) {
-                    sendEmail();
-                } else {
-                    Utilities.showMessage("Email not added", context, 2);
-                }
+        tvWebsite.setOnClickListener(v -> {
+            String url = searchDetails.getWebsite();
+
+            if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                url = "http://" + url;
             }
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
         });
 
-        tvWebsite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = searchDetails.getWebsite();
-
-                if (!url.startsWith("https://") || !url.startsWith("http://")) {
-                    url = "http://" + url;
-                }
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
+        tvTotalRating.setOnClickListener(v -> {
+            if (Utilities.isNetworkAvailable(context))
+                new GetRatingsAndReviews().execute("1", searchDetails.getId());
+            else
+                Utilities.showMessage("Please check your internet connection", context, 2);
         });
 
-        tvTotalRating.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context))
-                    new GetRatingsAndReviews().execute("1", searchDetails.getId());
-                else
-                    Utilities.showMessage("Please check your internet connection", context, 2);
-            }
-        });
+//        cvAddOffer.setOnClickListener(v ->
+//                startActivity(new Intent(context, BookOrderBusinessOwnerOrdersActivity.class)
+//                        .putExtra("businessId", searchDetails.getId()))
+//        );
 
-        cvViewOrders.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        cvViewOffer.setOnClickListener(v ->
+//                startActivity(new Intent(context, BookOrderBusinessOwnerOrdersActivity.class)
+//                        .putExtra("businessId", searchDetails.getId()))
+//        );
+
+        cvViewOrders.setOnClickListener(v ->
                 startActivity(new Intent(context, BookOrderBusinessOwnerOrdersActivity.class)
-                        .putExtra("businessId", searchDetails.getId()));
-            }
-        });
+                        .putExtra("businessId", searchDetails.getId()))
+        );
+
+        cvProducts.setOnClickListener(v ->
+                startActivity(new Intent(context, BusinessProductsActivity.class)
+                        .putExtra("businessId", searchDetails.getId()))
+        );
 
     }
 

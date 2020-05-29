@@ -65,6 +65,7 @@ import in.oriange.eorder.utilities.ParamsPojo;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.setPaddingForView;
 
 public class AddProductActivity extends AppCompatActivity {
@@ -131,7 +132,7 @@ public class AddProductActivity extends AppCompatActivity {
         context = AddProductActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-
+        changeStatusBar(context, getWindow());
         rvImages.setLayoutManager(new GridLayoutManager(context, 3));
 
         imageList = new ArrayList<>();
@@ -377,7 +378,7 @@ public class AddProductActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
-            param.add(new ParamsPojo("type", "getProductCategories"));
+            param.add(new ParamsPojo("type", "getUnitOfMeasures"));
             res = APICall.FORMDATAAPICall(ApplicationConstants.MASTERAPI, param);
             return res.trim();
         }

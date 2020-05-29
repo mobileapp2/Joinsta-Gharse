@@ -174,7 +174,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                     for (BookOrderProductsListModel.ResultBean orderDetails : productsList) {
 
                         String orderToBeSearched = orderDetails.getName().toLowerCase() +
-                                orderDetails.getRemark().toLowerCase();
+                                orderDetails.getDescription().toLowerCase();
 
                         if (orderToBeSearched.contains(query.toString().toLowerCase())) {
                             searchedList.add(orderDetails);

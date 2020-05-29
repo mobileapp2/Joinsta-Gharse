@@ -192,26 +192,6 @@
 
             </LinearLayout>
 
-            <CheckBox
-                android:id="@+id/cb_is_in_stock"
-                style="@style/CheckBox"
-                android:text="Is product available in stock?" />
-
-            <CheckBox
-                android:id="@+id/cb_is_featured"
-                style="@style/CheckBox"
-                android:text="Is product featured?" />
-
-            <CheckBox
-                android:id="@+id/cb_is_show_in_list"
-                style="@style/CheckBox"
-                android:text="Show product in list?" />
-
-            <CheckBox
-                android:id="@+id/cb_is_inclusive_tax"
-                style="@style/CheckBox"
-                android:text="Is inclusive tax?" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -231,6 +211,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -245,6 +226,27 @@
                     android:inputType="text" />
 
             </LinearLayout>
+
+
+            <CheckBox
+                android:id="@+id/cb_is_in_stock"
+                style="@style/CheckBox"
+                android:text="Is product available in stock?" />
+
+            <CheckBox
+                android:id="@+id/cb_is_featured"
+                style="@style/CheckBox"
+                android:text="Is product featured?" />
+
+            <CheckBox
+                android:id="@+id/cb_is_show_in_list"
+                style="@style/CheckBox"
+                android:text="Show product in list?" />
+
+            <CheckBox
+                android:id="@+id/cb_is_inclusive_tax"
+                style="@style/CheckBox"
+                android:text="Is inclusive tax?" />
 
         </LinearLayout>
 

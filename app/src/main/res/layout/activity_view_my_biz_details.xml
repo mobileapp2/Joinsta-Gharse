@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -99,7 +100,8 @@
                             android:id="@+id/progressBar"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:layout_centerInParent="true" />
+                            android:layout_centerInParent="true"
+                            android:layout_margin="10dp" />
 
                         <ImageView
                             android:id="@+id/imv_share"
@@ -117,7 +119,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
                     android:layout_marginRight="5dp"
                     app:cardBackgroundColor="@color/white"
                     app:cardCornerRadius="5dp"
@@ -215,20 +216,17 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
                                 android:layout_marginRight="2.5dp"
                                 android:layout_weight="0.5"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                app:cardBackgroundColor="@color/orange"
-                                app:cardCornerRadius="5dp"
-                                app:cardElevation="2dp"
-                                app:cardUseCompatPadding="true">
+                                app:cardElevation="0dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:background="@drawable/bg_round_grey"
                                     android:orientation="horizontal"
-                                    android:padding="10dp"
-                                    android:weightSum="1">
+                                    android:padding="10dp">
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -237,17 +235,8 @@
                                         android:layout_weight="1"
                                         android:gravity="center"
                                         android:text="Add Offers"
-                                        android:textColor="@color/white"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold" />
-
-                                    <ImageView
-                                        android:layout_width="0dp"
-                                        android:layout_height="25dp"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.1"
-                                        android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:textColor="@color/colorPrimary"
+                                        android:textSize="16sp" />
 
                                 </LinearLayout>
 
@@ -258,20 +247,17 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="2.5dp"
+                                android:layout_marginTop="5dp"
                                 android:layout_marginRight="5dp"
                                 android:layout_weight="0.5"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                app:cardBackgroundColor="@color/orange"
-                                app:cardCornerRadius="5dp"
-                                app:cardElevation="2dp"
-                                app:cardUseCompatPadding="true">
+                                app:cardElevation="0dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:background="@drawable/bg_round_grey"
                                     android:orientation="horizontal"
-                                    android:padding="10dp"
-                                    android:weightSum="1">
+                                    android:padding="10dp">
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -280,17 +266,8 @@
                                         android:layout_weight="1"
                                         android:gravity="center"
                                         android:text="View Offers"
-                                        android:textColor="@color/white"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold" />
-
-                                    <ImageView
-                                        android:layout_width="0dp"
-                                        android:layout_height="25dp"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.1"
-                                        android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:textColor="@color/colorPrimary"
+                                        android:textSize="16sp" />
 
                                 </LinearLayout>
 
@@ -308,20 +285,18 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
                                 android:layout_marginRight="2.5dp"
+                                android:layout_marginBottom="5dp"
                                 android:layout_weight="0.5"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                app:cardBackgroundColor="@color/orange"
-                                app:cardCornerRadius="5dp"
-                                app:cardElevation="2dp"
-                                app:cardUseCompatPadding="true">
+                                app:cardElevation="0dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:background="@drawable/bg_round_grey"
                                     android:orientation="horizontal"
-                                    android:padding="10dp"
-                                    android:weightSum="1">
+                                    android:padding="10dp">
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -330,17 +305,8 @@
                                         android:layout_weight="1"
                                         android:gravity="center"
                                         android:text="View Orders"
-                                        android:textColor="@color/white"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold" />
-
-                                    <ImageView
-                                        android:layout_width="0dp"
-                                        android:layout_height="25dp"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.1"
-                                        android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:textColor="@color/colorPrimary"
+                                        android:textSize="16sp" />
 
                                 </LinearLayout>
 
@@ -351,20 +317,18 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="2.5dp"
+                                android:layout_marginTop="5dp"
                                 android:layout_marginRight="5dp"
+                                android:layout_marginBottom="5dp"
                                 android:layout_weight="0.5"
-                                android:foreground="?android:attr/selectableItemBackground"
-                                app:cardBackgroundColor="@color/orange"
-                                app:cardCornerRadius="5dp"
-                                app:cardElevation="2dp"
-                                app:cardUseCompatPadding="true">
+                                app:cardElevation="0dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
+                                    android:background="@drawable/bg_round_grey"
                                     android:orientation="horizontal"
-                                    android:padding="10dp"
-                                    android:weightSum="1">
+                                    android:padding="10dp">
 
                                     <TextView
                                         android:layout_width="0dp"
@@ -373,17 +337,8 @@
                                         android:layout_weight="1"
                                         android:gravity="center"
                                         android:text="Products"
-                                        android:textColor="@color/white"
-                                        android:textSize="16sp"
-                                        android:textStyle="bold" />
-
-                                    <ImageView
-                                        android:layout_width="0dp"
-                                        android:layout_height="25dp"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_weight="0.1"
-                                        android:src="@drawable/icon_arrowright"
-                                        android:tint="@color/white" />
+                                        android:textColor="@color/colorPrimary"
+                                        android:textSize="16sp" />
 
                                 </LinearLayout>
 
