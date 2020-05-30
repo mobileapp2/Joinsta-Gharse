@@ -27,7 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -42,6 +42,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -58,6 +59,8 @@ import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+import static in.oriange.eorder.utilities.Utilities.getCommaSeparatedNumber;
 
 public class BookOrderProductsListActivity extends AppCompatActivity {
 
@@ -79,6 +82,12 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     TextView tvCartCount;
     @BindView(R.id.fl_cart)
     FrameLayout flCart;
+    @BindView(R.id.ib_back)
+    ImageButton ibBack;
+    @BindView(R.id.cv_text)
+    CardView cvText;
+    @BindView(R.id.cv_image)
+    CardView cvImage;
 
     private Context context;
     private UserSessionManager session;
@@ -88,7 +97,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
 
-    private LocalBroadcastManager localBroadcastManager;
+    private LocalBroadcastManager localBroadcastManager, localBroadcastManager2;
     private int quantity = 1;
     private int sellingPrice, applicablePrice = 0;
 
@@ -108,12 +117,14 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     private void init() {
         context = BookOrderProductsListActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
+
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         pd.setMessage("Please wait ...");
         pd.setCancelable(false);
 
-//        rvProducts.setLayoutManager(new LinearLayoutManager(context));
-        rvProducts.setLayoutManager(new GridLayoutManager(context, 2));
+        rvProducts.setLayoutManager(new LinearLayoutManager(context));
+//        rvProducts.setLayoutManager(new GridLayoutManager(context, 2));
 
         productsList = new ArrayList<>();
         ordersList = new ArrayList<>();
@@ -145,6 +156,10 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderProductsListActivity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+
+        localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter2 = new IntentFilter("BookOrderProductsListActivityRefreshOrderList");
+        localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
     }
 
     private void setEventHandler() {
@@ -207,6 +222,13 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
+
+        cvText.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
+                .putExtra("businessOwnerId", businessOwnerId)));
+
+        cvImage.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeImageActivity.class)
+                .putExtra("businessOwnerId", businessOwnerId)));
+
     }
 
     private class GetAllProducts extends AsyncTask<String, Void, String> {
@@ -227,7 +249,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             obj.addProperty("type", "getallProducts");
             obj.addProperty("user_id", userId);
             obj.addProperty("business_id", businessOwnerId);
-            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, obj.toString());
+            res = APICall.JSONAPICall(ApplicationConstants.PRODUCTSAPI, obj.toString());
             return res.trim();
         }
 
@@ -327,7 +349,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.grid_book_order_products, parent, false);
+            View view = inflater.inflate(R.layout.list_row_book_order_products_v2, parent, false);
             return new MyViewHolder(view);
         }
 
@@ -364,49 +386,59 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             float maxRetailPrice = Float.parseFloat(productDetails.getMax_retail_price());
             float sellingPrice = Float.parseFloat(productDetails.getSelling_price());
 
+            if (productDetails.getIn_stock().equals("1"))
+                holder.tv_out_of_stock.setVisibility(View.GONE);
+            else
+                holder.btn_addtocart.setVisibility(View.GONE);
+
+
             if (sellingPrice != 0) {
                 holder.tv_no_price_available.setVisibility(View.GONE);
                 float savedAmount = maxRetailPrice - sellingPrice;
                 if (savedAmount <= 0) {
-                    holder.tv_selling_price.setText("₹ " + (int) sellingPrice);
+                    holder.tv_selling_price.setText("₹" + getCommaSeparatedNumber((int) sellingPrice));
                     holder.tv_max_retail_price.setVisibility(View.GONE);
                     holder.tv_precentage_off.setVisibility(View.GONE);
+                    holder.tv_you_save.setVisibility(View.GONE);
                 } else {
                     float divide = sellingPrice / maxRetailPrice;
                     int percent = (int) (divide * 100);
-                    holder.tv_selling_price.setText("₹ " + (int) sellingPrice);
-                    holder.tv_max_retail_price.setText(Html.fromHtml("<strike>₹ " + (int) maxRetailPrice + "</strike>"));
+                    holder.tv_selling_price.setText("₹" + getCommaSeparatedNumber((int) sellingPrice));
+                    holder.tv_max_retail_price.setText(Html.fromHtml("<strike>₹" + getCommaSeparatedNumber((int) maxRetailPrice) + "</strike>"));
                     holder.tv_precentage_off.setText(100 - percent + "% off");
+                    holder.tv_you_save.setText("You Save ₹" + getCommaSeparatedNumber((int) savedAmount));
                 }
             } else {
                 holder.ll_prices.setVisibility(View.GONE);
             }
 
-
-            holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
+            holder.tv_quantity.setText(String.valueOf(quantity[0]));
 
             holder.cv_mainlayout.setOnClickListener(v -> {
-                showProductDetailsDialog(productDetails);
+//                showProductDetailsDialog(productDetails);
+                startActivity(new Intent(context, BookOrderProductDetailsActivity.class)
+                        .putExtra("productDetails", productDetails)
+                        .putExtra("ordersList", (Serializable) ordersList)
+                        .putExtra("businessOwnerId", businessOwnerId));
             });
 
-            holder.btn_remove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (quantity[0] == 1) {
-                        return;
-                    }
-                    quantity[0] = quantity[0] - 1;
-                    holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
-
+            holder.btn_remove.setOnClickListener(v -> {
+                if (quantity[0] == 1) {
+                    return;
                 }
+                quantity[0] = quantity[0] - 1;
+                holder.tv_quantity.setText(String.valueOf(quantity[0]));
             });
 
             holder.btn_add.setOnClickListener(v -> {
                 quantity[0] = quantity[0] + 1;
-                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
+                holder.tv_quantity.setText(String.valueOf(quantity[0]));
             });
 
-            holder.btn_addtocart.setOnClickListener(v -> findValidOrderId(productDetails, quantity[0]));
+            holder.btn_addtocart.setOnClickListener(v -> {
+                if (productDetails.getIn_stock().equals("1"))
+                    findValidOrderId(productDetails, quantity[0]);
+            });
 
         }
 
@@ -421,7 +453,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             private ImageView imv_productimage;
             private LinearLayout ll_prices;
             private TextView tv_nopreview, tv_product_name, tv_selling_price, tv_max_retail_price,
-                    tv_precentage_off, tv_quantity, tv_no_price_available;
+                    tv_precentage_off, tv_quantity, tv_no_price_available, tv_you_save, tv_out_of_stock;
             private ImageButton btn_remove, btn_add;
             private Button btn_addtocart;
 
@@ -436,12 +468,258 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                 tv_max_retail_price = view.findViewById(R.id.tv_max_retail_price);
                 tv_precentage_off = view.findViewById(R.id.tv_precentage_off);
                 tv_no_price_available = view.findViewById(R.id.tv_no_price_available);
+                tv_you_save = view.findViewById(R.id.tv_you_save);
                 tv_quantity = view.findViewById(R.id.tv_quantity);
+                tv_out_of_stock = view.findViewById(R.id.tv_out_of_stock);
                 btn_remove = view.findViewById(R.id.btn_remove);
                 btn_add = view.findViewById(R.id.btn_add);
                 btn_addtocart = view.findViewById(R.id.btn_addtocart);
             }
         }
+    }
+
+    private void findValidOrderId(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
+        if (ordersList.size() == 0) {
+            addOrderJsonCreation(productDetails, quantity);
+        } else {
+            boolean isPendingOrderAvailable = false;
+
+            for (BookOrderGetMyOrdersModel.ResultBean orderDetails : ordersList) {
+                if (orderDetails.getStatus_details().size() == 1) {
+                    if (orderDetails.getStatus_details().get(0).getStatus().equals("1")) {
+                        if (orderDetails.getOwner_business_id().equals(businessOwnerId)) {
+                            isPendingOrderAvailable = true;
+                            updateOrderWithNewProduct(productDetails, orderDetails, quantity);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!isPendingOrderAvailable) {
+                addOrderJsonCreation(productDetails, quantity);
+            }
+        }
+    }
+
+    private void addOrderJsonCreation(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
+        JsonObject mainObj = new JsonObject();
+
+        JsonArray productsDetailsArray = new JsonArray();
+        JsonArray orderImageJsonArray = new JsonArray();
+
+        JsonObject productObject = new JsonObject();
+        productObject.addProperty("product_id", productDetails.getId());
+        productObject.addProperty("quantity", String.valueOf(quantity));
+        productObject.addProperty("amount", productDetails.getSelling_price());
+        productsDetailsArray.add(productObject);
+
+        mainObj.addProperty("type", "addOrder");
+        mainObj.addProperty("owner_business_id", businessOwnerId);
+        mainObj.addProperty("order_type", "1");
+        mainObj.addProperty("order_text", "");
+        mainObj.add("product_details", productsDetailsArray);
+        mainObj.addProperty("status", "1");    // status = 'IN CART'-2
+        mainObj.addProperty("purchase_order_type", "1");
+        mainObj.addProperty("business_id", "0");
+        mainObj.addProperty("delivery_option", "home_delivery");
+        mainObj.addProperty("user_address_id", "0");
+        mainObj.add("order_image", orderImageJsonArray);
+        mainObj.addProperty("user_id", userId);
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new AddOrder().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    private void updateOrderWithNewProduct(BookOrderProductsListModel.ResultBean selectedProduct, BookOrderGetMyOrdersModel.ResultBean orderDetails, int quantity) {
+        JsonObject mainObj = new JsonObject();
+
+        List<BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean> productsToBeAddedList = new ArrayList<>();
+
+        for (BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean orderProduct : orderDetails.getProduct_details()) {
+            productsToBeAddedList.add(new BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean(
+                    "0",
+                    orderProduct.getProduct_id(),
+                    orderDetails.getId(),
+                    orderProduct.getQuantity(),
+                    orderProduct.getCurrent_amount()
+            ));
+        }
+
+        boolean isProductAlreadyAddedInOrder = false;
+
+        for (int i = 0; i < productsToBeAddedList.size(); i++) {
+            if (productsToBeAddedList.get(i).getProduct_id().equals(selectedProduct.getId())) {
+                isProductAlreadyAddedInOrder = true;
+                productsToBeAddedList.get(i).setQuantity(String.valueOf(quantity));
+                productsToBeAddedList.get(i).setAmount(selectedProduct.getSelling_price());
+            }
+        }
+
+        if (!isProductAlreadyAddedInOrder) {
+            productsToBeAddedList.add(new BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean(
+                    "0",
+                    selectedProduct.getId(),
+                    orderDetails.getId(),
+                    String.valueOf(quantity),
+                    selectedProduct.getSelling_price()
+            ));
+        }
+
+        JsonArray productsDetailsArray = new JsonArray();
+
+        for (int i = 0; i < productsToBeAddedList.size(); i++) {
+            if (i <= orderDetails.getProduct_details().size() - 1) {
+                JsonObject productObject = new JsonObject();
+                productObject.addProperty("id", orderDetails.getProduct_details().get(i).getId());
+                productObject.addProperty("product_id", productsToBeAddedList.get(i).getProduct_id());
+                productObject.addProperty("quantity", productsToBeAddedList.get(i).getQuantity());
+                productObject.addProperty("amount", productsToBeAddedList.get(i).getAmount());
+                productsDetailsArray.add(productObject);
+            } else {
+                JsonObject productObject = new JsonObject();
+                productObject.addProperty("id", "0");
+                productObject.addProperty("product_id", productsToBeAddedList.get(i).getProduct_id());
+                productObject.addProperty("quantity", productsToBeAddedList.get(i).getQuantity());
+                productObject.addProperty("amount", productsToBeAddedList.get(i).getAmount());
+                productsDetailsArray.add(productObject);
+            }
+        }
+
+        JsonArray orderImageJsonArray = new JsonArray();
+
+        mainObj.addProperty("type", "updateOrder");
+        mainObj.addProperty("id", orderDetails.getId());
+        mainObj.addProperty("order_id", orderDetails.getOrder_id());
+        mainObj.addProperty("owner_business_id", businessOwnerId);
+        mainObj.addProperty("order_type", "1");
+        mainObj.addProperty("order_text", "");
+        mainObj.add("product_details", productsDetailsArray);
+        mainObj.addProperty("status", "1");    // status = 'IN CART'-2
+        mainObj.addProperty("purchase_order_type", "1");
+        mainObj.addProperty("business_id", "0");
+        mainObj.addProperty("delivery_option", "home_delivery");
+        mainObj.addProperty("user_address_id", "0");
+        mainObj.add("order_image", orderImageJsonArray);
+        mainObj.addProperty("user_id", userId);
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new UpdateOrder().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    private class AddOrder extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
+                    type = pojoDetails.getType();
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showMessage("Product added to cart", context, 1);
+                        ordersList = pojoDetails.getResult();
+                        showCartCount();
+                    } else {
+                        Utilities.showMessage(message, context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class UpdateOrder extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
+                    type = pojoDetails.getType();
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showMessage("Product added to cart", context, 1);
+                        ordersList = pojoDetails.getResult();
+                        showCartCount();
+                    } else {
+                        Utilities.showMessage(message, context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void setUpToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        ibBack.setOnClickListener(v -> finish());
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            new GetOrders().execute();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
     }
 
     private void showProductDetailsDialog(BookOrderProductsListModel.ResultBean productDetails) {
@@ -544,333 +822,4 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
         dialog.show();
     }
-
-    private void findValidOrderId(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
-        if (ordersList.size() == 0) {
-            addOrderJsonCreation(productDetails, quantity);
-        } else {
-            boolean isPendingOrderAvailable = false;
-
-            for (BookOrderGetMyOrdersModel.ResultBean orderDetails : ordersList) {
-                if (orderDetails.getStatus_details().size() == 1) {
-                    if (orderDetails.getStatus_details().get(0).getStatus().equals("1")) {
-                        if (orderDetails.getOwner_business_id().equals(businessOwnerId)) {
-                            isPendingOrderAvailable = true;
-                            updateOrderWithNewProduct(productDetails, orderDetails, quantity);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!isPendingOrderAvailable) {
-                addOrderJsonCreation(productDetails, quantity);
-            }
-        }
-    }
-
-    private void addOrderJsonCreation(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
-        JsonObject mainObj = new JsonObject();
-
-        JsonArray productsDetailsArray = new JsonArray();
-        JsonArray orderImageJsonArray = new JsonArray();
-
-        JsonObject productObject = new JsonObject();
-        productObject.addProperty("product_id", productDetails.getId());
-        productObject.addProperty("quantity", String.valueOf(quantity));
-        productObject.addProperty("amount", productDetails.getSelling_price());
-        productsDetailsArray.add(productObject);
-
-        mainObj.addProperty("type", "addOrder");
-        mainObj.addProperty("owner_business_id", businessOwnerId);
-        mainObj.addProperty("order_type", "1");
-        mainObj.addProperty("order_text", "");
-        mainObj.add("product_details", productsDetailsArray);
-        mainObj.addProperty("status", "1");    // status = 'IN CART'-2
-        mainObj.addProperty("purchase_order_type", "1");
-        mainObj.addProperty("business_id", "0");
-        mainObj.add("order_image", orderImageJsonArray);
-        mainObj.addProperty("user_id", userId);
-
-        if (Utilities.isNetworkAvailable(context)) {
-            new AddOrder().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
-        } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-        }
-    }
-
-    private void updateOrderWithNewProduct(BookOrderProductsListModel.ResultBean selectedProduct, BookOrderGetMyOrdersModel.ResultBean orderDetails, int quantity) {
-        JsonObject mainObj = new JsonObject();
-
-        List<BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean> productsToBeAddedList = new ArrayList<>();
-
-        for (BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean orderProduct : orderDetails.getProduct_details()) {
-            productsToBeAddedList.add(new BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean(
-                    "0",
-                    orderProduct.getProduct_id(),
-                    orderDetails.getId(),
-                    orderProduct.getQuantity(),
-                    orderProduct.getCurrent_amount()
-            ));
-        }
-
-        boolean isProductAlreadyAddedInOrder = false;
-
-        for (int i = 0; i < productsToBeAddedList.size(); i++) {
-            if (productsToBeAddedList.get(i).getProduct_id().equals(selectedProduct.getId())) {
-                isProductAlreadyAddedInOrder = true;
-                productsToBeAddedList.get(i).setQuantity(String.valueOf(quantity));
-                productsToBeAddedList.get(i).setAmount(selectedProduct.getSelling_price());
-            }
-        }
-
-        if (!isProductAlreadyAddedInOrder) {
-            productsToBeAddedList.add(new BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean(
-                    "0",
-                    selectedProduct.getId(),
-                    orderDetails.getId(),
-                    String.valueOf(quantity),
-                    selectedProduct.getSelling_price()
-            ));
-        }
-
-        JsonArray productsDetailsArray = new JsonArray();
-
-        for (int i = 0; i < productsToBeAddedList.size(); i++) {
-            if (i <= orderDetails.getProduct_details().size() - 1) {
-                JsonObject productObject = new JsonObject();
-                productObject.addProperty("id", orderDetails.getProduct_details().get(i).getId());
-                productObject.addProperty("product_id", productsToBeAddedList.get(i).getProduct_id());
-                productObject.addProperty("quantity", productsToBeAddedList.get(i).getQuantity());
-                productObject.addProperty("amount", productsToBeAddedList.get(i).getAmount());
-                productsDetailsArray.add(productObject);
-            } else {
-                JsonObject productObject = new JsonObject();
-                productObject.addProperty("id", "0");
-                productObject.addProperty("product_id", productsToBeAddedList.get(i).getProduct_id());
-                productObject.addProperty("quantity", productsToBeAddedList.get(i).getQuantity());
-                productObject.addProperty("amount", productsToBeAddedList.get(i).getAmount());
-                productsDetailsArray.add(productObject);
-            }
-        }
-
-        JsonArray orderImageJsonArray = new JsonArray();
-
-        mainObj.addProperty("type", "updateOrder");
-        mainObj.addProperty("id", orderDetails.getId());
-        mainObj.addProperty("order_id", orderDetails.getOrder_id());
-        mainObj.addProperty("owner_business_id", businessOwnerId);
-        mainObj.addProperty("order_type", "1");
-        mainObj.addProperty("order_text", "");
-        mainObj.add("product_details", productsDetailsArray);
-        mainObj.addProperty("status", "1");    // status = 'IN CART'-2
-        mainObj.addProperty("purchase_order_type", "1");
-        mainObj.addProperty("business_id", "0");
-        mainObj.add("order_image", orderImageJsonArray);
-        mainObj.addProperty("user_id", userId);
-
-        if (Utilities.isNetworkAvailable(context)) {
-            new UpdateOrder().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
-        } else {
-            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-        }
-    }
-
-    private class AddOrder extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
-            return res.trim();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            pd.dismiss();
-            String type = "", message = "";
-            try {
-                if (!result.equals("")) {
-                    BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
-                    type = pojoDetails.getType();
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragment"));
-                    if (type.equalsIgnoreCase("success")) {
-                        Utilities.showMessage("Product added to cart", context, 1);
-                        ordersList = pojoDetails.getResult();
-                        showCartCount();
-                    } else {
-                        Utilities.showMessage(message, context, 3);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private class UpdateOrder extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
-            return res.trim();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            pd.dismiss();
-            String type = "", message = "";
-            try {
-                if (!result.equals("")) {
-                    BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
-                    type = pojoDetails.getType();
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragment"));
-                    if (type.equalsIgnoreCase("success")) {
-                        Utilities.showMessage("Product added to cart", context, 1);
-                        ordersList = pojoDetails.getResult();
-                        showCartCount();
-                    } else {
-                        Utilities.showMessage(message, context, 3);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void setUpToolbar() {
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        toolbar.setNavigationOnClickListener(view -> finish());
-    }
-
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            finish();
-        }
-    };
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        localBroadcastManager.unregisterReceiver(broadcastReceiver);
-    }
 }
-
-//////////////////////////////////////////////Code to cancel other pending others/////////////////////////////////////
-
-//    private void findValidOrderId(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
-//        if (ordersList.size() == 0) {
-//            addOrderJsonCreation(productDetails, quantity);
-//        } else {
-//
-//            boolean isPendingOrderAvailable = false;
-//
-//            for (BookOrderGetMyOrdersModel.ResultBean orderDetails : ordersList) {
-//                if (orderDetails.getStatus_details().size() == 1) {
-//                    if (orderDetails.getStatus_details().get(0).getStatus().equals("1")) {
-//                        isPendingOrderAvailable = true;
-//                        if (!orderDetails.getOwner_business_id().equals(businessOwnerId)) {
-//                            cancelOtherBusinessOwnerOrderDialog(orderDetails);
-//                            break;
-//                        } else if (orderDetails.getOwner_business_id().equals(businessOwnerId)) {
-//                            updateOrderWithNewProduct(productDetails, orderDetails, quantity);
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//
-//            if (!isPendingOrderAvailable) {
-//                addOrderJsonCreation(productDetails, quantity);
-//            }
-//        }
-//    }
-
-//    private void cancelOtherBusinessOwnerOrderDialog(BookOrderGetMyOrdersModel.ResultBean orderDetails) {
-//        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-//        alertDialogBuilder.setTitle("Alert");
-//        alertDialogBuilder.setMessage("There is already an order pending for " + orderDetails.getOwner_business_name() + ", do you want to cancel that order?");
-//        alertDialogBuilder.setCancelable(false);
-//        alertDialogBuilder.setPositiveButton("Yes", (dialog, which) -> {
-//            JsonObject mainObj = new JsonObject();
-//
-//            mainObj.addProperty("type", "changeOrderStatus");
-//            mainObj.addProperty("id", orderDetails.getId());
-//            mainObj.addProperty("status", "7");    //status = 'CANCEL'-7
-//            mainObj.addProperty("user_id", userId);
-//
-//            if (Utilities.isNetworkAvailable(context)) {
-//                new ChangeOrderStatus().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
-//            } else {
-//                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-//            }
-//        });
-//        alertDialogBuilder.setNegativeButton("No", (dialog, which) -> {
-//
-//        });
-//        alertDialogBuilder.create().show();
-//    }
-
-//private class ChangeOrderStatus extends AsyncTask<String, Void, String> {
-//
-//    @Override
-//    protected void onPreExecute() {
-//        super.onPreExecute();
-//        pd.setMessage("Please wait ...");
-//        pd.setCancelable(false);
-//        pd.show();
-//    }
-//
-//    @Override
-//    protected String doInBackground(String... params) {
-//        String res = "[]";
-//        res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
-//        return res.trim();
-//    }
-//
-//    @Override
-//    protected void onPostExecute(String result) {
-//        super.onPostExecute(result);
-//        String type = "", message = "";
-//        try {
-//            pd.dismiss();
-//            if (!result.equals("")) {
-//                JSONObject mainObj = new JSONObject(result);
-//                type = mainObj.getString("type");
-//                message = mainObj.getString("message");
-//                if (type.equalsIgnoreCase("success")) {
-//                    Utilities.showMessage("Order cancelled successfully", context, 1);
-//                    new GetOrders().execute();
-//                } else {
-//                    Utilities.showMessage(message, context, 3);
-//                }
-//
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//}

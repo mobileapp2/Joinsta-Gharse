@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -510,5 +511,8 @@ public class Utilities {
         }
     }
 
+    public static String getCommaSeparatedNumber(int num) {
+        return NumberFormat.getNumberInstance(Locale.US).format(num);
+    }
 
 }

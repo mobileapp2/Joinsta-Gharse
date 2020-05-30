@@ -347,17 +347,13 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.icon_alertred);
                 builder.setCancelable(false);
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
+                builder.setPositiveButton("YES", (dialog, id) -> {
+                    if (Utilities.isNetworkAvailable(context))
                         new DeleteBusiness().execute();
-                    }
+                    else
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                builder.setNegativeButton("NO", (dialog, which) -> dialog.dismiss());
                 AlertDialog alertD = builder.create();
                 alertD.show();
                 break;

@@ -419,7 +419,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderMyOrdersActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderCartProductsActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderPurchaseTypeSelectionActivity"));

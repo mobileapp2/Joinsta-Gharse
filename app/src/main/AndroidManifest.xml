@@ -25,6 +25,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon">
+
         <activity
             android:name=".activities.SplashScreenActivity"
             android:screenOrientation="portrait"
@@ -315,6 +316,16 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.ViewMyBizDetailsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".activities.BookOrderProductDetailsActivity"
+            android:configChanges="orientation|screenSize"
+            android:label=""
+            android:theme="@style/MyTheme.Detail" />
+        <activity
+            android:name=".activities.ViewMyProductDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />

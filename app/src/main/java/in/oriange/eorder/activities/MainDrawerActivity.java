@@ -146,7 +146,7 @@ public class MainDrawerActivity extends AppCompatActivity {
         //Create items
 
         AHBottomNavigationItem bot1 = new AHBottomNavigationItem("Home", R.drawable.icon_home, R.color.colorPrimaryDark);
-        AHBottomNavigationItem bot2 = new AHBottomNavigationItem("Search", R.drawable.icon_search, R.color.colorPrimaryDark);
+        AHBottomNavigationItem bot2 = new AHBottomNavigationItem("Search", R.drawable.icon_search_1, R.color.colorPrimaryDark);
         AHBottomNavigationItem bot3 = new AHBottomNavigationItem("Contacts", R.drawable.icon_group, R.color.colorPrimaryDark);
         AHBottomNavigationItem bot4 = new AHBottomNavigationItem("My Orders", R.drawable.icon_cart_256, R.color.colorPrimaryDark);
         AHBottomNavigationItem bot5 = new AHBottomNavigationItem("More", R.drawable.icon_more_1, R.color.colorPrimaryDark);

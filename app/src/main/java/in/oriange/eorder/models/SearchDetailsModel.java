@@ -68,6 +68,8 @@ public class SearchDetailsModel implements Serializable {
             private String state;
             private String designation;
             private String is_enquiry_available;
+            private String is_pick_up_available;
+            private String is_home_delivery_available;
             private String email;
             private String website;
             private String record_statusid;
@@ -231,6 +233,22 @@ public class SearchDetailsModel implements Serializable {
 
             public void setIs_enquiry_available(String is_enquiry_available) {
                 this.is_enquiry_available = is_enquiry_available;
+            }
+
+            public String getIs_pick_up_available() {
+                return is_pick_up_available;
+            }
+
+            public void setIs_pick_up_available(String is_pick_up_available) {
+                this.is_pick_up_available = is_pick_up_available;
+            }
+
+            public String getIs_home_delivery_available() {
+                return is_home_delivery_available;
+            }
+
+            public void setIs_home_delivery_available(String is_home_delivery_available) {
+                this.is_home_delivery_available = is_home_delivery_available;
             }
 
             public String getEmail() {
@@ -589,12 +607,14 @@ public class SearchDetailsModel implements Serializable {
                 StringBuilder subTypeNameSb = new StringBuilder();
                 String subTypeNameStr = "";
 
-                for (SearchDetailsModel.ResultBean.BusinessesBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0)) {
-                    subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(" | ");
+                if (getSub_categories().get(0) != null) {
+                    for (SearchDetailsModel.ResultBean.BusinessesBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0)) {
+                        subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(" | ");
+                    }
+                    subTypeNameStr = subTypeNameSb.toString();
+                    if (!subTypeNameStr.equals(""))
+                        subTypeNameStr = subTypeNameStr.substring(0, subTypeNameStr.length() - 3);
                 }
-                subTypeNameStr = subTypeNameSb.toString();
-                if (!subTypeNameStr.equals(""))
-                    subTypeNameStr = subTypeNameStr.substring(0, subTypeNameStr.length() - 3);
 
                 if (!getType_description().trim().isEmpty() && !subTypeNameStr.trim().isEmpty()) {
                     return getType_description() + " | " + subTypeNameStr;
@@ -643,6 +663,20 @@ public class SearchDetailsModel implements Serializable {
 
 
                 return list;
+            }
+
+            public String getDeliveryType() {
+                if (getIs_home_delivery_available().equals("1") && getIs_pick_up_available().equals("1")) {
+                    return "Home delivery and store pickup available";
+                } else if (getIs_home_delivery_available().equals("1") && getIs_pick_up_available().equals("0")) {
+                    return "Home delivery available";
+                } else if (getIs_home_delivery_available().equals("0") && getIs_pick_up_available().equals("1")) {
+                    return "Store pickup available";
+                } else if (getIs_home_delivery_available().equals("0") && getIs_pick_up_available().equals("0")) {
+                    return "";
+                } else {
+                    return "";
+                }
             }
 
             public static class MobilesBeanXX implements Serializable {

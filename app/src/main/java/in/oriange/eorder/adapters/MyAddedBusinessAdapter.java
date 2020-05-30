@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -15,6 +16,8 @@ import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.eorder.R;
+import in.oriange.eorder.activities.BookOrderBusinessOwnerOrdersActivity;
+import in.oriange.eorder.activities.BusinessProductsActivity;
 import in.oriange.eorder.activities.ViewMyBizDetailsActivity;
 import in.oriange.eorder.models.GetBusinessModel;
 
@@ -44,6 +47,11 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         holder.tv_business_name.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
         holder.tv_address.setText(searchDetails.getAddressCityPincode());
 
+        if (!searchDetails.getDeliveryType().equals(""))
+            holder.tv_delivery_type.setText(searchDetails.getDeliveryType());
+        else
+            holder.tv_delivery_type.setVisibility(View.GONE);
+
         List<String> tagsList = searchDetails.getSubTypesTagsList("1");
         List<String> topFiveTagsList = new ArrayList<>();
 
@@ -59,6 +67,15 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         holder.cv_mainlayout.setOnClickListener(v -> context.startActivity(new Intent(context, ViewMyBizDetailsActivity.class)
                 .putExtra("searchDetails", searchDetails)));
 
+        holder.ll_offer.setOnClickListener(v -> {
+
+        });
+
+        holder.ll_orders.setOnClickListener(v -> context.startActivity(new Intent(context, BookOrderBusinessOwnerOrdersActivity.class)
+                .putExtra("businessId", searchDetails.getId())));
+
+        holder.ll_book_order.setOnClickListener(v -> context.startActivity(new Intent(context, BusinessProductsActivity.class)
+                .putExtra("businessId", searchDetails.getId())));
     }
 
     @Override
@@ -70,7 +87,8 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
 
         private CardView cv_mainlayout;
         private TagContainerLayout container_tags;
-        private TextView tv_business_name, tv_address;
+        private TextView tv_business_name, tv_address, tv_delivery_type;
+        private LinearLayout ll_offer, ll_orders, ll_book_order;
 
         public MyViewHolder(View view) {
             super(view);
@@ -78,6 +96,10 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
             container_tags = view.findViewById(R.id.container_tags);
             tv_business_name = view.findViewById(R.id.tv_business_name);
             tv_address = view.findViewById(R.id.tv_address);
+            tv_delivery_type = view.findViewById(R.id.tv_delivery_type);
+            ll_offer = view.findViewById(R.id.ll_offer);
+            ll_orders = view.findViewById(R.id.ll_orders);
+            ll_book_order = view.findViewById(R.id.ll_book_order);
         }
     }
 

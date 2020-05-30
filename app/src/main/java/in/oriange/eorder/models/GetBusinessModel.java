@@ -630,12 +630,14 @@ public class GetBusinessModel implements Serializable {
             StringBuilder subTypeNameSb = new StringBuilder();
             String subTypeNameStr = "";
 
-            for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0)) {
-                subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(" | ");
+            if (getSub_categories().get(0) != null) {
+                for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0)) {
+                    subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(" | ");
+                }
+                subTypeNameStr = subTypeNameSb.toString();
+                if (!subTypeNameStr.equals(""))
+                    subTypeNameStr = subTypeNameStr.substring(0, subTypeNameStr.length() - 3);
             }
-            subTypeNameStr = subTypeNameSb.toString();
-            if (!subTypeNameStr.equals(""))
-                subTypeNameStr = subTypeNameStr.substring(0, subTypeNameStr.length() - 3);
 
             if (!getType_description().trim().isEmpty() && !subTypeNameStr.trim().isEmpty()) {
                 return getType_description() + " | " + subTypeNameStr;
@@ -683,6 +685,20 @@ public class GetBusinessModel implements Serializable {
                             list.add(subCategoriesBean.getSubtype_description());
 
             return list;
+        }
+
+        public String getDeliveryType() {
+            if (getIs_home_delivery_available().equals("1") && getIs_pick_up_available().equals("1")) {
+                return "Home delivery and store pickup available";
+            } else if (getIs_home_delivery_available().equals("1") && getIs_pick_up_available().equals("0")) {
+                return "Home delivery available";
+            } else if (getIs_home_delivery_available().equals("0") && getIs_pick_up_available().equals("1")) {
+                return "Store pickup available";
+            } else if (getIs_home_delivery_available().equals("0") && getIs_pick_up_available().equals("0")) {
+                return "";
+            } else {
+                return "";
+            }
         }
 
         public void setTag(List<List<TagBean>> tag) {

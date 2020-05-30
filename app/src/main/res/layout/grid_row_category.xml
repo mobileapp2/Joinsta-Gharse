@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="center"
+                android:padding="5dp"
                 android:src="@drawable/img_dummy_1" />
 
             <TextView
@@ -35,7 +36,7 @@
                 android:layout_height="match_parent"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:text="Category"
                 android:textColor="@color/black"
                 android:textSize="12sp" />

@@ -256,13 +256,15 @@ public class EditBusinessActivity extends AppCompatActivity {
         StringBuilder subTypeNameSb = new StringBuilder();
         String subTypeNameStr = "";
 
-        for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : searchDetails.getSub_categories().get(0)) {
-            subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(", ");
-            subCategoryJsonArray.add(subCategoriesBean.getSub_type_id());
+        if (searchDetails.getSub_categories().get(0) != null) {
+            for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : searchDetails.getSub_categories().get(0)) {
+                subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(", ");
+                subCategoryJsonArray.add(subCategoriesBean.getSub_type_id());
+            }
+            subTypeNameStr = subTypeNameSb.toString();
+            if (!subTypeNameStr.equals(""))
+                edtSubtype.setText(subTypeNameStr.substring(0, subTypeNameStr.length() - 2));
         }
-        subTypeNameStr = subTypeNameSb.toString();
-        if (!subTypeNameStr.equals(""))
-            edtSubtype.setText(subTypeNameStr.substring(0, subTypeNameStr.length() - 2));
 
         edtDesignation.setText(searchDetails.getDesignation());
         edtEmail.setText(searchDetails.getEmail());

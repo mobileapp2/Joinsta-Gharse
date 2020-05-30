@@ -29,13 +29,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.eorder.R;
 import in.oriange.eorder.activities.AddCustomerActivity;
 import in.oriange.eorder.activities.AddVendorActivity;
-import in.oriange.eorder.activities.BookOrderOrderTypeSelectActivity;
+import in.oriange.eorder.activities.BookOrderProductsListActivity;
 import in.oriange.eorder.activities.OffersForParticularRecordActivity;
 import in.oriange.eorder.activities.ViewSearchBizDetailsActivity;
 import in.oriange.eorder.models.SearchDetailsModel;
@@ -93,7 +94,20 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         holder.tv_business_name.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
         holder.tv_address.setText(searchDetails.getAddressCityPincode());
-        holder.container_tags.setTags(searchDetails.getSubTypesTagsList("1"));
+
+
+        List<String> tagsList = searchDetails.getSubTypesTagsList("1");
+        List<String> topFiveTagsList = new ArrayList<>();
+
+        try {
+            for (int i = 0; i < 5; i++)
+                topFiveTagsList.add(tagsList.get(i));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        holder.container_tags.setTags(topFiveTagsList);
+
 
         if (!searchDetails.getOffer_count().equals("0")) {
             if (Integer.parseInt(searchDetails.getOffer_count()) == 1) {
@@ -104,6 +118,11 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         } else {
             holder.tv_offers.setText("No Offers");
         }
+
+        if (!searchDetails.getDeliveryType().equals(""))
+            holder.tv_delivery_type.setText(searchDetails.getDeliveryType());
+        else
+            holder.tv_delivery_type.setVisibility(View.GONE);
 
         holder.cv_mainlayout.setOnClickListener(v ->
                 context.startActivity(new Intent(context, ViewSearchBizDetailsActivity.class)
@@ -133,7 +152,9 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         holder.ll_book_order.setOnClickListener(v -> {
             if (searchDetails.getCan_book_order().equals("1"))
-                context.startActivity(new Intent(context, BookOrderOrderTypeSelectActivity.class)
+//                context.startActivity(new Intent(context, BookOrderOrderTypeSelectActivity.class)
+//                        .putExtra("businessOwnerId", searchDetails.getId()));
+                context.startActivity(new Intent(context, BookOrderProductsListActivity.class)
                         .putExtra("businessOwnerId", searchDetails.getId()));
             else
                 Utilities.showMessage("Book order facility not available", context, 2);
@@ -149,7 +170,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         private CardView cv_mainlayout;
         private TagContainerLayout container_tags;
-        private TextView tv_business_name, tv_address, tv_offers;
+        private TextView tv_business_name, tv_address, tv_offers, tv_delivery_type;
         private LinearLayout ll_add, ll_enquire, ll_offer, ll_book_order;
 
         public MyViewHolder(View view) {
@@ -158,6 +179,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             container_tags = view.findViewById(R.id.container_tags);
             tv_business_name = view.findViewById(R.id.tv_business_name);
             tv_address = view.findViewById(R.id.tv_address);
+            tv_delivery_type = view.findViewById(R.id.tv_delivery_type);
             tv_offers = view.findViewById(R.id.tv_offers);
             ll_add = view.findViewById(R.id.ll_add);
             ll_enquire = view.findViewById(R.id.ll_enquire);

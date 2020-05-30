@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import in.oriange.eorder.R;
-import in.oriange.eorder.activities.EditProductActivity;
+import in.oriange.eorder.activities.ViewMyProductDetailsActivity;
 import in.oriange.eorder.models.BookOrderProductsListModel;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
@@ -92,13 +92,8 @@ public class BusinessProductsListAdapter extends RecyclerView.Adapter<BusinessPr
             holder.tv_in_stock.setTextColor(context.getResources().getColor(R.color.red));
         }
 
-        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context, EditProductActivity.class)
-                .putExtra("productDetails", productDetails));
-            }
-        });
+        holder.cv_mainlayout.setOnClickListener(v -> context.startActivity(new Intent(context, ViewMyProductDetailsActivity.class)
+                .putExtra("productDetails", productDetails)));
     }
 
     @Override

@@ -114,9 +114,9 @@ public class BusinessProductsActivity extends AppCompatActivity {
             }
         });
 
-        btnAdd.setOnClickListener(v -> startActivity(new Intent(context, AddProductActivity.class)));
+        btnAdd.setOnClickListener(v -> startActivity(new Intent(context, AddProductActivity.class)
+                .putExtra("businessId", businessId)));
     }
-
 
     private class GetAllProducts extends AsyncTask<String, Void, String> {
 

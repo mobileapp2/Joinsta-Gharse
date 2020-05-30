@@ -434,6 +434,8 @@ public class BookOrderImageUploadActivity extends AppCompatActivity {
         mainObj.addProperty("status", "1");    // status = 'IN CART'-2
         mainObj.addProperty("purchase_order_type", "1");
         mainObj.addProperty("business_id", "0");
+        mainObj.addProperty("delivery_option", "home_delivery");
+        mainObj.addProperty("user_address_id", "");
         mainObj.add("order_image", orderImageJsonArray);
         mainObj.addProperty("user_id", userId);
 

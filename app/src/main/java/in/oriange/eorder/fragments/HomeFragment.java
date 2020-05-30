@@ -1,7 +1,9 @@
 package in.oriange.eorder.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,6 +66,7 @@ public class HomeFragment extends Fragment {
     private SliderView imageSlider;
     private SpinKitView progressBar;
     private String categoryTypeId, userId;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -109,6 +113,10 @@ public class HomeFragment extends Fragment {
             new GetCategotyList().execute("0", "0", categoryTypeId);
             new GetOrders().execute();
         }
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("HomeFragment");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void getSessionDetails() {
@@ -323,6 +331,21 @@ public class HomeFragment extends Fragment {
                 tv_cart_count.setText("");
             }
         }
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetOrders().execute();
+            }
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 
 }

@@ -239,6 +239,7 @@
                         android:id="@+id/ll_main_categories"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
                         android:orientation="vertical">
 
                         <TextView
