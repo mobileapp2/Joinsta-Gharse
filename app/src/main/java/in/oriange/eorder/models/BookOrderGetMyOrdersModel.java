@@ -83,6 +83,9 @@ public class BookOrderGetMyOrdersModel implements Serializable {
         private String owner_mobile;
         private String business_code;
         private String business_name;
+        private String owner_address;
+        private String is_pick_up_available;
+        private String is_home_delivery_available;
         private List<String> order_images;
         private List<ProductDetailsBean> product_details;
         private List<StatusDetailsBean> status_details;
@@ -237,6 +240,30 @@ public class BookOrderGetMyOrdersModel implements Serializable {
 
         public void setBusiness_name(String business_name) {
             this.business_name = business_name;
+        }
+
+        public String getOwner_address() {
+            return owner_address;
+        }
+
+        public void setOwner_address(String owner_address) {
+            this.owner_address = owner_address;
+        }
+
+        public String getIs_pick_up_available() {
+            return is_pick_up_available;
+        }
+
+        public void setIs_pick_up_available(String is_pick_up_available) {
+            this.is_pick_up_available = is_pick_up_available;
+        }
+
+        public String getIs_home_delivery_available() {
+            return is_home_delivery_available;
+        }
+
+        public void setIs_home_delivery_available(String is_home_delivery_available) {
+            this.is_home_delivery_available = is_home_delivery_available;
         }
 
         public List<String> getOrder_images() {

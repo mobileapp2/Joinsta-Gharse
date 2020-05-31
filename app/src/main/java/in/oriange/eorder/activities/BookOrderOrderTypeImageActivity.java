@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -28,6 +27,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.gson.JsonArray;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -51,6 +51,7 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.MultipartUtility;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.setPaddingForView;
 
 public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
@@ -62,11 +63,11 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
     @BindView(R.id.btn_add_image)
     Button btnAddImage;
     @BindView(R.id.btn_save)
-    Button btnSave;
+    ExtendedFloatingActionButton btnSave;
 
     private Context context;
     private ProgressDialog pd;
-    private String businessOwnerId;
+    private String businessOwnerId, businessOwnerAddress;
 
     private LocalBroadcastManager localBroadcastManager;
     private ArrayList<MasterModel> imageList;
@@ -95,6 +96,7 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         pd.setMessage("Please wait ...");
         pd.setCancelable(false);
+        changeStatusBar(context, getWindow());
 
         rvImages.setLayoutManager(new GridLayoutManager(context, 3));
         imageList = new ArrayList<>();
@@ -110,9 +112,7 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            builder.detectFileUriExposure();
-        }
+        builder.detectFileUriExposure();
     }
 
     private void getSessionDetails() {
@@ -121,6 +121,7 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
+        businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderOrderTypeImageActivity");
@@ -167,11 +168,21 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
             }
         }
 
-        startActivity(new Intent(context, BookOrderPurchaseTypeSelectionActivity.class)
+//        startActivity(new Intent(context, BookOrderPurchaseTypeSelectionActivity.class)
+//                .putExtra("businessOwnerId", businessOwnerId)
+//                .putExtra("orderType", "2")
+//                .putExtra("orderText", "")
+//                .putExtra("orderImageArray", imageJsonArray.toString()));
+
+        startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
                 .putExtra("businessOwnerId", businessOwnerId)
+                .putExtra("businessOwnerAddress", businessOwnerAddress)
+                .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
+                .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))
                 .putExtra("orderType", "2")
                 .putExtra("orderText", "")
                 .putExtra("orderImageArray", imageJsonArray.toString()));
+
     }
 
     private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
@@ -387,7 +398,7 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 

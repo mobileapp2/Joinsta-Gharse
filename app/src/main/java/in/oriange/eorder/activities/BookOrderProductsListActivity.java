@@ -93,7 +93,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private String userId, businessOwnerId;
+    private String userId, businessOwnerId, businessOwnerAddress;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
 
@@ -145,6 +145,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
+        businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetAllProducts().execute();
@@ -224,10 +225,16 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         });
 
         cvText.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
-                .putExtra("businessOwnerId", businessOwnerId)));
+                .putExtra("businessOwnerId", businessOwnerId)
+                .putExtra("businessOwnerAddress", businessOwnerAddress)
+                .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
+                .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
 
         cvImage.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeImageActivity.class)
-                .putExtra("businessOwnerId", businessOwnerId)));
+                .putExtra("businessOwnerId", businessOwnerId)
+                .putExtra("businessOwnerAddress", businessOwnerAddress)
+                .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
+                .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
 
     }
 

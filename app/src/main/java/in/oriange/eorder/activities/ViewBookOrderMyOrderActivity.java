@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -309,8 +310,19 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
 //                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
 //            }
 
-            startActivity(new Intent(context, BookOrderImageUploadActivity.class)
-                    .putExtra("orderDetails", orderDetails));
+//            startActivity(new Intent(context, BookOrderImageUploadActivity.class)
+//                    .putExtra("orderDetails", orderDetails));
+
+            startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
+                    .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
+                    .putExtra("businessOwnerAddress", orderDetails.getOwner_address())
+                    .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
+                    .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
+                    .putExtra("orderType", "1")
+                    .putExtra("orderText", "")
+                    .putExtra("orderDetails", orderDetails)
+                    .putExtra("orderImageArray", new JsonArray().toString()));
+
         });
 
         btnReject.setOnClickListener(v -> {

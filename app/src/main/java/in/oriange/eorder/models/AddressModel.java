@@ -73,6 +73,7 @@ public class AddressModel implements Serializable {
         private String Country;
         private String created_by;
         private String updated_by;
+        private boolean isChecked;
 
         public String getUser_address_id() {
             return user_address_id;
@@ -196,6 +197,14 @@ public class AddressModel implements Serializable {
 
         public void setUpdated_by(String updated_by) {
             this.updated_by = updated_by;
+        }
+
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
         }
     }
 }

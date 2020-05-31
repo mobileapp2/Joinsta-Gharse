@@ -152,10 +152,15 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         holder.ll_book_order.setOnClickListener(v -> {
             if (searchDetails.getCan_book_order().equals("1"))
+
 //                context.startActivity(new Intent(context, BookOrderOrderTypeSelectActivity.class)
 //                        .putExtra("businessOwnerId", searchDetails.getId()));
+
                 context.startActivity(new Intent(context, BookOrderProductsListActivity.class)
-                        .putExtra("businessOwnerId", searchDetails.getId()));
+                        .putExtra("businessOwnerId", searchDetails.getId())
+                        .putExtra("businessOwnerAddress", searchDetails.getAddress())
+                        .putExtra("isHomeDeliveryAvailable", searchDetails.getIs_home_delivery_available())
+                        .putExtra("isPickUpAvailable", searchDetails.getIs_pick_up_available()));
             else
                 Utilities.showMessage("Book order facility not available", context, 2);
         });

@@ -48,6 +48,7 @@ import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
@@ -85,11 +86,19 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
     CardView cvProducts;
     @BindView(R.id.tv_more_order_images)
     TextView tvMoreOrderImages;
+    @BindView(R.id.tv_delivery_type)
+    TextView tvDeliveryType;
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
+    @BindView(R.id.cv_delivery_details)
+    CardView cvDeliveryDetails;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private String userId, businessOwnerId = "0", purchaseOrderType, orderType, orderText = "", status, customerBusinessId = "0", orderImageArray = "";
+    private String userId, businessOwnerId = "0", purchaseOrderType, orderType, orderText = "", status,
+            customerBusinessId = "0", orderImageArray = "", businessOwnerAddress, deliveryStatus, customerAddressId,
+            customerAddress;
     private GetBusinessModel.ResultBean businessDetails;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
     private JsonArray orderImageJsonArray;
@@ -111,6 +120,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
     private void init() {
         context = BookOrderPurchaseSummaryActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         rvOrderImages.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
@@ -147,12 +157,15 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
+        businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
+        deliveryStatus = getIntent().getStringExtra("deliveryStatus");
+        customerAddressId = getIntent().getStringExtra("customerAddressId");
+        customerAddress = getIntent().getStringExtra("customerAddress");
         purchaseOrderType = getIntent().getStringExtra("purchaseOrderType");     // purchase_order_type = 'individual' - 1, 'business' -2
         orderType = getIntent().getStringExtra("orderType");                     //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
         orderText = getIntent().getStringExtra("orderText");
         orderImageArray = getIntent().getStringExtra("orderImageArray");
         businessDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("businessDetails");
-
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
 
         if (orderDetails == null) {
@@ -172,6 +185,20 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                 tvBusinessTypeSubtype.setText(businessDetails.getTypeSubTypeName());
             else
                 tvBusinessTypeSubtype.setText(businessDetails.getType_description());
+        }
+
+        if (deliveryStatus.equals("store_pickup")) {
+            tvDeliveryType.setText("Store Pickup");
+            if (!businessOwnerAddress.equals("")) {
+                tvAddress.setText(businessOwnerAddress);
+                tvAddress.setTextColor(context.getResources().getColor(R.color.black));
+            } else {
+                tvAddress.setText("Store address not available");
+                tvAddress.setTextColor(context.getResources().getColor(R.color.red));
+            }
+        } else if (deliveryStatus.equals("home_delivery")) {
+            tvDeliveryType.setText("Home Delivery");
+            tvAddress.setText(customerAddress);
         }
 
         switch (orderType) {
@@ -278,6 +305,8 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
         mainObj.addProperty("status", "2");    // status = 'PLACED'-2
         mainObj.addProperty("purchase_order_type", purchaseOrderType);
         mainObj.addProperty("business_id", customerBusinessId);
+        mainObj.addProperty("delivery_option", deliveryStatus);
+        mainObj.addProperty("user_address_id", customerAddressId);
         mainObj.add("order_image", orderImageJsonArray);
         mainObj.addProperty("user_id", userId);
 
@@ -313,6 +342,8 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
         mainObj.addProperty("status", "2");    // status = 'IN CART'-2
         mainObj.addProperty("purchase_order_type", purchaseOrderType);
         mainObj.addProperty("business_id", customerBusinessId);
+        mainObj.addProperty("delivery_option", deliveryStatus);
+        mainObj.addProperty("user_address_id", customerAddressId);
         mainObj.add("order_image", orderImageJsonArray);
         mainObj.addProperty("user_id", userId);
 
@@ -352,7 +383,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderPurchaseTypeSelectionActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderSelectDeliveryTypeActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeTextActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImageActivity"));
 
@@ -422,7 +453,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderMyOrdersActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderCartProductsActivity"));
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderPurchaseTypeSelectionActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderSelectDeliveryTypeActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeTextActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImageActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderImageUploadActivity"));
@@ -466,7 +497,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 }

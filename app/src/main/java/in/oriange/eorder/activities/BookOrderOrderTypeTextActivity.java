@@ -5,31 +5,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.gson.JsonArray;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.eorder.R;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.edt_order_text)
-    TextInputEditText edtOrderText;
+    EditText edtOrderText;
     @BindView(R.id.btn_save)
-    Button btnSave;
+    ExtendedFloatingActionButton btnSave;
 
     private Context context;
-    private String businessOwnerId;
+    private String businessOwnerId, businessOwnerAddress;
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -48,6 +49,7 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
 
     private void init() {
         context = BookOrderOrderTypeTextActivity.this;
+        changeStatusBar(context, getWindow());
     }
 
     private void getSessionDetails() {
@@ -56,28 +58,28 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
+        businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderOrderTypeTextActivity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
-
     }
 
     private void setEventHandler() {
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (edtOrderText.getText().toString().trim().isEmpty()) {
-                    edtOrderText.setError("Please enter order");
-                    return;
-                }
-
-                startActivity(new Intent(context, BookOrderPurchaseTypeSelectionActivity.class)
-                        .putExtra("businessOwnerId", businessOwnerId)
-                        .putExtra("orderType", "3")
-                        .putExtra("orderText", edtOrderText.getText().toString().trim())
-                        .putExtra("orderImageArray", new JsonArray().toString()));
+        btnSave.setOnClickListener(v -> {
+            if (edtOrderText.getText().toString().trim().isEmpty()) {
+                edtOrderText.setError("Please enter order");
+                return;
             }
+
+            startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
+                    .putExtra("businessOwnerId", businessOwnerId)
+                    .putExtra("businessOwnerAddress", businessOwnerAddress)
+                    .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
+                    .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))
+                    .putExtra("orderType", "3")
+                    .putExtra("orderText", edtOrderText.getText().toString().trim())
+                    .putExtra("orderImageArray", new JsonArray().toString()));
         });
 
     }
@@ -85,7 +87,7 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 

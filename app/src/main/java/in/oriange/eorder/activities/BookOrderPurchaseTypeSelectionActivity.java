@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -142,7 +143,7 @@ public class BookOrderPurchaseTypeSelectionActivity extends AppCompatActivity {
         rvBusiness.setLayoutManager(new LinearLayoutManager(context));
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("BookOrderPurchaseTypeSelectionActivity");
+        IntentFilter intentFilter = new IntentFilter("BookOrderSelectDeliveryTypeActivity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -287,9 +288,9 @@ public class BookOrderPurchaseTypeSelectionActivity extends AppCompatActivity {
             final GetBusinessModel.ResultBean searchDetails = businessList.get(position);
 
             if (searchDetails.isChecked())
-                holder.rb_select_business.setChecked(true);
+                holder.cb_select_business.setChecked(true);
             else
-                holder.rb_select_business.setChecked(false);
+                holder.cb_select_business.setChecked(false);
 
             holder.tv_heading.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
 
@@ -298,10 +299,10 @@ public class BookOrderPurchaseTypeSelectionActivity extends AppCompatActivity {
             else
                 holder.tv_subheading.setText(searchDetails.getType_description());
 
-            holder.rb_select_business.setOnClickListener(new View.OnClickListener() {
+            holder.cb_select_business.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (holder.rb_select_business.isChecked()) {
+                    if (holder.cb_select_business.isChecked()) {
                         for (int i = 0; i < businessList.size(); i++) {
                             businessList.get(i).setChecked(false);
                         }
@@ -321,14 +322,14 @@ public class BookOrderPurchaseTypeSelectionActivity extends AppCompatActivity {
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            private RadioButton rb_select_business;
+            private CheckBox cb_select_business;
             private TextView tv_heading, tv_subheading;
 
             public MyViewHolder(View view) {
                 super(view);
                 tv_heading = view.findViewById(R.id.tv_heading);
                 tv_subheading = view.findViewById(R.id.tv_subheading);
-                rb_select_business = view.findViewById(R.id.rb_select_business);
+                cb_select_business = view.findViewById(R.id.cb_select_business);
             }
         }
     }

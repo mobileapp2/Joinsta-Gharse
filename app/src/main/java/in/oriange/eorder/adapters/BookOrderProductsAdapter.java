@@ -20,6 +20,7 @@ import in.oriange.eorder.R;
 import in.oriange.eorder.models.BookOrderBusinessOwnerModel;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.eorder.utilities.Utilities.getCommaSeparatedNumber;
 
 public class BookOrderProductsAdapter extends RecyclerView.Adapter<BookOrderProductsAdapter.MyViewHolder> {
 
@@ -77,7 +78,7 @@ public class BookOrderProductsAdapter extends RecyclerView.Adapter<BookOrderProd
         } else {
             holder.tv_no_price_available.setVisibility(View.GONE);
             holder.tv_price.setVisibility(View.VISIBLE);
-            holder.tv_price.setText("₹ " + Integer.parseInt(productDetails.getAmount()) + "/" + productDetails.getUnit_of_measure());
+            holder.tv_price.setText("₹" + getCommaSeparatedNumber(Integer.parseInt(productDetails.getAmount())) + "/" + productDetails.getUnit_of_measure());
         }
 
         if (holder.tv_productinfo.getText().toString().trim().equals(""))

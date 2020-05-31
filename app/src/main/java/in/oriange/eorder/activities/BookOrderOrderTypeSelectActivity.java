@@ -52,11 +52,11 @@ public class BookOrderOrderTypeSelectActivity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        cvText.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
-                .putExtra("businessOwnerId", businessOwnerId)));
+//        cvText.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
+//                .putExtra("businessOwnerId", businessOwnerId)));
 
-        cvImage.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeImageActivity.class)
-                .putExtra("businessOwnerId", businessOwnerId)));
+//        cvImage.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeImageActivity.class)
+//                .putExtra("businessOwnerId", businessOwnerId)));
 
         cvProducts.setOnClickListener(v -> startActivity(new Intent(context, BookOrderProductsListActivity.class)
                 .putExtra("businessOwnerId", businessOwnerId)));

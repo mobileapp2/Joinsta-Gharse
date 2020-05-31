@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +50,8 @@ import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+import static in.oriange.eorder.utilities.Utilities.getCommaSeparatedNumber;
 
 public class BookOrderCartProductsActivity extends AppCompatActivity {
 
@@ -90,6 +91,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
     private void init() {
         context = BookOrderCartProductsActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         pd.setMessage("Please wait ...");
         pd.setCancelable(false);
@@ -159,8 +161,20 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
 
             holder.rv_products.setAdapter(new BookOrderProductsListAdapter(orderDetails.getProduct_details()));
 
-            holder.btn_save.setOnClickListener(v -> startActivity(new Intent(context, BookOrderImageUploadActivity.class)
-                    .putExtra("orderDetails", orderDetails)));
+            holder.btn_save.setOnClickListener(v -> {
+//                startActivity(new Intent(context, BookOrderImageUploadActivity.class)
+//                        .putExtra("orderDetails", orderDetails));
+
+                startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
+                        .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
+                        .putExtra("businessOwnerAddress", orderDetails.getOwner_address())
+                        .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
+                        .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
+                        .putExtra("orderType", "1")
+                        .putExtra("orderText", "")
+                        .putExtra("orderDetails", orderDetails)
+                        .putExtra("orderImageArray", new JsonArray().toString()));
+            });
 
             holder.btn_reject.setOnClickListener(v -> {
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
@@ -260,34 +274,34 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
             holder.tv_product_name.setText(productDetails.getName());
             holder.tv_product_info.setText(productDetails.getDescription());
 
-            if (holder.tv_product_info.getText().toString().trim().equals(""))
-                holder.tv_product_info.setVisibility(View.GONE);
+//            if (holder.tv_product_info.getText().toString().trim().equals(""))
+            holder.tv_product_info.setVisibility(View.GONE);
 
             int sellingPrice = (int) Float.parseFloat(productDetails.getCurrent_amount());
 
             if (sellingPrice != 0) {
                 holder.tv_no_price_available.setVisibility(View.GONE);
-                holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
+                holder.tv_total_product_price.setText("₹" + getCommaSeparatedNumber(sellingPrice * quantity[0]));
             } else {
                 holder.tv_total_product_price.setVisibility(View.GONE);
             }
 
-            holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
+            holder.tv_quantity.setText(String.valueOf(quantity[0]));
 
             holder.btn_remove.setOnClickListener(v -> {
                 if (quantity[0] == 1) {
                     return;
                 }
                 quantity[0] = quantity[0] - 1;
-                holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
-                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
+                holder.tv_total_product_price.setText("₹" + getCommaSeparatedNumber(sellingPrice * quantity[0]));
+                holder.tv_quantity.setText(String.valueOf(quantity[0]));
                 updateProductQuantity(finalBusinessOwnerOrderDetails, productDetails, quantity[0]);
             });
 
             holder.btn_add.setOnClickListener(v -> {
                 quantity[0] = quantity[0] + 1;
-                holder.tv_total_product_price.setText("₹ " + sellingPrice * quantity[0]);
-                holder.tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Qty - </b></font> <font color=\"#01579B\"> <b>" + quantity[0] + "</b></font>"));
+                holder.tv_total_product_price.setText("₹" + getCommaSeparatedNumber(sellingPrice * quantity[0]));
+                holder.tv_quantity.setText(String.valueOf(quantity[0]));
                 updateProductQuantity(finalBusinessOwnerOrderDetails, productDetails, quantity[0]);
             });
 
@@ -295,7 +309,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
 //                updateProductQuantity(finalBusinessOwnerOrderDetails, productDetails, quantity[0]);
 //            });
 
-            holder.ib_delete.setOnClickListener(v -> {
+            holder.btn_delete.setOnClickListener(v -> {
 
                 if (productsList.size() == 1) {
                     Utilities.showMessage("There must be atleast one product in the order", context, 2);
@@ -318,9 +332,8 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
 
             private ImageView imv_productimage;
             private TextView tv_nopreview, tv_product_name, tv_product_info, tv_total_product_price, tv_no_price_available, tv_quantity;
-            private ImageButton btn_remove, btn_add;
+            private ImageButton btn_remove, btn_add, btn_delete;
             private Button btn_addtocart;
-            private Button ib_delete;
             private View view_divider;
 
             public MyViewHolder(@NonNull View view) {
@@ -335,7 +348,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                 btn_remove = view.findViewById(R.id.btn_remove);
                 btn_add = view.findViewById(R.id.btn_add);
                 btn_addtocart = view.findViewById(R.id.btn_addtocart);
-                ib_delete = view.findViewById(R.id.ib_delete);
+                btn_delete = view.findViewById(R.id.btn_delete);
                 view_divider = view.findViewById(R.id.view_divider);
             }
         }
@@ -634,7 +647,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 
