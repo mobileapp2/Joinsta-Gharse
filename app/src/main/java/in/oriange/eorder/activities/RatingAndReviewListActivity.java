@@ -49,6 +49,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class RatingAndReviewListActivity extends AppCompatActivity {
 
     @BindView(R.id.tv_no_review)
@@ -120,6 +122,7 @@ public class RatingAndReviewListActivity extends AppCompatActivity {
 
     private void init() {
         context = RatingAndReviewListActivity.this;
+        changeStatusBar(context, getWindow());
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         reviewsList = new ArrayList<>();
@@ -280,13 +283,8 @@ public class RatingAndReviewListActivity extends AppCompatActivity {
         edtProfileName.setText(profileName);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 
     public class GetRatingsAndReviews extends AsyncTask<String, Void, String> {
@@ -354,12 +352,9 @@ public class RatingAndReviewListActivity extends AppCompatActivity {
         alertDialogBuilder.setCancelable(false);
         final AlertDialog alertD = alertDialogBuilder.create();
 
-        btn_ok.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertD.dismiss();
-                finish();
-            }
+        btn_ok.setOnClickListener(v -> {
+            alertD.dismiss();
+            finish();
         });
 
         alertD.show();

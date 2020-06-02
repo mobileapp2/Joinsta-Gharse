@@ -71,6 +71,7 @@
                         android:clickable="false"
                         android:focusable="false"
                         android:longClickable="false"
+                        android:text="Name"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -81,6 +82,7 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
+                        android:layout_marginTop="2dp"
                         android:longClickable="false"
                         android:text="City"
                         android:textColor="@color/black"
@@ -92,8 +94,9 @@
                         android:layout_height="wrap_content"
                         android:clickable="false"
                         android:focusable="false"
+                        android:layout_marginTop="2dp"
                         android:longClickable="false"
-                        android:text="City"
+                        android:text="business"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -125,6 +128,7 @@
                         android:clickable="false"
                         android:drawableLeft="@drawable/icon_call"
                         android:drawablePadding="5dp"
+                        android:layout_marginTop="2dp"
                         android:focusable="false"
                         android:gravity="center_vertical"
                         android:longClickable="false"
@@ -139,6 +143,7 @@
                         android:clickable="false"
                         android:drawableLeft="@drawable/icon_email"
                         android:drawablePadding="5dp"
+                        android:layout_marginTop="2dp"
                         android:focusable="false"
                         android:gravity="center_vertical"
                         android:longClickable="false"
@@ -156,7 +161,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/button_focusfilled_orange"
+                android:background="@drawable/button_focusfilled_red"
                 android:gravity="center"
                 android:paddingLeft="10dp"
                 android:paddingTop="5dp"
@@ -166,6 +171,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 android:textStyle="bold" />
+
 
         </LinearLayout>
 

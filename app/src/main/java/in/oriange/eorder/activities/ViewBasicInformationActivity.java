@@ -41,6 +41,7 @@ import in.oriange.eorder.utilities.Utilities;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.eorder.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class ViewBasicInformationActivity extends AppCompatActivity {
 
@@ -49,7 +50,7 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
     private ProgressDialog pd;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CircleImageView imv_user;
-    private MaterialEditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
+    private EditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
             edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile, edt_about, edt_referral_code;
     private TextView tv_verify, tv_verified, tv_countrycode_mobile, tv_countrycode_landline;
     private RadioButton rb_male, rb_female;
@@ -75,7 +76,7 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
         context = ViewBasicInformationActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-
+        changeStatusBar(context, getWindow());
         imv_user = findViewById(R.id.imv_user);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
@@ -386,13 +387,8 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 
     @Override

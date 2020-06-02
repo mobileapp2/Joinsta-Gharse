@@ -2,8 +2,10 @@ package in.oriange.eorder.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -19,6 +21,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -59,6 +62,7 @@ public class MainDrawerActivity extends AppCompatActivity {
 
     private UserSessionManager session;
     private String userId;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +120,10 @@ public class MainDrawerActivity extends AppCompatActivity {
         adapter = new BotNavViewPagerAdapter(getSupportFragmentManager());
         view_pager.setAdapter(adapter);
 
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("MainDrawerActivityJumpToSearchTab");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
@@ -133,13 +141,10 @@ public class MainDrawerActivity extends AppCompatActivity {
         if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
             return;
         }
-
         if (!isLocationEnabled(context)) {
             return;
         }
-
         startLocationUpdates();
-
     }
 
     private void setUpBottomNavigation() {
@@ -287,4 +292,16 @@ public class MainDrawerActivity extends AppCompatActivity {
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            bottomNavigation.setCurrentItem(1);
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+    }
 }

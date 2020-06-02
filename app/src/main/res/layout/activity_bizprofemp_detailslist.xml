@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -28,7 +28,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="Details"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
 
@@ -42,9 +42,8 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="0dp"
-        app:cardUseCompatPadding="false">
+        app:cardCornerRadius="5dp"
+        app:cardUseCompatPadding="true">
 
         <com.smarteist.autoimageslider.SliderView
             android:id="@+id/imageSlider"

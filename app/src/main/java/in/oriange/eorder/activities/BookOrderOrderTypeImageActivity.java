@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonArray;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -63,7 +63,7 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
     @BindView(R.id.btn_add_image)
     Button btnAddImage;
     @BindView(R.id.btn_save)
-    ExtendedFloatingActionButton btnSave;
+    MaterialButton btnSave;
 
     private Context context;
     private ProgressDialog pd;

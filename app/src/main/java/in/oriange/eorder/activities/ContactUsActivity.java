@@ -20,6 +20,8 @@ import androidx.core.app.ActivityCompat;
 import in.oriange.eorder.R;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class ContactUsActivity extends AppCompatActivity {
 
     private Context context;
@@ -40,6 +42,7 @@ public class ContactUsActivity extends AppCompatActivity {
 
     private void init() {
         context = ContactUsActivity.this;
+        changeStatusBar(context, getWindow());
         ll_mobile = findViewById(R.id.ll_mobile);
         ll_whatsapp = findViewById(R.id.ll_whatsapp);
 
@@ -90,7 +93,7 @@ public class ContactUsActivity extends AppCompatActivity {
         ll_whatsapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String phoneno = "919175326801";
+                String phoneno = "917020009889";
                 String URL = "https://wa.me/" + phoneno;
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(URL)));
             }
@@ -101,7 +104,7 @@ public class ContactUsActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

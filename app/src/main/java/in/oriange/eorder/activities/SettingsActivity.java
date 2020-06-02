@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -17,7 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -152,12 +153,13 @@ public class SettingsActivity extends AppCompatActivity {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_change_password, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setTitle("Change Password");
+//        alertDialogBuilder.setTitle("Change Password");
         alertDialogBuilder.setView(promptView);
 
-        final MaterialEditText edt_oldpassword = promptView.findViewById(R.id.edt_oldpassword);
-        final MaterialEditText edt_newpassword = promptView.findViewById(R.id.edt_newpassword);
+        final EditText edt_oldpassword = promptView.findViewById(R.id.edt_oldpassword);
+        final EditText edt_newpassword = promptView.findViewById(R.id.edt_newpassword);
         final Button btn_save = promptView.findViewById(R.id.btn_save);
+        final ImageButton ib_close = promptView.findViewById(R.id.ib_close);
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -188,6 +190,10 @@ public class SettingsActivity extends AppCompatActivity {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
             }
+        });
+
+        ib_close.setOnClickListener(v -> {
+            alertD.dismiss();
         });
 
         alertD.show();

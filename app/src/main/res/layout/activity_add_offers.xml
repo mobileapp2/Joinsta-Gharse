@@ -8,7 +8,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -27,9 +27,16 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="Add Offer"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                style="@style/MaterialButton"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:text="Save"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -44,284 +51,235 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="10dp">
 
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Title" />
+
+                <EditText
+                    android:id="@+id/edt_title"
+                    style="@style/EditableEditText"
+                    android:inputType="textCapWords" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Description" />
+
+                <EditText
+                    android:id="@+id/edt_description"
+                    style="@style/EditableEditText"
+                    android:inputType="textMultiLine|textCapSentences" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Start Date" />
+
+                <EditText
+                    android:id="@+id/edt_start_date"
+                    style="@style/SelectableEditText"
+                    android:hint="Select Start Date" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="End Date" />
+
+                <EditText
+                    android:id="@+id/edt_end_date"
+                    style="@style/SelectableEditText"
+                    android:hint="Select End Date" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="URL" />
+
+                <EditText
+                    android:id="@+id/edt_url"
+                    style="@style/EditableEditText"
+                    android:inputType="textWebEditText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Promo Code" />
+
+                <EditText
+                    android:id="@+id/edt_promo_code"
+                    style="@style/EditableEditText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Images" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
+                    android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Offer Details"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="0.5"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_dotted">
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Title"
-                        android:inputType="textCapWords"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                            <ImageView
+                                android:id="@+id/imv_image_one_delete"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_margin="5dp"
+                                android:background="@drawable/bg_circularview"
+                                android:src="@drawable/icon_cross"
+                                android:tint="@color/white"
+                                android:visibility="gone" />
 
-                    <EditText
-                        android:id="@+id/edt_description"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/bg_outline"
-                        android:gravity="top"
-                        android:hint="Description"
-                        android:inputType="textCapSentences|textMultiLine"
-                        android:padding="5dp"
-                        android:textColorHint="@color/darkGray"
-                        android:textSize="16sp" />
+                            <ImageView
+                                android:id="@+id/imv_image_one"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:padding="40dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/icon_camera" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        </RelativeLayout>
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_start_date"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:layout_weight="0.5"
-                            android:drawableRight="@drawable/icon_date"
-                            android:focusable="false"
-                            android:hint="Start Date"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                    </androidx.cardview.widget.CardView>
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_end_date"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="5dp"
-                            android:layout_weight="0.5"
-                            android:drawableRight="@drawable/icon_date"
-                            android:focusable="false"
-                            android:hint="End Date"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="0.5"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
 
-                    </LinearLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_dotted">
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_url"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="URL"
-                        android:inputType="textWebEditText"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                            <ImageView
+                                android:id="@+id/imv_image_two_delete"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_margin="5dp"
+                                android:background="@drawable/bg_circularview"
+                                android:src="@drawable/icon_cross"
+                                android:tint="@color/white"
+                                android:visibility="gone" />
 
-                    <com.rengwuxian.materialedittext.MaterialEditText
-                        android:id="@+id/edt_promo_code"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Promo Code"
-                        android:textSize="16sp"
-                        app:met_floatingLabel="highlight"
-                        app:met_textColorHint="@color/darkGray"
-                        app:met_underlineColor="@color/mediumGray" />
+                            <ImageView
+                                android:id="@+id/imv_image_two"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:padding="40dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/icon_camera" />
 
-                </LinearLayout>
+                        </RelativeLayout>
 
-            </androidx.cardview.widget.CardView>
+                    </androidx.cardview.widget.CardView>
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="0dp"
+                        android:layout_height="120dp"
+                        android:layout_margin="10dp"
+                        android:layout_weight="0.5"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        app:cardBackgroundColor="@color/white"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/bg_dotted">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Offer Images"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
+                            <ImageView
+                                android:id="@+id/imv_image_three_delete"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_alignParentRight="true"
+                                android:layout_margin="5dp"
+                                android:background="@drawable/bg_circularview"
+                                android:src="@drawable/icon_cross"
+                                android:tint="@color/white"
+                                android:visibility="gone" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+                            <ImageView
+                                android:id="@+id/imv_image_three"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:padding="40dp"
+                                android:scaleType="centerCrop"
+                                android:src="@drawable/icon_camera" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        </RelativeLayout>
 
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="120dp"
-                            android:layout_margin="10dp"
-                            android:layout_weight="0.5"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardBackgroundColor="@color/white"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp">
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/bg_dotted">
-
-                                <ImageView
-                                    android:id="@+id/imv_image_one_delete"
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:layout_alignParentRight="true"
-                                    android:layout_margin="5dp"
-                                    android:background="@drawable/bg_circularview"
-                                    android:src="@drawable/icon_cross"
-                                    android:tint="@color/white"
-                                    android:visibility="gone" />
-
-                                <ImageView
-                                    android:id="@+id/imv_image_one"
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:padding="40dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@drawable/icon_add_orange" />
-
-                            </RelativeLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="120dp"
-                            android:layout_margin="10dp"
-                            android:layout_weight="0.5"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardBackgroundColor="@color/white"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp">
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/bg_dotted">
-
-                                <ImageView
-                                    android:id="@+id/imv_image_two_delete"
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:layout_alignParentRight="true"
-                                    android:layout_margin="5dp"
-                                    android:background="@drawable/bg_circularview"
-                                    android:src="@drawable/icon_cross"
-                                    android:tint="@color/white"
-                                    android:visibility="gone" />
-
-                                <ImageView
-                                    android:id="@+id/imv_image_two"
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:padding="40dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@drawable/icon_add_orange" />
-
-                            </RelativeLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                        <androidx.cardview.widget.CardView
-                            android:layout_width="0dp"
-                            android:layout_height="120dp"
-                            android:layout_margin="10dp"
-                            android:layout_weight="0.5"
-                            android:foreground="?android:attr/selectableItemBackground"
-                            app:cardBackgroundColor="@color/white"
-                            app:cardCornerRadius="10dp"
-                            app:cardElevation="0dp">
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:background="@drawable/bg_dotted">
-
-                                <ImageView
-                                    android:id="@+id/imv_image_three_delete"
-                                    android:layout_width="20dp"
-                                    android:layout_height="20dp"
-                                    android:layout_alignParentRight="true"
-                                    android:layout_margin="5dp"
-                                    android:background="@drawable/bg_circularview"
-                                    android:src="@drawable/icon_cross"
-                                    android:tint="@color/white"
-                                    android:visibility="gone" />
-
-                                <ImageView
-                                    android:id="@+id/imv_image_three"
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:padding="40dp"
-                                    android:scaleType="centerCrop"
-                                    android:src="@drawable/icon_add_orange" />
-
-                            </RelativeLayout>
-
-                        </androidx.cardview.widget.CardView>
-
-                    </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
-
-            <android.widget.Button
-                android:id="@+id/btn_save"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:background="@drawable/button_background_filled"
-                android:text="Save"
-                android:textColor="@color/white" />
+            </LinearLayout>
 
         </LinearLayout>
 

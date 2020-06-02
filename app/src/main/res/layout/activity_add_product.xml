@@ -34,17 +34,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Save"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:strokeColor="@color/colorPrimary" />
+                android:text="Save"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -69,7 +62,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Product Code" />
+                    android:text="Product Code *" />
 
                 <EditText
                     android:id="@+id/edt_code"
@@ -85,7 +78,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Product Name" />
+                    android:text="Product Name *" />
 
                 <EditText
                     android:id="@+id/edt_name"
@@ -101,7 +94,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Product Description" />
+                    android:text="Product Description *" />
 
                 <EditText
                     android:id="@+id/edt_description"
@@ -134,7 +127,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Unit of Measure" />
+                    android:text="Unit of Measure *" />
 
                 <EditText
                     android:id="@+id/edt_unit_of_measure"
@@ -183,7 +176,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Stock" />
+                    android:text="Stock *" />
 
                 <EditText
                     android:id="@+id/edt_stock"
@@ -231,7 +224,7 @@
             <CheckBox
                 android:id="@+id/cb_is_in_stock"
                 style="@style/CheckBox"
-                android:text="Is product available in stock?" />
+                android:text="Is product in stock?" />
 
             <CheckBox
                 android:id="@+id/cb_is_featured"
@@ -246,7 +239,7 @@
             <CheckBox
                 android:id="@+id/cb_is_inclusive_tax"
                 style="@style/CheckBox"
-                android:text="Is inclusive tax?" />
+                android:text="Is tax included?" />
 
         </LinearLayout>
 

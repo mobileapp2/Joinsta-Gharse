@@ -36,6 +36,7 @@ import in.oriange.eorder.utilities.RecyclerItemClickListener;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
 
 
@@ -45,7 +46,7 @@ public class SelectCityActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private EditText edt_search_city;
+    private EditText edt_search;
     private RecyclerView rv_city;
     private LinearLayout ll_user_current_location, ll_recent_city;
     private TextView tv_recent_city;
@@ -69,9 +70,10 @@ public class SelectCityActivity extends AppCompatActivity {
     private void init() {
         context = SelectCityActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
-        edt_search_city = findViewById(R.id.edt_search_city);
+        edt_search = findViewById(R.id.edt_search);
         ll_user_current_location = findViewById(R.id.ll_user_current_location);
         ll_recent_city = findViewById(R.id.ll_recent_city);
         tv_recent_city = findViewById(R.id.tv_recent_city);
@@ -118,18 +120,10 @@ public class SelectCityActivity extends AppCompatActivity {
 
     private void setEventHandler() {
         ll_user_current_location.setOnClickListener(v -> {
-//                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-//                try {
-//                    startActivityForResult(builder.build(SelectCityActivity.this), requestCode);
-//                } catch (GooglePlayServicesRepairableException e) {
-//                    e.printStackTrace();
-//                } catch (GooglePlayServicesNotAvailableException e) {
-//                    e.printStackTrace();
-//                }
             startActivityForResult(new Intent(context, PickMapLocationActivity.class), requestCode);
         });
 
-        edt_search_city.addTextChangedListener(new TextWatcher() {
+        edt_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -258,13 +252,8 @@ public class SelectCityActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 
     @Override

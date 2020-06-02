@@ -234,11 +234,6 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
             tvAddress.setText(searchDetails.getAddress());
         else
             tvAddress.setVisibility(View.GONE);
-
-
-//        localBroadcastManager = LocalBroadcastManager.getInstance(context);
-//        IntentFilter intentFilter = new IntentFilter("ViewMyBizDetailsActivity");
-//        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void getSessionDetails() {

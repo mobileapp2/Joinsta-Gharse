@@ -49,6 +49,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
 
     @BindView(R.id.toolbar)
@@ -94,6 +96,7 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
     private void init() {
         context = BookOrderBusinessOwnerOrdersActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         rvOrders.setLayoutManager(new LinearLayoutManager(context));
@@ -363,7 +366,7 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 

@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Enquire"
-            android:textColor="@color/darkGray"
+            android:textColor="@color/black"
             android:textSize="22dp" />
 
         <ImageButton
@@ -158,6 +158,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:text="Send"
+        android:textAllCaps="false"
         android:textColor="@color/white" />
 
 

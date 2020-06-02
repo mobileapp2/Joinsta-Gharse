@@ -35,6 +35,8 @@ import butterknife.ButterKnife;
 import in.oriange.eorder.R;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class FullScreenImagesActivity extends AppCompatActivity {
 
     private Context context;
@@ -64,6 +66,7 @@ public class FullScreenImagesActivity extends AppCompatActivity {
 
     private void init() {
         context = FullScreenImagesActivity.this;
+        changeStatusBar(context, getWindow());
         imageUrlList = new ArrayList<>();
 
         downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Images");

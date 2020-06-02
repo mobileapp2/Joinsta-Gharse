@@ -18,10 +18,12 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.hsalf.smilerating.SmileRating;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -40,20 +42,26 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class EditRatingAndReviewActivity extends AppCompatActivity {
 
+    @BindView(R.id.toolbar_title)
+    AppCompatEditText toolbarTitle;
+    @BindView(R.id.btn_save)
+    MaterialButton btnSave;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.edt_public_name)
+    EditText edtPublicName;
+    @BindView(R.id.ib_edit_public_name)
+    ImageButton ibEditPublicName;
+    @BindView(R.id.edt_title)
+    EditText edtTitle;
     @BindView(R.id.edt_review)
     EditText edtReview;
     @BindView(R.id.smile_rating)
     SmileRating smileRating;
-    @BindView(R.id.btn_save)
-    Button btnSave;
-    @BindView(R.id.edt_title)
-    MaterialEditText edtTitle;
-    @BindView(R.id.edt_public_name)
-    MaterialEditText edtPublicName;
-    @BindView(R.id.ib_edit_public_name)
-    ImageButton ibEditPublicName;
 
     private Context context;
     private UserSessionManager session;
@@ -78,6 +86,7 @@ public class EditRatingAndReviewActivity extends AppCompatActivity {
     private void init() {
         context = EditRatingAndReviewActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
     }
 
@@ -388,12 +397,7 @@ public class EditRatingAndReviewActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 }

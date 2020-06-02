@@ -32,9 +32,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -62,6 +62,7 @@ import in.oriange.eorder.utilities.Utilities;
 import static in.oriange.eorder.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.eorder.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.eorder.utilities.Utilities.changeDateFormat;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.eorder.utilities.Utilities.setPaddingForView;
 import static in.oriange.eorder.utilities.Utilities.yyyyMMddDate;
@@ -72,10 +73,9 @@ public class AddOffers_Activity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private MaterialEditText edt_title, edt_start_date, edt_end_date, edt_url, edt_promo_code;
-    private EditText edt_description;
+    private EditText edt_title, edt_description, edt_start_date, edt_end_date, edt_url, edt_promo_code;
     private ImageView imv_image_one, imv_image_one_delete, imv_image_two, imv_image_two_delete, imv_image_three, imv_image_three_delete;
-    private Button btn_save;
+    private MaterialButton btn_save;
 
     private int mYear, mMonth, mDay, mYear1, mMonth1, mDay1;
     private String userId, startDate, endDate, detailId, categoryTypeId, categoryId, categoryTypeName;
@@ -104,7 +104,7 @@ public class AddOffers_Activity extends AppCompatActivity {
         context = AddOffers_Activity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-
+        changeStatusBar(context, getWindow());
         edt_title = findViewById(R.id.edt_title);
         edt_start_date = findViewById(R.id.edt_start_date);
         edt_end_date = findViewById(R.id.edt_end_date);
@@ -626,13 +626,8 @@ public class AddOffers_Activity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

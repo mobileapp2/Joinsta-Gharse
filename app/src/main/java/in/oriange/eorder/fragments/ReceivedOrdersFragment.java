@@ -303,11 +303,8 @@ public class ReceivedOrdersFragment extends Fragment {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getReceivedOrders");
-            obj.addProperty("business_id", "0");
+            obj.addProperty("type", "getAllReceivedOrders");
             obj.addProperty("user_id", userId);
-//            obj.addProperty("business_id", "18");
-//            obj.addProperty("user_id", "21");
             res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, obj.toString());
             return res.trim();
         }

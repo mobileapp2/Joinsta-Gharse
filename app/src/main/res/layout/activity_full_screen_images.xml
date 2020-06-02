@@ -10,15 +10,11 @@
         android:background="#000" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        style="@style/FloatingActionButton"
         android:id="@+id/btn_download"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
-        android:src="@drawable/icon_download"
-        android:tint="@color/white" />
+        android:src="@drawable/icon_download"/>
 
     <ImageButton
         android:id="@+id/imv_back"

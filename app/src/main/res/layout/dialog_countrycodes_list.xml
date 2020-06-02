@@ -17,17 +17,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/edt_search"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.9"
-                android:background="@android:color/transparent"
-                android:gravity="center_vertical"
-                android:hint="Search"
-                android:padding="10dp"
-                android:textSize="16sp" />
-
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="20dp"
@@ -36,6 +25,20 @@
                 android:layout_weight="0.1"
                 android:src="@drawable/icon_search"
                 android:tint="@color/mediumGray" />
+
+            <EditText
+                android:id="@+id/edt_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:background="@android:color/transparent"
+                android:gravity="center_vertical"
+                android:hint="Search"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textColor="@color/black"
+                android:textColorHint="@color/darkGray"
+                android:textSize="14sp" />
 
         </LinearLayout>
 

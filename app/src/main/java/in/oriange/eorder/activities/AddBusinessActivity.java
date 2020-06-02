@@ -263,8 +263,7 @@ public class AddBusinessActivity extends AppCompatActivity {
         edtSubtype.setOnClickListener(v -> {
 
             if (edtNature.getText().toString().trim().isEmpty()) {
-                edtNature.setError("Please select the nature of business");
-                edtNature.requestFocus();
+                Utilities.showMessage("Please select the nature of business", context, 2);
                 return;
             }
 

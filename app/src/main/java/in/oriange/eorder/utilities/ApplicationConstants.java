@@ -38,6 +38,8 @@ public class ApplicationConstants {
     // EORDER BETA
     private static final String API_LINK = "https://gstkhata.com/EOrderBook/Api/";
     public static final String IMAGE_LINK = "https://gstkhata.com/EOrderBook/images/";
+//    private static final String API_LINK = "http://3.7.171.217/Api/";
+//    public static final String IMAGE_LINK = "http://3.7.171.217/images/";
 
     //LIVE API LINK V17
 //    private static final String API_LINK = "https://joinsta.in/Api_v17/";

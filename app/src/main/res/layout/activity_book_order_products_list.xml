@@ -37,8 +37,7 @@
                     android:layout_marginRight="5dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitXY"
-                    android:src="@drawable/icon_backarrow_black"
-                    android:tint="@color/black" />
+                    android:src="@drawable/icon_backarrow_black" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"

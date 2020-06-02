@@ -61,6 +61,7 @@
                 android:maxLines="1"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:text="Product Name"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -73,6 +74,7 @@
                 android:maxLines="2"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
+                android:text="Product Description"
                 android:textColor="@color/darkGray"
                 android:textSize="14sp" />
 
@@ -84,17 +86,25 @@
                 android:paddingRight="5dp"
                 android:paddingBottom="2dp">
 
-                <TextView
-                    android:id="@+id/tv_in_stock"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:textColor="@color/darkGray"
-                    android:textSize="14sp" />
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tv_in_stock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/button_focusfilled_green"
+                        android:gravity="center"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:text="In Stock"
+                        android:textColor="@color/white"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/tv_price"
@@ -104,6 +114,7 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:gravity="center"
+                    android:text="1,200/BOX"
                     android:maxLines="2"
                     android:textColor="@color/darkGray"
                     android:textSize="14sp" />

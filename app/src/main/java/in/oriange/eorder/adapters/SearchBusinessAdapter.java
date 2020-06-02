@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -21,6 +22,7 @@ import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
@@ -108,7 +110,6 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         holder.container_tags.setTags(topFiveTagsList);
 
-
         if (!searchDetails.getOffer_count().equals("0")) {
             if (Integer.parseInt(searchDetails.getOffer_count()) == 1) {
                 holder.tv_offers.setText("1 Offer");
@@ -119,10 +120,26 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             holder.tv_offers.setText("No Offers");
         }
 
-        if (!searchDetails.getDeliveryType().equals(""))
-            holder.tv_delivery_type.setText(searchDetails.getDeliveryType());
-        else
-            holder.tv_delivery_type.setVisibility(View.GONE);
+        if (searchDetails.getIs_pick_up_available().equals("1")) {
+            holder.tv_store_pickup.setTextColor(context.getResources().getColor(R.color.green));
+            holder.imv_store_pickup.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_check));
+            holder.imv_store_pickup.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            holder.tv_store_pickup.setTextColor(context.getResources().getColor(R.color.red));
+            holder.imv_store_pickup.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cross));
+            holder.imv_store_pickup.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
+        if (searchDetails.getIs_home_delivery_available().equals("1")) {
+            holder.tv_home_delivery.setTextColor(context.getResources().getColor(R.color.green));
+            holder.imv_home_delivery.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_check));
+            holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else {
+            holder.tv_home_delivery.setTextColor(context.getResources().getColor(R.color.red));
+            holder.imv_home_delivery.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cross));
+            holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+        }
+
 
         holder.cv_mainlayout.setOnClickListener(v ->
                 context.startActivity(new Intent(context, ViewSearchBizDetailsActivity.class)
@@ -152,10 +169,6 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         holder.ll_book_order.setOnClickListener(v -> {
             if (searchDetails.getCan_book_order().equals("1"))
-
-//                context.startActivity(new Intent(context, BookOrderOrderTypeSelectActivity.class)
-//                        .putExtra("businessOwnerId", searchDetails.getId()));
-
                 context.startActivity(new Intent(context, BookOrderProductsListActivity.class)
                         .putExtra("businessOwnerId", searchDetails.getId())
                         .putExtra("businessOwnerAddress", searchDetails.getAddress())
@@ -175,7 +188,8 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         private CardView cv_mainlayout;
         private TagContainerLayout container_tags;
-        private TextView tv_business_name, tv_address, tv_offers, tv_delivery_type;
+        private TextView tv_business_name, tv_address, tv_offers, tv_store_pickup, tv_home_delivery;
+        private ImageView imv_store_pickup, imv_home_delivery;
         private LinearLayout ll_add, ll_enquire, ll_offer, ll_book_order;
 
         public MyViewHolder(View view) {
@@ -184,7 +198,10 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             container_tags = view.findViewById(R.id.container_tags);
             tv_business_name = view.findViewById(R.id.tv_business_name);
             tv_address = view.findViewById(R.id.tv_address);
-            tv_delivery_type = view.findViewById(R.id.tv_delivery_type);
+            tv_store_pickup = view.findViewById(R.id.tv_store_pickup);
+            tv_home_delivery = view.findViewById(R.id.tv_home_delivery);
+            imv_store_pickup = view.findViewById(R.id.imv_store_pickup);
+            imv_home_delivery = view.findViewById(R.id.imv_home_delivery);
             tv_offers = view.findViewById(R.id.tv_offers);
             ll_add = view.findViewById(R.id.ll_add);
             ll_enquire = view.findViewById(R.id.ll_enquire);

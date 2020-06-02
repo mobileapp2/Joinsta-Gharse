@@ -20,6 +20,7 @@ import java.util.List;
 import in.oriange.eorder.R;
 import in.oriange.eorder.activities.ViewMyProductDetailsActivity;
 import in.oriange.eorder.models.BookOrderProductsListModel;
+import in.oriange.eorder.utilities.Utilities;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
 
@@ -78,18 +79,18 @@ public class BusinessProductsListAdapter extends RecyclerView.Adapter<BusinessPr
         } else {
             holder.tv_no_price_available.setVisibility(View.GONE);
             holder.tv_price.setVisibility(View.VISIBLE);
-            holder.tv_price.setText("₹ " + Integer.parseInt(productDetails.getSelling_price()) + "/" + productDetails.getUnit_of_measure());
+            holder.tv_price.setText("₹ " + Utilities.getCommaSeparatedNumber(Integer.parseInt(productDetails.getSelling_price())) + "/" + productDetails.getUnit_of_measure());
         }
 
         if (holder.tv_productinfo.getText().toString().trim().equals(""))
             holder.tv_productinfo.setVisibility(View.GONE);
 
         if (productDetails.getIn_stock().equals("1")) {
-            holder.tv_in_stock.setText("In Stock");
-            holder.tv_in_stock.setTextColor(context.getResources().getColor(R.color.green));
+            holder.tv_in_stock.setText("In stock");
+            holder.tv_in_stock.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
         } else if (productDetails.getIn_stock().equals("0")) {
-            holder.tv_in_stock.setText("Not In Stock");
-            holder.tv_in_stock.setTextColor(context.getResources().getColor(R.color.red));
+            holder.tv_in_stock.setText("Out of stock");
+            holder.tv_in_stock.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
         }
 
         holder.cv_mainlayout.setOnClickListener(v -> context.startActivity(new Intent(context, ViewMyProductDetailsActivity.class)

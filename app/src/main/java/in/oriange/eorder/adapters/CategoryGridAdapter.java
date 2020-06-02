@@ -11,8 +11,7 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -53,24 +52,30 @@ public class CategoryGridAdapter extends RecyclerView.Adapter<CategoryGridAdapte
                 context.startActivity(new Intent(context, BizProfEmpDetailsListActivity.class)
                         .putExtra("mainCategoryTypeId", mainCategoryTypeId)
                         .putExtra("categoryTypeId", categotyDetails.getId())
-                        .putExtra("subCategoryTypeId", "NA"));
+                        .putExtra("subCategoryTypeId", "NA")
+                        .putExtra("categoryTypeName", categotyDetails.getName()));
             }
         });
 
         if (!categotyDetails.getCategory_icon().trim().isEmpty()) {
-            Picasso.with(context)
+//            Picasso.with(context)
+//                    .load(categotyDetails.getCategory_icon().trim())
+//                    .into(holder.imv_category, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
+//                        }
+//                    });
+            Glide.with(context)
                     .load(categotyDetails.getCategory_icon().trim())
-                    .into(holder.imv_category, new Callback() {
-                        @Override
-                        public void onSuccess() {
+//                    .placeholder(context.getResources().getDrawable(R.drawable.icon_preview))
+                    .into(holder.imv_category);
 
-                        }
-
-                        @Override
-                        public void onError() {
-                            holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
-                        }
-                    });
         } else {
             holder.imv_category.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_preview));
         }

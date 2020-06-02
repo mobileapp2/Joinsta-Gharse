@@ -49,7 +49,8 @@ public class SubCategoryAdapter extends RecyclerView.Adapter<SubCategoryAdapter.
                 context.startActivity(new Intent(context, BizProfEmpDetailsListActivity.class)
                         .putExtra("mainCategoryTypeId", mainCategoryTypeId)
                         .putExtra("categoryTypeId", categoryTypeId)
-                        .putExtra("subCategoryTypeId", subCategotyDetails.getId()));
+                        .putExtra("subCategoryTypeId", subCategotyDetails.getId())
+                        .putExtra("categoryTypeName", subCategotyDetails.getName()));
             }
         });
 

@@ -31,363 +31,350 @@
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                style="@style/MaterialButton"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:text="Next"/>
+
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="5dp"
+                app:cardUseCompatPadding="true">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="5dp"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="5dp"
-                    app:cardUseCompatPadding="true">
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:padding="4dp"
+                        android:text="Purchase type"
+                        android:textColor="@color/darkGray"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="4dp"
-                            android:text="Purchase type"
-                            android:textColor="@color/darkGray"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <RadioGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:id="@+id/ll_ind"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:layout_gravity="center"
-                                    android:padding="2dp"
-                                    android:src="@drawable/icon_individual_order" />
-
-                                <RadioButton
-                                    android:id="@+id/rb_individual"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:paddingLeft="-30dp"
-                                    android:text="Individual"
-                                    android:textSize="16sp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_biz"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:layout_gravity="center"
-                                    android:padding="2dp"
-                                    android:src="@drawable/icon_business_order" />
-
-                                <RadioButton
-                                    android:id="@+id/rb_business"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:paddingLeft="-30dp"
-                                    android:text="Business"
-                                    android:textSize="16sp" />
-
-                            </LinearLayout>
-
-                        </RadioGroup>
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <LinearLayout
-                            android:id="@+id/ll_individual_details"
-                            android:layout_width="match_parent"
+                            android:id="@+id/ll_ind"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:visibility="gone">
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                            <de.hdodenhof.circleimageview.CircleImageView
-                                android:id="@+id/imv_user"
+                            <ImageView
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_margin="5dp"
-                                android:gravity="center_horizontal"
-                                android:src="@drawable/icon_user" />
+                                android:layout_gravity="center"
+                                android:padding="2dp"
+                                android:src="@drawable/icon_individual_order" />
 
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:gravity="center_vertical"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_name"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:text="Priyesh Pawar"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp" />
-
-                                <TextView
-                                    android:id="@+id/tv_mobile"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:text="+91 8149115089"
-                                    android:textColor="@color/black"
-                                    android:textSize="16sp" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_business"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:visibility="gone">
-
-                            <TextView
+                            <RadioButton
+                                android:id="@+id/rb_individual"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:padding="5dp"
-                                android:text="Please select from below businesses"
-                                android:textColor="@color/black"
+                                android:gravity="center"
+                                android:paddingLeft="-30dp"
+                                android:text="Individual"
                                 android:textSize="16sp" />
 
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rv_business"
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_biz"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center"
+                                android:padding="2dp"
+                                android:src="@drawable/icon_business_order" />
+
+                            <RadioButton
+                                android:id="@+id/rb_business"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:paddingLeft="-30dp"
+                                android:text="Business"
+                                android:textSize="16sp" />
 
                         </LinearLayout>
 
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="5dp"
-                    app:cardUseCompatPadding="true">
+                    </RadioGroup>
 
                     <LinearLayout
+                        android:id="@+id/ll_individual_details"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="4dp"
-                            android:text="Delivery type"
-                            android:textColor="@color/darkGray"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <RadioGroup
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:weightSum="2">
-
-                            <LinearLayout
-                                android:id="@+id/ll_store"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:layout_gravity="center"
-                                    android:padding="2dp"
-                                    android:src="@drawable/icon_store_pickup" />
-
-                                <RadioButton
-                                    android:id="@+id/rb_store_pickup"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:paddingLeft="-30dp"
-                                    android:text="Store Pickup"
-                                    android:textSize="16sp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_home"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:layout_width="50dp"
-                                    android:layout_height="50dp"
-                                    android:layout_gravity="center"
-                                    android:padding="2dp"
-                                    android:src="@drawable/icon_home_delivery" />
-
-                                <RadioButton
-                                    android:id="@+id/rb_home_delivery"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:paddingLeft="-30dp"
-                                    android:text="Home Delivery"
-                                    android:textSize="16sp" />
-
-                            </LinearLayout>
-
-                        </RadioGroup>
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imv_user"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_margin="5dp"
+                            android:gravity="center_horizontal"
+                            android:src="@drawable/icon_user" />
 
                         <LinearLayout
-                            android:id="@+id/ll_store_pickup"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:visibility="gone">
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tv_store_address"
+                                android:id="@+id/tv_name"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:padding="5dp"
                                 android:text="Priyesh Pawar"
                                 android:textColor="@color/black"
                                 android:textSize="16sp" />
 
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_home_delivery"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:visibility="gone">
-
                             <TextView
+                                android:id="@+id/tv_mobile"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:padding="5dp"
-                                android:text="Please select from below addresses"
+                                android:layout_marginTop="5dp"
+                                android:text="+91 8149115089"
                                 android:textColor="@color/black"
                                 android:textSize="16sp" />
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/rv_address"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
 
                         </LinearLayout>
 
                     </LinearLayout>
 
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/cv_images"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    app:cardBackgroundColor="@color/white"
-                    app:cardCornerRadius="5dp"
-                    app:cardUseCompatPadding="true">
-
                     <LinearLayout
+                        android:id="@+id/ll_business"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="4dp"
-                            android:paddingTop="2dp"
-                            android:paddingRight="4dp"
-                            android:paddingBottom="2dp"
-                            android:text="Delivery type"
-                            android:textColor="@color/darkGray"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="2dp"
-                            android:text="Please upload images of any specific product needed" />
+                            android:padding="5dp"
+                            android:text="Please select from below businesses"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/rv_images"
+                            android:id="@+id/rv_business"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
                     </LinearLayout>
 
-                </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
-            </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-        </ScrollView>
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="5dp"
+                app:cardUseCompatPadding="true">
 
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/btn_save"
-            style="@style/Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:backgroundTint="@color/white"
-            android:text="Next"
-            android:textColor="@color/red"
-            android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-    </LinearLayout>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="4dp"
+                        android:text="Delivery type"
+                        android:textColor="@color/darkGray"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:id="@+id/ll_store"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center"
+                                android:padding="2dp"
+                                android:src="@drawable/icon_store_pickup" />
+
+                            <RadioButton
+                                android:id="@+id/rb_store_pickup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:paddingLeft="-30dp"
+                                android:text="Store Pickup"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_home"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center"
+                                android:padding="2dp"
+                                android:src="@drawable/icon_home_delivery" />
+
+                            <RadioButton
+                                android:id="@+id/rb_home_delivery"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:paddingLeft="-30dp"
+                                android:text="Home Delivery"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+
+                    </RadioGroup>
+
+                    <LinearLayout
+                        android:id="@+id/ll_store_pickup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/tv_store_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Priyesh Pawar"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_home_delivery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Please select from below addresses"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="5dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="4dp"
+                        android:paddingTop="2dp"
+                        android:paddingRight="4dp"
+                        android:paddingBottom="2dp"
+                        android:text="Delivery type"
+                        android:textColor="@color/darkGray"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:text="Please upload images of any specific product needed" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_images"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

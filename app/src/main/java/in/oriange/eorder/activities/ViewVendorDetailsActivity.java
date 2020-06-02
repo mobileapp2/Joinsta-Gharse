@@ -98,7 +98,11 @@ public class ViewVendorDetailsActivity extends AppCompatActivity {
         vendorDetails = (VendorModel.ResultBean) getIntent().getSerializableExtra("vendorDetails");
 
         tvName.setText(vendorDetails.getVendorCodeName());
-        tvCity.setText(vendorDetails.getCity());
+
+        if (!vendorDetails.getCity().equals(""))
+            tvCity.setText(vendorDetails.getCity());
+        else
+            tvCity.setVisibility(View.GONE);
 
         if (!vendorDetails.getBusiness_name().equals(""))
             tvBusinessCodeName.setText("Business: " + vendorDetails.getBusiness_code() + " - " + vendorDetails.getBusiness_name());

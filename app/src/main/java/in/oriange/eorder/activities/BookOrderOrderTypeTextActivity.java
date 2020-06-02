@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonArray;
 
 import butterknife.BindView;
@@ -27,7 +27,7 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
     @BindView(R.id.edt_order_text)
     EditText edtOrderText;
     @BindView(R.id.btn_save)
-    ExtendedFloatingActionButton btnSave;
+    MaterialButton btnSave;
 
     private Context context;
     private String businessOwnerId, businessOwnerAddress;

@@ -38,7 +38,7 @@
                 android:id="@+id/tv_prime"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@drawable/button_focusfilled_orange"
+                android:background="@drawable/button_focusfilled_red"
                 android:gravity="center"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"

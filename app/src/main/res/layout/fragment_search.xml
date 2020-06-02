@@ -53,7 +53,7 @@
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:gravity="center_vertical"
-                        android:hint="Search for businesses"
+                        android:hint="Search for business"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:textColor="@color/black"

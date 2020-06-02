@@ -23,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.hsalf.smilerating.SmileRating;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -40,22 +41,26 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class AddRatingAndReviewActivity extends AppCompatActivity {
 
     @BindView(R.id.edt_profile_name)
     AppCompatEditText edtProfileName;
+    @BindView(R.id.btn_save)
+    MaterialButton btnSave;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.edt_public_name)
+    EditText edtPublicName;
+    @BindView(R.id.ib_edit_public_name)
+    ImageButton ibEditPublicName;
+    @BindView(R.id.edt_title)
+    EditText edtTitle;
     @BindView(R.id.edt_review)
     EditText edtReview;
     @BindView(R.id.smile_rating)
     SmileRating smileRating;
-    @BindView(R.id.btn_save)
-    Button btnSave;
-    @BindView(R.id.edt_title)
-    MaterialEditText edtTitle;
-    @BindView(R.id.edt_public_name)
-    MaterialEditText edtPublicName;
-    @BindView(R.id.ib_edit_public_name)
-    ImageButton ibEditPublicName;
 
     private Context context;
     private UserSessionManager session;
@@ -80,6 +85,7 @@ public class AddRatingAndReviewActivity extends AppCompatActivity {
     private void init() {
         context = AddRatingAndReviewActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
     }
 
@@ -413,7 +419,7 @@ public class AddRatingAndReviewActivity extends AppCompatActivity {
         edtProfileName.setText(profileName);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -116,31 +116,62 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp">
 
-                    <TextView
-                        android:id="@+id/tv_productprice"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:padding="4dp"
-                        android:text="₹120 / kg"
-                        android:textColor="@color/mediumGray"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/tv_is_tax_inclusive"
-                        android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/tv_stock_availability"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button_focusfilled_green"
+                            android:paddingLeft="10dp"
+                            android:paddingTop="5dp"
+                            android:paddingRight="10dp"
+                            android:paddingBottom="5dp"
+                            android:text="Out of Stock"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center|bottom"
-                        android:layout_weight="1"
-                        android:gravity="start"
-                        android:padding="4dp"
-                        android:text="(Inclusive of all taxes)"
-                        android:textColor="@color/mediumGray"
-                        android:textSize="12sp" />
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_productprice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:paddingLeft="4dp"
+                            android:paddingTop="4dp"
+                            android:paddingRight="4dp"
+                            android:text="₹120 / kg"
+                            android:textColor="@color/mediumGray"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_is_tax_inclusive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:paddingLeft="4dp"
+                            android:paddingRight="4dp"
+                            android:text="(Inclusive of all taxes)"
+                            android:textColor="@color/mediumGray"
+                            android:textSize="12sp" />
+
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -148,6 +179,7 @@
                     android:id="@+id/tv_saved"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
                     android:gravity="center"
                     android:textSize="16sp" />
 
@@ -162,27 +194,33 @@
                 android:textColor="@color/red"
                 android:textSize="20sp" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginTop="5dp"
-                android:background="@color/lightGray" />
+            <!--            <View-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="0.5dp"-->
+            <!--                android:layout_marginTop="5dp"-->
+            <!--                android:layout_marginBottom="5dp"-->
+            <!--                android:background="@color/lightGray" />-->
 
-            <TextView
-                android:id="@+id/tv_stock_availability"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:padding="10dp"
-                android:text="Out of Stock"
-                android:textColor="@color/red"
-                android:textSize="20sp" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/tv_stock_availability"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:background="@drawable/button_focusfilled_green"-->
+            <!--                android:paddingLeft="10dp"-->
+            <!--                android:paddingTop="5dp"-->
+            <!--                android:paddingRight="10dp"-->
+            <!--                android:paddingBottom="5dp"-->
+            <!--                android:text="Out of Stock"-->
+            <!--                android:textColor="@color/white"-->
+            <!--                android:textSize="16sp" />-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginBottom="5dp"
-                android:background="@color/lightGray" />
+            <!--            <View-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="0.5dp"-->
+            <!--                android:layout_marginTop="5dp"-->
+            <!--                android:layout_marginBottom="5dp"-->
+            <!--                android:background="@color/lightGray" />-->
 
             <LinearLayout
                 android:id="@+id/ll_description"
@@ -205,7 +243,7 @@
                     android:layout_gravity="start"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:textColor="@color/black"
+                    android:textColor="@color/darkGray"
                     android:textSize="16sp" />
 
             </LinearLayout>

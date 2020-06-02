@@ -3,7 +3,6 @@ package in.oriange.eorder.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -12,6 +11,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import in.oriange.eorder.R;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
 
 public class FullScreenTextEditActivity extends AppCompatActivity {
@@ -33,6 +33,7 @@ public class FullScreenTextEditActivity extends AppCompatActivity {
 
     private void init() {
         context = FullScreenTextEditActivity.this;
+        changeStatusBar(context, getWindow());
         edt_text = findViewById(R.id.edt_text);
         btn_save = findViewById(R.id.btn_save);
     }
@@ -54,13 +55,8 @@ public class FullScreenTextEditActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 
     @Override

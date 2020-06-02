@@ -9,7 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -28,9 +28,16 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="Update your review"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                style="@style/MaterialButton"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:text="Update"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -44,31 +51,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="5dp">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.rengwuxian.materialedittext.MaterialEditText
-                    android:id="@+id/edt_public_name"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
-                    android:clickable="false"
-                    android:focusable="false"
-                    android:hint="Your Public Name"
-                    android:inputType="textCapWords"
-                    android:longClickable="false"
-                    android:textSize="16sp"
-                    app:met_floatingLabel="highlight"
-                    app:met_helperText="This is how you'll appear to other users"
-                    app:met_helperTextAlwaysShown="true"
-                    app:met_helperTextColor="@color/helper_color"
-                    app:met_textColorHint="@color/darkGray"
-                    app:met_underlineColor="@color/mediumGray" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TitleTextView"
+                        android:text="Your Public Name" />
+
+                    <EditText
+                        android:id="@+id/edt_public_name"
+                        style="@style/EditableEditText"
+                        android:inputType="textCapWords" />
+
+                    <TextView
+                        style="@style/TitleTextView"
+                        android:text="This is how you'll appear to other users"
+                        android:textColor="@color/blue"
+                        android:textStyle="italic" />
+
+                </LinearLayout>
 
                 <ImageButton
                     android:id="@+id/ib_edit_public_name"
@@ -80,50 +91,45 @@
                     android:src="@drawable/icon_edit"
                     android:tint="@color/black" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Title" />
+
+                <EditText
+                    android:id="@+id/edt_title"
+                    style="@style/EditableEditText"
+                    android:inputType="textCapWords" />
 
             </LinearLayout>
 
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/edt_title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:hint="Title"
-                android:inputType="textCapWords"
-                android:textSize="16sp"
-                app:met_floatingLabel="highlight"
-                app:met_textColorHint="@color/darkGray"
-                app:met_underlineColor="@color/mediumGray" />
+                android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/edt_review"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/bg_outline"
-                android:gravity="top"
-                android:hint="What do you think?"
-                android:inputType="textCapSentences|textMultiLine"
-                android:padding="5dp"
-                android:textColorHint="@color/darkGray"
-                android:textSize="16sp" />
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="What do you think?" />
+
+                <EditText
+                    android:id="@+id/edt_review"
+                    style="@style/EditableEditText"
+                    android:inputType="textCapSentences|textMultiLine" />
+
+            </LinearLayout>
 
             <com.hsalf.smilerating.SmileRating
                 android:id="@+id/smile_rating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp" />
-
-            <android.widget.Button
-                android:id="@+id/btn_save"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:background="@drawable/button_background_filled"
-                android:text="Post this review"
-                android:textColor="@color/white" />
 
         </LinearLayout>
 

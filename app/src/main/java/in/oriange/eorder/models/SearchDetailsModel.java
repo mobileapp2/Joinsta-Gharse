@@ -237,6 +237,7 @@ public class SearchDetailsModel implements Serializable {
 
             public String getIs_pick_up_available() {
                 return is_pick_up_available;
+//                return "0";
             }
 
             public void setIs_pick_up_available(String is_pick_up_available) {
@@ -245,6 +246,7 @@ public class SearchDetailsModel implements Serializable {
 
             public String getIs_home_delivery_available() {
                 return is_home_delivery_available;
+//                return "0";
             }
 
             public void setIs_home_delivery_available(String is_home_delivery_available) {

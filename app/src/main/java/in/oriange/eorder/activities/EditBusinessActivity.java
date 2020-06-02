@@ -394,8 +394,7 @@ public class EditBusinessActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (edtNature.getText().toString().trim().isEmpty()) {
-                    edtNature.setError("Please select the nature of business");
-                    edtNature.requestFocus();
+                    Utilities.showMessage("Please select the nature of business", context, 2);
                     return;
                 }
 

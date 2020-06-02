@@ -1,11 +1,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingLeft="20dp"
-    android:paddingRight="20dp">
+    android:padding="10dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,48 +11,71 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_countrycode_changepassword"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="start|center_vertical"
-            android:text="+91"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
-
-        <View
-            android:layout_width="0.7dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/mediumGray" />
-
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/edt_mobile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75"
-            android:hint="Mobile"
-            android:inputType="number"
-            android:maxLength="14"
-            android:textSize="16sp"
-            app:met_floatingLabel="highlight"
-            app:met_textColorHint="@color/darkGray"
-            app:met_underlineColor="@color/mediumGray" />
+            android:layout_weight="1"
+            android:text="Enter Mobile"
+            android:textColor="@color/black"
+            android:textSize="22dp" />
+
+        <ImageButton
+            android:id="@+id/ib_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/icon_close"
+            android:tint="@color/darkGray" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="3dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_countrycode_changepassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="+91"
+                android:textColor="@color/black"
+                android:textSize="14sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/darkGray" />
+
+            <EditText
+                android:id="@+id/edt_mobile"
+                style="@style/EditableEditText"
+                android:inputType="number"
+                android:maxLength="14" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <android.widget.Button
         android:id="@+id/btn_save"
+        style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_margin="10dp"
-        android:background="@drawable/button_focusfilled"
-        android:text="SEND OTP"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
+        android:text="Send OTP"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
 
 
 </LinearLayout>

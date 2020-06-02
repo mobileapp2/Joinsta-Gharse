@@ -446,8 +446,8 @@
                     app:container_border_width="0dp"
                     app:container_enable_drag="false"
                     app:horizontal_interval="5dp"
-                    app:tag_background_color="@color/white"
-                    app:tag_border_color="@color/darkGray"
+                    app:tag_background_color="@color/lightred"
+                    app:tag_border_color="@color/lightred"
                     app:tag_border_width="1dp"
                     app:tag_clickable="false"
                     app:tag_enable_cross="false"
@@ -492,6 +492,7 @@
                     android:focusable="false"
                     android:gravity="center_vertical"
                     android:longClickable="false"
+                    android:paddingTop="2dp"
                     android:text="Email"
                     android:textColor="@color/black"
                     android:textSize="16sp" />
@@ -506,6 +507,7 @@
                     android:focusable="false"
                     android:gravity="center_vertical"
                     android:longClickable="false"
+                    android:paddingTop="2dp"
                     android:text="Website"
                     android:textColor="@color/black"
                     android:textSize="16sp" />

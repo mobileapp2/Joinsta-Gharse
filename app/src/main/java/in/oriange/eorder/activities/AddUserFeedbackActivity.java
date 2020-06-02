@@ -43,6 +43,7 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.eorder.utilities.Utilities.loadJSONForCountryCode;
 
@@ -52,8 +53,7 @@ public class AddUserFeedbackActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private TextView tv_countrycode;
-    private MaterialEditText edt_mobile;
-    private EditText edt_feedback;
+    private EditText edt_mobile, edt_feedback;
     private RatingBar rb_feedbackstars;
     private MaterialButton btn_save;
 
@@ -76,6 +76,7 @@ public class AddUserFeedbackActivity extends AppCompatActivity {
     private void init() {
         context = AddUserFeedbackActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         tv_countrycode = findViewById(R.id.tv_countrycode);
@@ -370,13 +371,8 @@ public class AddUserFeedbackActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 
     @Override

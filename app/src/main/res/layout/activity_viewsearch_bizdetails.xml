@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:background="@color/white"
             android:fitsSystemWindows="true"
-            app:contentScrim="?colorPrimary"
+            app:contentScrim="@color/white"
             app:expandedTitleMarginStart="24dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
@@ -86,7 +86,8 @@
                 android:background="@android:color/transparent"
                 android:fitsSystemWindows="false"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:titleTextColor="@color/black" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 

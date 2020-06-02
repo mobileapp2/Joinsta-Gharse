@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -150,15 +151,17 @@ public class ViewMyProductDetailsActivity extends AppCompatActivity {
 
         if (productDetails.getIs_inclusive_tax().equals("1"))
             tvIsTaxInclusive.setVisibility(View.VISIBLE);
-        else
+        else {
             tvIsTaxInclusive.setVisibility(View.GONE);
+            tvProductprice.setGravity(Gravity.CENTER);
+        }
 
         if (productDetails.getIn_stock().equals("1")) {
-            tvStockAvailability.setText("In Stock");
-            tvStockAvailability.setTextColor(context.getResources().getColor(R.color.green));
+            tvStockAvailability.setText("In stock");
+            tvStockAvailability.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
         } else if (productDetails.getIn_stock().equals("0")) {
-            tvStockAvailability.setText("Not In Stock");
-            tvStockAvailability.setTextColor(context.getResources().getColor(R.color.red));
+            tvStockAvailability.setText("Out of stock");
+            tvStockAvailability.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
         }
 
         int maxRetailPrice = (int) Float.parseFloat(productDetails.getMax_retail_price());

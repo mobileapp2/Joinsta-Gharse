@@ -29,15 +29,14 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="Joinsta Development"
-            android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textColor="@color/darkGray"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="This is the sub sub heading"
@@ -55,8 +54,8 @@
             app:container_border_width="0dp"
             app:container_enable_drag="false"
             app:horizontal_interval="5dp"
-            app:tag_background_color="@color/lightGray"
-            app:tag_border_color="@color/lightGray"
+            app:tag_background_color="@color/lightred"
+            app:tag_border_color="@color/lightred"
             app:tag_clickable="false"
             app:tag_enable_cross="false"
             app:tag_text_color="@color/darkGray"
@@ -64,17 +63,64 @@
             app:tag_theme="none"
             app:vertical_interval="10dp" />
 
-        <TextView
-            android:id="@+id/tv_delivery_type"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="Home delivery and store pickup available"
-            android:textColor="@color/green"
-            android:textSize="16sp" />
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imv_store_pickup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_check"
+                    android:tint="@color/green" />
+
+                <TextView
+                    android:id="@+id/tv_store_pickup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Store Pickup"
+                    android:textColor="@color/green"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imv_home_delivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_check"
+                    android:tint="@color/green" />
+
+                <TextView
+                    android:id="@+id/tv_home_delivery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:text="Home Delivery"
+                    android:textColor="@color/green"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"

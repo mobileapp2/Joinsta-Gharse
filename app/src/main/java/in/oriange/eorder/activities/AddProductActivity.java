@@ -223,6 +223,13 @@ public class AddProductActivity extends AppCompatActivity {
             return;
         }
 
+        if (edtDescription.getText().toString().trim().isEmpty()) {
+            edtDescription.setError("Please enter product description");
+            edtDescription.requestFocus();
+            edtDescription.getParent().requestChildFocus(edtDescription, edtDescription);
+            return;
+        }
+
         if (edtUnitOfMeasure.getText().toString().trim().isEmpty()) {
             Utilities.showMessage("Please select unit of measurement", context, 2);
             return;

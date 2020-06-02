@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +34,8 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class BizProfEmpDetailsListActivity extends AppCompatActivity {
 
     private Context context;
@@ -45,6 +48,7 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
 
     public static List<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
     private String userId, mainCategoryTypeId, categoryTypeId, subCategoryTypeId;
+    private GetSearchList getSearchList = new GetSearchList();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,7 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
     private void init() {
         context = BizProfEmpDetailsListActivity.this;
         session = new UserSessionManager(context);
-
+        changeStatusBar(context, getWindow());
         cv_banner = findViewById(R.id.cv_banner);
         imageSlider = findViewById(R.id.imageSlider);
         ll_nopreview = findViewById(R.id.ll_nopreview);
@@ -77,7 +81,7 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
         subCategoryTypeId = getIntent().getStringExtra("subCategoryTypeId");
 
         if (Utilities.isNetworkAvailable(context)) {
-            new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+            getSearchList.execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
             if (subCategoryTypeId.equals("NA")) {
                 new GetBannersForCategory().execute(categoryTypeId, session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
             } else {
@@ -282,13 +286,16 @@ public class BizProfEmpDetailsListActivity extends AppCompatActivity {
     private void setUpToolbar() {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+        AppCompatEditText toolbar_title = findViewById(R.id.toolbar_title);
+        toolbar_title.setText(getIntent().getStringExtra("categoryTypeName"));
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getSearchList.cancel(true);
     }
 }

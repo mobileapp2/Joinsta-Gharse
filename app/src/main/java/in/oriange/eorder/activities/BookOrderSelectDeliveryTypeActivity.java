@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -95,8 +95,6 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     RecyclerView rvBusiness;
     @BindView(R.id.ll_business)
     LinearLayout llBusiness;
-    @BindView(R.id.btn_save)
-    ExtendedFloatingActionButton btnSave;
     @BindView(R.id.rb_store_pickup)
     RadioButton rbStorePickup;
     @BindView(R.id.ll_store)
@@ -117,6 +115,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     RecyclerView rvImages;
     @BindView(R.id.cv_images)
     CardView cvImages;
+    @BindView(R.id.btn_save)
+    MaterialButton btnSave;
 
     private Context context;
     private UserSessionManager session;
@@ -642,15 +642,15 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         }
 
         @Override
-        public ImagesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.grid_row_images, parent, false);
-            ImagesAdapter.MyViewHolder myViewHolder = new ImagesAdapter.MyViewHolder(view);
+            MyViewHolder myViewHolder = new MyViewHolder(view);
             return myViewHolder;
         }
 
         @Override
-        public void onBindViewHolder(final ImagesAdapter.MyViewHolder holder, final int pos) {
+        public void onBindViewHolder(final MyViewHolder holder, final int pos) {
             final int position = holder.getAdapterPosition();
 
             if (!imageList.get(position).getId().isEmpty()) {

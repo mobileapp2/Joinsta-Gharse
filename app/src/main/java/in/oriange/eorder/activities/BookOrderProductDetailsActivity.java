@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageButton;
@@ -47,6 +48,7 @@ import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.getCommaSeparatedNumber;
 
 public class BookOrderProductDetailsActivity extends AppCompatActivity {
@@ -179,8 +181,10 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
 
         if (productDetails.getIs_inclusive_tax().equals("1"))
             tvIsTaxInclusive.setVisibility(View.VISIBLE);
-        else
+        else {
             tvIsTaxInclusive.setVisibility(View.GONE);
+            tvProductprice.setGravity(Gravity.CENTER);
+        }
 
         if (productDetails.getIn_stock().equals("1"))
             tvOutOfStock.setVisibility(View.GONE);
@@ -491,12 +495,19 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if ((!appBarExpanded)) {
-            animToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+            animToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
             collapsingToolbar.setTitle("Product Details");
+            changeStatusBar(context, getWindow());
         } else {
             collapsingToolbar.setTitle("");
             animToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+        collapsingToolbar.setCollapsedTitleTextColor(context.getResources().getColor(R.color.black));
+        collapsingToolbar.setExpandedTitleColor(context.getResources().getColor(R.color.black));
         return super.onPrepareOptionsMenu(menu);
     }
 

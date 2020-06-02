@@ -198,7 +198,8 @@ public class Utilities {
             }
         });
 
-        alertD.show();
+        if (context != null)
+            alertD.show();
     }
 
     public static void showAlertDialogNormal(Context context, String message) {

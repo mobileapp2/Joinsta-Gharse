@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -29,7 +29,7 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:text="Basic Information"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
 
@@ -90,58 +90,75 @@
                         android:orientation="vertical"
                         android:padding="5dp">
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_fname"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Name"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical">
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_reg_mobile"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Registered Mobile No."
-                            android:inputType="number"
-                            android:longClickable="false"
-                            android:textColorHint="@color/colorAccent"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Name" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_mname"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Middle Name"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:textSize="16sp"
-                            android:visibility="gone"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            <EditText
+                                android:id="@+id/edt_fname"
+                                style="@style/UnEditableEditText"
+                                android:inputType="textCapWords|textNoSuggestions" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_lname"
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Last Name"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:textSize="16sp"
-                            android:visibility="gone"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Registered Mobile No." />
+
+                            <EditText
+                                android:id="@+id/edt_reg_mobile"
+                                style="@style/UnEditableEditText"
+                                android:inputType="number" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Name *" />
+
+                            <EditText
+                                android:id="@+id/edt_mname"
+                                style="@style/UnEditableEditText"
+                                android:inputType="textCapWords|textNoSuggestions" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Name *" />
+
+                            <EditText
+                                android:id="@+id/edt_lname"
+                                style="@style/UnEditableEditText"
+                                android:inputType="textCapWords|textNoSuggestions" />
+
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -187,89 +204,111 @@
 
                         </LinearLayout>
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_bloodgroup"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Blood Group"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical">
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_education"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Education"
-                            android:longClickable="false"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Blood Group" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_specify"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Specification"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                            <EditText
+                                android:id="@+id/edt_bloodgroup"
+                                style="@style/UnEditableEditText" />
 
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_nativeplace"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="Current City"
-                            android:inputType="textCapWords|textNoSuggestions"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
-
-                        <com.rengwuxian.materialedittext.MaterialEditText
-                            android:id="@+id/edt_about"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:hint="About Me"
-                            android:inputType="textNoSuggestions|textMultiLine"
-                            android:textSize="16sp"
-                            app:met_floatingLabel="highlight"
-                            app:met_textColorHint="@color/darkGray"
-                            app:met_underlineColor="@color/mediumGray" />
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Education" />
+
+                            <EditText
+                                android:id="@+id/edt_education"
+                                style="@style/UnEditableEditText" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Specification" />
+
+                            <EditText
+                                android:id="@+id/edt_specify"
+                                style="@style/UnEditableEditText"
+                                android:inputType="textCapWords|textNoSuggestions" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="Current City" />
+
+                            <EditText
+                                android:id="@+id/edt_nativeplace"
+                                style="@style/UnEditableEditText"
+                                android:inputType="textCapWords|textNoSuggestions" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/TitleTextView"
+                                android:text="About Me" />
+
+                            <EditText
+                                android:id="@+id/edt_about"
+                                style="@style/UnEditableEditText"
+                                android:inputType="textNoSuggestions|textMultiLine" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
                             android:orientation="horizontal">
 
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/edt_referral_code"
+                            <LinearLayout
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:clickable="false"
-                                android:focusable="false"
-                                android:hint="Referral Code"
-                                android:inputType="textCapWords|textNoSuggestions"
-                                android:textSize="16sp"
-                                app:met_floatingLabel="highlight"
-                                app:met_textColorHint="@color/darkGray"
-                                app:met_underlineColor="@color/mediumGray" />
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TitleTextView"
+                                    android:text="Referral Code" />
+
+                                <EditText
+                                    android:id="@+id/edt_referral_code"
+                                    style="@style/UnEditableEditText"
+                                    android:inputType="textNoSuggestions|textMultiLine" />
+
+                            </LinearLayout>
 
                             <ImageButton
                                 android:id="@+id/imv_share"
@@ -304,40 +343,43 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tv_countrycode_mobile"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.15"
-                                android:gravity="center"
-                                android:text="+91"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
+                                style="@style/TitleTextView"
+                                android:text="Mobile" />
 
-                            <View
-                                android:layout_width="0.7dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginBottom="10dp"
-                                android:background="@color/mediumGray" />
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/edt_mobile"
-                                android:layout_width="0dp"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.85"
-                                android:clickable="false"
-                                android:focusable="false"
-                                android:hint="Mobile"
-                                android:inputType="number"
-                                android:maxLength="14"
-                                android:textSize="16sp"
-                                app:met_floatingLabel="highlight"
-                                app:met_textColorHint="@color/darkGray"
-                                app:met_underlineColor="@color/mediumGray" />
+                                android:layout_marginLeft="3dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_countrycode_mobile"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="+91"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:background="@color/darkGray" />
+
+                                <EditText
+                                    android:id="@+id/edt_mobile"
+                                    style="@style/UnEditableEditText"
+                                    android:inputType="number"
+                                    android:maxLength="14" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -364,40 +406,43 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/tv_countrycode_landline"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.15"
-                                android:gravity="center"
-                                android:text="+91"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
+                                style="@style/TitleTextView"
+                                android:text="Landline" />
 
-                            <View
-                                android:layout_width="0.7dp"
-                                android:layout_height="match_parent"
-                                android:layout_marginTop="10dp"
-                                android:layout_marginRight="5dp"
-                                android:layout_marginBottom="10dp"
-                                android:background="@color/mediumGray" />
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/edt_landline"
-                                android:layout_width="0dp"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.85"
-                                android:clickable="false"
-                                android:focusable="false"
-                                android:hint="Landline"
-                                android:inputType="number"
-                                android:maxLength="14"
-                                android:textSize="16sp"
-                                app:met_floatingLabel="highlight"
-                                app:met_textColorHint="@color/darkGray"
-                                app:met_underlineColor="@color/mediumGray" />
+                                android:layout_marginLeft="3dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_countrycode_landline"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="+91"
+                                    android:textColor="@color/black"
+                                    android:textSize="14sp" />
+
+                                <View
+                                    android:layout_width="1dp"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:background="@color/darkGray" />
+
+                                <EditText
+                                    android:id="@+id/edt_landline"
+                                    style="@style/UnEditableEditText"
+                                    android:inputType="number"
+                                    android:maxLength="14" />
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
@@ -425,19 +470,21 @@
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
 
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/edt_email"
-                                android:layout_width="0dp"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="0.8"
-                                android:clickable="false"
-                                android:focusable="false"
-                                android:hint="Email"
-                                android:inputType="textEmailAddress|textNoSuggestions"
-                                android:textSize="16sp"
-                                app:met_floatingLabel="highlight"
-                                app:met_textColorHint="@color/darkGray"
-                                app:met_underlineColor="@color/mediumGray" />
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/TitleTextView"
+                                    android:text="Email" />
+
+                                <EditText
+                                    android:id="@+id/edt_email"
+                                    style="@style/EditableEditText"
+                                    android:inputType="textEmailAddress" />
+
+                            </LinearLayout>
 
                             <TextView
                                 android:id="@+id/tv_verify"
@@ -447,7 +494,7 @@
                                 android:gravity="center"
                                 android:padding="2dp"
                                 android:text="Verify"
-                                android:textColor="@color/colorPrimary"
+                                android:textColor="@color/green"
                                 android:textSize="14sp"
                                 android:visibility="gone" />
 

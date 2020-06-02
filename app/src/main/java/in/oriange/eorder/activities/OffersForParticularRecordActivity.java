@@ -34,6 +34,8 @@ import in.oriange.eorder.utilities.ParamsPojo;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
+
 public class OffersForParticularRecordActivity extends AppCompatActivity {
 
     private Context context;
@@ -61,6 +63,7 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
     private void init() {
 
         context = OffersForParticularRecordActivity.this;
+        changeStatusBar(context, getWindow());
         session = new UserSessionManager(context);
 
         progressBar = findViewById(R.id.progressBar);
@@ -176,7 +179,7 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -71,6 +72,7 @@ import in.oriange.eorder.utilities.Utilities;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.provideCallPremission;
 
 public class ViewSearchBizDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -971,15 +973,24 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (collapsedMenu != null && (!appBarExpanded)) {
-            toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+            toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
             collapsedMenu.add("Share")
                     .setIcon(R.drawable.icon_share)
                     .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             collapsingToolbar.setTitle(searchDetails.getBusiness_name());
+            changeStatusBar(context, getWindow());
         } else {
+            //Expanded
             collapsingToolbar.setTitle("");
             toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+
+        collapsingToolbar.setCollapsedTitleTextColor(context.getResources().getColor(R.color.black));
+        collapsingToolbar.setExpandedTitleColor(context.getResources().getColor(R.color.black));
         return super.onPrepareOptionsMenu(collapsedMenu);
     }
 

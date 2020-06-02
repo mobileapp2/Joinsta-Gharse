@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,7 +31,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.goodiebag.pinview.Pinview;
 import com.google.android.material.textfield.TextInputEditText;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -323,12 +323,13 @@ public class LoginActivity extends AppCompatActivity {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_change_mobile, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setTitle("Enter Mobile");
+//        alertDialogBuilder.setTitle("Enter Mobile");
         alertDialogBuilder.setView(promptView);
 
-        final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
+        final EditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
         tv_countrycode_changepassword = promptView.findViewById(R.id.tv_countrycode_changepassword);
         final Button btn_save = promptView.findViewById(R.id.btn_save);
+        final ImageButton ib_close = promptView.findViewById(R.id.ib_close);
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -364,6 +365,13 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        ib_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertD.dismiss();
+            }
+        });
+
         alertD.show();
 
     }
@@ -372,14 +380,16 @@ public class LoginActivity extends AppCompatActivity {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_change_password, null);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setTitle("Change Password");
+//        alertDialogBuilder.setTitle("Change Password");
         alertDialogBuilder.setView(promptView);
 
-        final MaterialEditText edt_oldpassword = promptView.findViewById(R.id.edt_oldpassword);
-        final MaterialEditText edt_newpassword = promptView.findViewById(R.id.edt_newpassword);
+        final EditText edt_oldpassword = promptView.findViewById(R.id.edt_oldpassword);
+        final EditText edt_newpassword = promptView.findViewById(R.id.edt_newpassword);
         final Button btn_save = promptView.findViewById(R.id.btn_save);
+        final ImageButton ib_close = promptView.findViewById(R.id.ib_close);
+        final LinearLayout ll_old_password = promptView.findViewById(R.id.ll_old_password);
 
-        edt_oldpassword.setVisibility(View.GONE);
+        ll_old_password.setVisibility(View.GONE);
 
         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -402,6 +412,10 @@ public class LoginActivity extends AppCompatActivity {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
             }
+        });
+
+        ib_close.setOnClickListener(v -> {
+            alertD.dismiss();
         });
 
         alertD.show();

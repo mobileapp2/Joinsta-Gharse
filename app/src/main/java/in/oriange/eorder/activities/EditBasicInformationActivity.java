@@ -18,13 +18,8 @@ import android.os.Environment;
 import android.os.Looper;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -36,7 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +48,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -87,6 +82,7 @@ import in.oriange.eorder.models.PrimarySelectionModel;
 import in.oriange.eorder.models.UserProfileDetailsModel;
 import in.oriange.eorder.utilities.APICall;
 import in.oriange.eorder.utilities.ApplicationConstants;
+import in.oriange.eorder.utilities.CountryCodeSelection;
 import in.oriange.eorder.utilities.MultipartUtility;
 import in.oriange.eorder.utilities.ParamsPojo;
 import in.oriange.eorder.utilities.UserSessionManager;
@@ -97,6 +93,7 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.eorder.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.eorder.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.eorder.utilities.Utilities.isLocationEnabled;
 import static in.oriange.eorder.utilities.Utilities.loadJSONForCountryCode;
@@ -110,12 +107,13 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     private ProgressDialog pd;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CircleImageView imv_user;
-    private MaterialEditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
-            edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile, edt_about;
+    private EditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
+            edt_specify, edt_nativeplace, edt_reg_mobile, edt_about;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
-    private ImageButton ib_add_mobile, ib_add_landline, ib_add_email, ib_location;
-    private TextView tv_verify, tv_verified, tv_countrycode_mobile, tv_countrycode_landline;
+    private Button btn_add_mobile, btn_add_landline, btn_add_email;
+    private ImageButton ib_location;
+    private MaterialButton btn_save;
 
     private ArrayList<MasterModel> bloodGroupList, educationList;
     private ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList, emailLayoutsList;
@@ -154,6 +152,7 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     private void init() {
         context = EditBasicInformationActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         imv_user = findViewById(R.id.imv_user);
@@ -165,17 +164,9 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         edt_bloodgroup = findViewById(R.id.edt_bloodgroup);
         edt_education = findViewById(R.id.edt_education);
         edt_specify = findViewById(R.id.edt_specify);
-        edt_mobile = findViewById(R.id.edt_mobile);
-        edt_landline = findViewById(R.id.edt_landline);
-        edt_email = findViewById(R.id.edt_email);
         edt_reg_mobile = findViewById(R.id.edt_reg_mobile);
         edt_nativeplace = findViewById(R.id.edt_nativeplace);
         edt_about = findViewById(R.id.edt_about);
-
-        tv_verify = findViewById(R.id.tv_verify);
-        tv_verified = findViewById(R.id.tv_verified);
-        tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
-        tv_countrycode_landline = findViewById(R.id.tv_countrycode_landline);
 
         rb_male = findViewById(R.id.rb_male);
         rb_female = findViewById(R.id.rb_female);
@@ -184,10 +175,11 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
 
-        ib_add_mobile = findViewById(R.id.ib_add_mobile);
-        ib_add_landline = findViewById(R.id.ib_add_landline);
-        ib_add_email = findViewById(R.id.ib_add_email);
+        btn_add_mobile = findViewById(R.id.btn_add_mobile);
+        btn_add_landline = findViewById(R.id.btn_add_landline);
+        btn_add_email = findViewById(R.id.btn_add_email);
         ib_location = findViewById(R.id.ib_location);
+        btn_save = findViewById(R.id.btn_save);
 
         bloodGroupList = new ArrayList<>();
         educationList = new ArrayList<>();
@@ -211,9 +203,7 @@ public class EditBasicInformationActivity extends AppCompatActivity {
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            builder.detectFileUriExposure();
-        }
+        builder.detectFileUriExposure();
     }
 
     private void setDefault() {
@@ -309,186 +299,133 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         emailSessionList = userDetails.getEmail();
 
         if (mobileSessionList != null)
-            if (mobileSessionList.size() > 0) {
+            if (mobileSessionList.size() > 0)
                 for (int i = 0; i < mobileSessionList.size(); i++) {
-                    if (i == (mobileSessionList.size() - 1)) {
-                        edt_mobile.setText(mobileSessionList.get(i).getMobile());
-                        tv_countrycode_mobile.setText(mobileSessionList.get(i).getCountry_code());
-                    } else {
-                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
-                        LinearLayout ll = (LinearLayout) rowView;
-                        mobileLayoutsList.add(ll);
-                        ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
-                        ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileSessionList.get(i).getMobile());
-                        ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(mobileSessionList.get(i).getCountry_code());
-                    }
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
+                    LinearLayout ll = (LinearLayout) rowView;
+                    mobileLayoutsList.add(ll);
+                    ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
+                    ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobileSessionList.get(i).getMobile());
+                    ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(mobileSessionList.get(i).getCountry_code());
                 }
-            }
+            else
+                addMobileLayout();
+        else
+            addMobileLayout();
+
 
         if (landlineSessionList != null)
-            if (landlineSessionList.size() > 0) {
+            if (landlineSessionList.size() > 0)
                 for (int i = 0; i < landlineSessionList.size(); i++) {
-
-                    if (i == (landlineSessionList.size() - 1)) {
-                        edt_landline.setText(landlineSessionList.get(i).getLandline_number());
-                        tv_countrycode_landline.setText(landlineSessionList.get(i).getCountry_code());
-                    } else {
-                        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
-                        LinearLayout ll = (LinearLayout) rowView;
-                        landlineLayoutsList.add(ll);
-                        ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-                        ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineSessionList.get(i).getLandline_number());
-                        ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(landlineSessionList.get(i).getCountry_code());
-                    }
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
+                    LinearLayout ll = (LinearLayout) rowView;
+                    landlineLayoutsList.add(ll);
+                    ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
+                    ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineSessionList.get(i).getLandline_number());
+                    ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(landlineSessionList.get(i).getCountry_code());
                 }
-            }
+            else
+                addLandLineLayout();
+        else
+            addLandLineLayout();
 
         if (emailSessionList != null)
-            if (emailSessionList.size() > 0) {
+            if (emailSessionList.size() > 0)
                 for (int i = 0; i < emailSessionList.size(); i++) {
-                    if (i == (emailSessionList.size() - 1)) {
-                        edt_email.setText(emailSessionList.get(i).getEmail());
-                        if (emailSessionList.get(i).getEmail_verification().equals("0")) {
-                            tv_verify.setVisibility(View.VISIBLE);
-                            tv_verified.setVisibility(View.GONE);
-                        } else {
-                            tv_verified.setVisibility(View.VISIBLE);
-                            tv_verify.setVisibility(View.GONE);
-                        }
+                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    final View rowView = inflater.inflate(R.layout.layout_add_email, null);
+                    emailLayoutsList.add((LinearLayout) rowView);
+                    ll_email.addView(rowView, ll_email.getChildCount());
+                    ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailSessionList.get(i).getEmail());
+                    if (emailSessionList.get(i).getEmail_verification().equals("0")) {
+                        (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
+                        (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.GONE);
                     } else {
-                        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                        final View rowView = inflater.inflate(R.layout.layout_add_email, null);
-                        emailLayoutsList.add((LinearLayout) rowView);
-                        ll_email.addView(rowView, ll_email.getChildCount());
-                        ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailSessionList.get(i).getEmail());
-                        if (emailSessionList.get(i).getEmail_verification().equals("0")) {
-                            (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
-                            (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.GONE);
-                        } else {
-                            (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.VISIBLE);
-                            (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.GONE);
-                        }
+                        (emailLayoutsList.get(i).findViewById(R.id.tv_verified)).setVisibility(View.VISIBLE);
+                        (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.GONE);
                     }
-
                 }
-            }
+            else
+                addEmailLayout();
+        else
+            addEmailLayout();
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private void setEventHandler() {
 
-        imv_user.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    if (doesAppNeedPermissions()) {
-                        askPermission();
+        imv_user.setOnClickListener(view -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                if (doesAppNeedPermissions()) {
+                    askPermission();
+                } else {
+                    selectImage();
+                }
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        });
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new RefreshSession().execute(userId);
+                swipeRefreshLayout.setRefreshing(false);
+            } else {
+                swipeRefreshLayout.setRefreshing(false);
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+
+        });
+
+        edt_bloodgroup.setOnClickListener(v -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetBloodGroupList().execute();
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        });
+
+        edt_education.setOnClickListener(v -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetEducationList().execute();
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        });
+
+        btn_add_mobile.setOnClickListener(v -> {
+            addMobileLayout();
+        });
+
+        btn_add_landline.setOnClickListener(v -> {
+            addLandLineLayout();
+        });
+
+        btn_add_email.setOnClickListener(v -> {
+            addEmailLayout();
+        });
+
+        ib_location.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
+                provideLocationAccess(context);
+            } else {
+                if (!isLocationEnabled(context)) {
+                    turnOnLocation(context);
+                } else {
+                    startLocationUpdates();
+                    if (MainDrawerActivity.latLng != null) {
+                        latLng = MainDrawerActivity.latLng;
+                        if (Utilities.isNetworkAvailable(context)) {
+                            new GetAddress().execute(
+                                    String.valueOf(latLng.latitude),
+                                    String.valueOf(latLng.longitude));
+                        } else {
+                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                        }
                     } else {
-                        selectImage();
-                    }
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new RefreshSession().execute(userId);
-                    swipeRefreshLayout.setRefreshing(false);
-                } else {
-                    swipeRefreshLayout.setRefreshing(false);
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-
-            }
-        });
-
-        edt_bloodgroup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetBloodGroupList().execute();
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        edt_education.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetEducationList().execute();
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
-        });
-
-        tv_countrycode_mobile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showContryCodeDialog("1");
-            }
-        });
-
-        tv_countrycode_landline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showContryCodeDialog("2");
-            }
-        });
-
-        ib_add_mobile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
-                LinearLayout ll = (LinearLayout) rowView;
-                mobileLayoutsList.add(ll);
-                ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
-            }
-        });
-
-        ib_add_landline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
-                LinearLayout ll = (LinearLayout) rowView;
-                landlineLayoutsList.add(ll);
-                ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
-            }
-        });
-
-        ib_add_email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.layout_add_email, null);
-                LinearLayout ll = (LinearLayout) rowView;
-                emailLayoutsList.add(ll);
-                ll_email.addView(rowView, ll_email.getChildCount() - 1);
-            }
-        });
-
-        ib_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-                    provideLocationAccess(context);
-                } else {
-                    if (!isLocationEnabled(context)) {
-                        turnOnLocation(context);
-                    } else {
-                        startLocationUpdates();
-                        if (MainDrawerActivity.latLng != null) {
-                            latLng = MainDrawerActivity.latLng;
+                        if (latLng != null) {
                             if (Utilities.isNetworkAvailable(context)) {
                                 new GetAddress().execute(
                                         String.valueOf(latLng.latitude),
@@ -497,39 +434,17 @@ public class EditBasicInformationActivity extends AppCompatActivity {
                                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                             }
                         } else {
-                            if (latLng != null) {
-                                if (Utilities.isNetworkAvailable(context)) {
-                                    new GetAddress().execute(
-                                            String.valueOf(latLng.latitude),
-                                            String.valueOf(latLng.longitude));
-                                } else {
-                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                                }
-                            } else {
-                                edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
-                            }
+                            edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
                         }
-
-
                     }
+
+
                 }
             }
         });
 
-        tv_verify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JsonObject obj = new JsonObject();
-                obj.addProperty("type", "SendVerificationLink");
-                obj.addProperty("email_id", edt_email.getText().toString().trim());
-                obj.addProperty("user_id", userId);
-
-                if (Utilities.isNetworkAvailable(context)) {
-                    new SendVerificationLink().execute(obj.toString());
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
+        btn_save.setOnClickListener(v -> {
+            validateData();
         });
     }
 
@@ -915,6 +830,30 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         alertD.show();
     }
 
+    private void addMobileLayout() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
+        LinearLayout ll = (LinearLayout) rowView;
+        mobileLayoutsList.add(ll);
+        ll_mobile.addView(rowView, ll_mobile.getChildCount() - 1);
+    }
+
+    private void addLandLineLayout() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
+        LinearLayout ll = (LinearLayout) rowView;
+        landlineLayoutsList.add(ll);
+        ll_landline.addView(rowView, ll_landline.getChildCount() - 1);
+    }
+
+    private void addEmailLayout() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View rowView = inflater.inflate(R.layout.layout_add_email, null);
+        LinearLayout ll = (LinearLayout) rowView;
+        emailLayoutsList.add(ll);
+        ll_email.addView(rowView, ll_email.getChildCount() - 1);
+    }
+
     public void removeMobileLayout(View view) {
         ll_mobile.removeView((View) view.getParent());
         mobileLayoutsList.remove(view.getParent());
@@ -946,25 +885,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menus_save, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.action_save:
-                validateData();
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     private void validateData() {
 
         mobileList = new ArrayList<>();
@@ -993,14 +913,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
             }
         }
 
-        if (!edt_mobile.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isValidMobileno(edt_mobile.getText().toString().trim())) {
-                edt_mobile.setError("Please enter valid mobile number");
-                edt_mobile.requestFocus();
-                return;
-            }
-        }
-
         for (int i = 0; i < landlineLayoutsList.size(); i++) {
             if (!((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim().isEmpty()) {
                 if (!Utilities.isLandlineValid(((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).getText().toString().trim())) {
@@ -1008,14 +920,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
                     (landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).requestFocus();
                     return;
                 }
-            }
-        }
-
-        if (!edt_landline.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isLandlineValid(edt_landline.getText().toString().trim())) {
-                edt_landline.setError("Please enter valid landline number");
-                edt_landline.requestFocus();
-                return;
             }
         }
 
@@ -1029,15 +933,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
             }
         }
 
-        if (!edt_email.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
-                edt_email.setError("Please enter valid email");
-                edt_email.requestFocus();
-                return;
-            }
-        }
-
-
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
                 if (i < mobileSessionList.size() - 1) {
@@ -1048,14 +943,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
                             ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim(), "0", "0", "0"));
                 }
             }
-        }
-
-        if (mobileSessionList.size() != 0) {
-            if (!edt_mobile.getText().toString().trim().isEmpty())
-                mobileList.add(new PrimaryPublicMobileSelectionModel(tv_countrycode_mobile.getText().toString(), edt_mobile.getText().toString().trim(), "0", "0", mobileSessionList.get(mobileSessionList.size() - 1).getUser_moblie_id()));
-        } else {
-            if (!edt_mobile.getText().toString().trim().isEmpty())
-                mobileList.add(new PrimaryPublicMobileSelectionModel(tv_countrycode_mobile.getText().toString(), edt_mobile.getText().toString().trim(), "0", "0", "0"));
         }
 
         for (int i = 0; i < landlineLayoutsList.size(); i++) {
@@ -1070,14 +957,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
             }
         }
 
-        if (landlineSessionList.size() != 0) {
-            if (!edt_landline.getText().toString().trim().isEmpty())
-                landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", landlineSessionList.get(landlineSessionList.size() - 1).getUser_landline_id(), tv_countrycode_landline.getText().toString()));
-        } else {
-            if (!edt_landline.getText().toString().trim().isEmpty())
-                landlineList.add(new PrimarySelectionModel(edt_landline.getText().toString().trim(), "0", "0", tv_countrycode_landline.getText().toString()));
-        }
-
         for (int i = 0; i < emailLayoutsList.size(); i++) {
             if (!((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim().equals("")) {
                 if (i < emailSessionList.size() - 1) {
@@ -1086,14 +965,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
                     emailList.add(new PrimarySelectionModel(((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).getText().toString().trim(), "0", "0", ""));
                 }
             }
-        }
-
-        if (emailSessionList.size() != 0) {
-            if (!edt_email.getText().toString().trim().isEmpty())
-                emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), emailSessionList.get(emailSessionList.size() - 1).getIs_primary(), emailSessionList.get(emailSessionList.size() - 1).getUser_email_id(), ""));
-        } else {
-            if (!edt_email.getText().toString().trim().isEmpty())
-                emailList.add(new PrimarySelectionModel(edt_email.getText().toString().trim(), "0", "0", ""));
         }
 
         if (emailList.size() != 0) {
@@ -1114,134 +985,7 @@ public class EditBasicInformationActivity extends AppCompatActivity {
 
     public void selectContryCode(View v) {
         tv_selected_forconcode = (TextView) v;
-        showContryCodeDialog("3");
-    }
-
-    public void showContryCodeDialog(final String type) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.dialog_countrycodes_list, null);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builder.setView(view);
-        builder.setTitle("Select Country");
-        builder.setCancelable(false);
-
-        final RecyclerView rv_country = view.findViewById(R.id.rv_country);
-        EditText edt_search = view.findViewById(R.id.edt_search);
-        rv_country.setLayoutManager(new LinearLayoutManager(context));
-        rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
-
-        edt_search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence query, int start, int before, int count) {
-
-                if (query.toString().isEmpty()) {
-                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
-                    return;
-                }
-
-                if (countryCodeList.size() == 0) {
-                    rv_country.setVisibility(View.GONE);
-                    return;
-                }
-
-                if (!query.toString().equals("")) {
-                    ArrayList<ContryCodeModel> searchedCountryList = new ArrayList<>();
-                    for (ContryCodeModel countryDetails : countryCodeList) {
-
-                        String countryToBeSearched = countryDetails.getName().toLowerCase();
-
-                        if (countryToBeSearched.contains(query.toString().toLowerCase())) {
-                            searchedCountryList.add(countryDetails);
-                        }
-                    }
-                    rv_country.setAdapter(new CountryCodeAdapter(searchedCountryList, type));
-                } else {
-                    rv_country.setAdapter(new CountryCodeAdapter(countryCodeList, type));
-                }
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        builder.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-
-        countryCodeDialog = builder.create();
-        countryCodeDialog.show();
-    }
-
-    private class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.MyViewHolder> {
-
-        private ArrayList<ContryCodeModel> countryCodeList;
-        private String type;
-
-        public CountryCodeAdapter(ArrayList<ContryCodeModel> countryCodeList, String type) {
-            this.countryCodeList = countryCodeList;
-            this.type = type;
-        }
-
-        @NonNull
-        @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.list_row_1, parent, false);
-            return new MyViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, final int pos) {
-            final int position = holder.getAdapterPosition();
-
-            holder.tv_name.setText(countryCodeList.get(position).getName());
-
-            holder.tv_name.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (type.equals("1")) {
-                        tv_countrycode_mobile.setText(countryCodeList.get(position).getDial_code());
-                    } else if (type.equals("2")) {
-                        tv_countrycode_landline.setText(countryCodeList.get(position).getDial_code());
-                    } else if (type.equals("3")) {
-                        tv_selected_forconcode.setText(countryCodeList.get(position).getDial_code());
-                    }
-                    countryCodeDialog.dismiss();
-                }
-            });
-        }
-
-        @Override
-        public int getItemCount() {
-            return countryCodeList.size();
-        }
-
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-
-            private TextView tv_name;
-
-            public MyViewHolder(@NonNull View view) {
-                super(view);
-                tv_name = view.findViewById(R.id.tv_name);
-            }
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return position;
-        }
+        new CountryCodeSelection(context, tv_selected_forconcode);
     }
 
     private void showPrimaryMobileDialog() {
@@ -1758,7 +1502,7 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

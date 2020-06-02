@@ -34,17 +34,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Save"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:strokeColor="@color/colorPrimary" />
+                android:text="Save"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -348,10 +341,11 @@
                         android:drawableLeft="@drawable/icon_current_location"
                         android:text="Select From Map"
                         android:textAllCaps="false"
+                        android:textColor="@color/darkGray"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         app:backgroundTint="@color/white"
-                        app:strokeColor="@color/colorPrimary" />
+                        app:strokeColor="@color/darkGray" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -470,22 +464,22 @@
                     <CheckBox
                         android:id="@+id/cb_is_enquiry_available"
                         style="@style/CheckBox"
-                        android:text="Is enquiry available?" />
+                        android:text="Do you need enquiries?" />
 
                     <CheckBox
                         android:id="@+id/cb_is_pick_up_available"
                         style="@style/CheckBox"
-                        android:text="Is pick up at store available?" />
+                        android:text="Do you allow store pickup?" />
 
                     <CheckBox
                         android:id="@+id/cb_is_home_delivery_available"
                         style="@style/CheckBox"
-                        android:text="Is home delivery available?" />
+                        android:text="Do you do home delivery?" />
 
                     <CheckBox
                         android:id="@+id/cb_show_in_search"
                         style="@style/CheckBox"
-                        android:text="Show business profile in search section?" />
+                        android:text="Show business in business listing?" />
 
                 </LinearLayout>
 

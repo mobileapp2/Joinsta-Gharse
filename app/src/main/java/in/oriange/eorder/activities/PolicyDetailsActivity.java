@@ -1,15 +1,16 @@
 package in.oriange.eorder.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.content.Context;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import in.oriange.eorder.R;
+
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class PolicyDetailsActivity extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class PolicyDetailsActivity extends AppCompatActivity {
 
     private void init() {
         context = PolicyDetailsActivity.this;
+        changeStatusBar(context, getWindow());
         wv_policies_details = findViewById(R.id.wv_policies_details);
     }
 
@@ -41,7 +43,7 @@ public class PolicyDetailsActivity extends AppCompatActivity {
         toolbar_title.setText(getIntent().getStringExtra("title"));
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         mToolbar.setNavigationOnClickListener(view -> finish());
     }
 }

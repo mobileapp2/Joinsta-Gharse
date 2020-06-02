@@ -8,7 +8,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/tv_productname"
@@ -159,7 +160,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.4"
-                android:background="@color/blue"
+                android:background="@color/colorPrimary"
                 android:gravity="center"
                 android:text="Add to Cart"
                 android:textColor="@color/white"
@@ -173,9 +174,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="10dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/button_focusfilled_red"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
             android:text="Out of Stock"
-            android:textColor="@color/red"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <View
@@ -205,7 +211,7 @@
                 android:layout_gravity="start"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
-                android:textColor="@color/black"
+                android:textColor="@color/darkGray"
                 android:textSize="16sp" />
 
         </LinearLayout>

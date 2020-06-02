@@ -38,6 +38,7 @@ import java.util.List;
 
 import in.oriange.eorder.R;
 import in.oriange.eorder.activities.BookOrderCartProductsActivity;
+import in.oriange.eorder.activities.NotificationActivity;
 import in.oriange.eorder.activities.SelectCityActivity;
 import in.oriange.eorder.adapters.BannerSliderAdapter;
 import in.oriange.eorder.adapters.CategoryAdapter;
@@ -147,8 +148,12 @@ public class HomeFragment extends Fragment {
             startActivity(new Intent(context, BookOrderCartProductsActivity.class));
         });
 
-        edt_search.setOnClickListener(v -> {
+        ib_notifications.setOnClickListener(v -> {
+            startActivity(new Intent(context, NotificationActivity.class));
+        });
 
+        edt_search.setOnClickListener(v -> {
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MainDrawerActivityJumpToSearchTab"));
         });
     }
 

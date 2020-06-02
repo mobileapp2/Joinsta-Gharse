@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         holder.tv_name.setText(contactsModel.getName());
         holder.tv_mobile.setText(contactsModel.getPhoneNo());
 
-        holder.cv_main_layout.setOnClickListener(v -> showContextMenu(v, contactsModel));
+        holder.imv_add.setOnClickListener(v -> showContextMenu(v, contactsModel));
     }
 
     @Override
@@ -61,9 +62,11 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
 
         private CardView cv_main_layout;
         private TextView tv_initial, tv_name, tv_mobile;
+        private ImageButton imv_add;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            imv_add = itemView.findViewById(R.id.imv_add);
             cv_main_layout = itemView.findViewById(R.id.cv_main_layout);
             tv_initial = itemView.findViewById(R.id.tv_initial);
             tv_name = itemView.findViewById(R.id.tv_name);

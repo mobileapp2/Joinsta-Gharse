@@ -35,17 +35,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_save"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Update"
-                android:textAllCaps="false"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:strokeColor="@color/colorPrimary" />
+                android:text="Update"/>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -207,7 +200,7 @@
             <CheckBox
                 android:id="@+id/cb_is_prime_customer"
                 style="@style/CheckBox"
-                android:text="Is prime customer?" />
+                android:text="Mark Prime?" />
 
         </LinearLayout>
 

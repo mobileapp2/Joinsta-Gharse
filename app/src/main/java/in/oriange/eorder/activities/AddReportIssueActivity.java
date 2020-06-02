@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -41,6 +42,7 @@ import in.oriange.eorder.utilities.ApplicationConstants;
 import in.oriange.eorder.utilities.UserSessionManager;
 import in.oriange.eorder.utilities.Utilities;
 
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.eorder.utilities.Utilities.loadJSONForCountryCode;
 
@@ -50,9 +52,8 @@ public class AddReportIssueActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private TextView tv_countrycode;
-    private MaterialEditText edt_mobile;
-    private EditText edt_feedback;
-    private Button btn_save;
+    private EditText edt_mobile, edt_feedback;
+    private MaterialButton btn_save;
 
     private ArrayList<ContryCodeModel> countryCodeList;
     private String userId, name, mobile, countryCode;
@@ -73,6 +74,7 @@ public class AddReportIssueActivity extends AppCompatActivity {
     private void init() {
         context = AddReportIssueActivity.this;
         session = new UserSessionManager(context);
+        changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         tv_countrycode = findViewById(R.id.tv_countrycode);
@@ -207,7 +209,6 @@ public class AddReportIssueActivity extends AppCompatActivity {
         countryCodeDialog = builder.create();
         countryCodeDialog.show();
     }
-
 
     private class CountryCodeAdapter extends RecyclerView.Adapter<CountryCodeAdapter.MyViewHolder> {
 
@@ -360,13 +361,8 @@ public class AddReportIssueActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 
     @Override
