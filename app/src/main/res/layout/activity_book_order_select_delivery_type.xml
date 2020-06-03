@@ -22,7 +22,7 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="start"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
@@ -36,7 +36,7 @@
                 style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Next"/>
+                android:text="Next" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -72,7 +72,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="4dp"
-                        android:text="Purchase type"
+                        android:text="Ordering for?"
                         android:textColor="@color/darkGray"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -169,7 +169,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="+91 8149115089"
+                                android:text="+918149115089"
                                 android:textColor="@color/black"
                                 android:textSize="16sp" />
 
@@ -181,6 +181,7 @@
                         android:id="@+id/ll_business"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
                         android:orientation="vertical"
                         android:visibility="gone">
 
@@ -188,7 +189,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:text="Please select from below businesses"
+                            android:text="Select Business"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -314,7 +315,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
-                            android:text="Please select from below addresses"
+                            android:text="Select Address"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
@@ -322,6 +323,15 @@
                             android:id="@+id/rv_address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
+
+                        <Button
+                            android:id="@+id/btn_address"
+                            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_gravity="end"
+                            android:text="Add Address"
+                            android:textAllCaps="false" />
 
                     </LinearLayout>
 
@@ -350,19 +360,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="4dp"
-                        android:paddingTop="2dp"
                         android:paddingRight="4dp"
-                        android:paddingBottom="2dp"
-                        android:text="Delivery type"
-                        android:textColor="@color/darkGray"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="2dp"
-                        android:text="Please upload images of any specific product needed" />
+                        android:text="You can placer order by taking photo of your items list here.
+Write on paper, click a photo and upload" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_images"

@@ -273,7 +273,17 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
                     if (type.equalsIgnoreCase("success")) {
                         productsList = pojoDetails.getResult();
-                        searchedProductsList = pojoDetails.getResult();
+
+                        List<BookOrderProductsListModel.ResultBean> filterProductList = new ArrayList<>();
+                        for (BookOrderProductsListModel.ResultBean resultBean : productsList)
+                            if (resultBean.getIs_show_in_list().equals("1"))
+                                filterProductList.add(resultBean);
+
+                        productsList.clear();
+                        searchedProductsList.clear();
+
+                        productsList.addAll(filterProductList);
+                        searchedProductsList.addAll(filterProductList);
 
                         if (productsList.size() != 0) {
                             rvProducts.setAdapter(new BookOrderProductsListAdapter());

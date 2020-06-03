@@ -16,7 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -117,6 +117,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     CardView cvImages;
     @BindView(R.id.btn_save)
     MaterialButton btnSave;
+    @BindView(R.id.btn_address)
+    Button btnAddress;
 
     private Context context;
     private UserSessionManager session;
@@ -129,14 +131,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     private GetBusinessModel.ResultBean businessDetails;
     private ArrayList<MasterModel> imageList;
     private AddressModel.ResultBean addressDetails;
-    private LocalBroadcastManager localBroadcastManager;
+    private LocalBroadcastManager localBroadcastManager, localBroadcastManager1;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            finish();
-        }
-    };
 
     private Uri photoURI;
     private File orderFileFolder;
@@ -165,8 +161,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         pd.setCancelable(false);
 
         rvImages.setLayoutManager(new GridLayoutManager(context, 3));
-        rvBusiness.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
-        rvAddress.setLayoutManager(new LinearLayoutManager(context, RecyclerView.HORIZONTAL, false));
+        rvBusiness.setLayoutManager(new LinearLayoutManager(context));
+        rvAddress.setLayoutManager(new LinearLayoutManager(context));
 
 
         imageList = new ArrayList<>();
@@ -249,6 +245,10 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderSelectDeliveryTypeActivity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+
+        localBroadcastManager1 = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter1 = new IntentFilter("BookOrderSelectDeliveryTypeActivityAddressRefresh");
+        localBroadcastManager1.registerReceiver(broadcastReceiver1, intentFilter1);
     }
 
     private void setEventHandler() {
@@ -313,6 +313,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 }
             }
         });
+
+        btnAddress.setOnClickListener(v -> startActivity(new Intent(context, AddAddressActivity.class)));
 
         btnSave.setOnClickListener(v -> submitData());
     }
@@ -382,6 +384,7 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        localBroadcastManager1.unregisterReceiver(broadcastReceiver1);
     }
 
     private class GetBusiness extends AsyncTask<String, Void, String> {
@@ -457,29 +460,22 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
             final GetBusinessModel.ResultBean searchDetails = businessList.get(position);
 
             if (searchDetails.isChecked()) {
-                holder.cb_select_business.setChecked(true);
+                holder.cv_mainlayout.setBackgroundColor(context.getResources().getColor(R.color.lightred));
                 holder.tv_heading.setTextColor(context.getResources().getColor(R.color.black));
             } else {
-                holder.cb_select_business.setChecked(false);
+                holder.cv_mainlayout.setBackgroundColor(context.getResources().getColor(R.color.white));
                 holder.tv_heading.setTextColor(context.getResources().getColor(R.color.darkGray));
             }
 
             holder.tv_heading.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
 
-//            if (!searchDetails.getTypeSubTypeName().isEmpty())
-//                holder.tv_subheading.setText(searchDetails.getTypeSubTypeName());
-//            else
-//                holder.tv_subheading.setText(searchDetails.getType_description());
-
-            holder.cb_select_business.setOnClickListener((View.OnClickListener) v -> {
-                if (holder.cb_select_business.isChecked()) {
-                    for (int i = 0; i < businessList.size(); i++) {
-                        businessList.get(i).setChecked(false);
-                    }
-                    businessDetails = businessList.get(position);
-                    customerBusinessId = businessList.get(position).getId();
-                    businessList.get(position).setChecked(true);
+            holder.cv_mainlayout.setOnClickListener((View.OnClickListener) v -> {
+                for (int i = 0; i < businessList.size(); i++) {
+                    businessList.get(i).setChecked(false);
                 }
+                businessDetails = businessList.get(position);
+                customerBusinessId = businessList.get(position).getId();
+                businessList.get(position).setChecked(true);
                 notifyDataSetChanged();
             });
 
@@ -494,16 +490,18 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            private CheckBox cb_select_business;
+
+            private LinearLayout cv_mainlayout;
             private TextView tv_heading, tv_subheading;
             private View view_divider;
 
             public MyViewHolder(View view) {
                 super(view);
+                cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
                 tv_heading = view.findViewById(R.id.tv_heading);
                 tv_subheading = view.findViewById(R.id.tv_subheading);
-                cb_select_business = view.findViewById(R.id.cb_select_business);
                 view_divider = view.findViewById(R.id.view_divider);
+                tv_subheading.setVisibility(View.GONE);
             }
         }
     }
@@ -589,25 +587,26 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
             final AddressModel.ResultBean searchDetails = addressList.get(position);
 
             if (searchDetails.isChecked()) {
-                holder.cb_select_address.setChecked(true);
+                holder.cv_mainlayout.setBackgroundColor(context.getResources().getColor(R.color.lightred));
                 holder.tv_heading.setTextColor(context.getResources().getColor(R.color.black));
+                holder.tv_subheading.setTextColor(context.getResources().getColor(R.color.black));
             } else {
-                holder.cb_select_address.setChecked(false);
+                holder.cv_mainlayout.setBackgroundColor(context.getResources().getColor(R.color.white));
                 holder.tv_heading.setTextColor(context.getResources().getColor(R.color.darkGray));
+                holder.tv_subheading.setTextColor(context.getResources().getColor(R.color.darkGray));
             }
 
-            holder.tv_heading.setText(searchDetails.getAddress_line1());
+            holder.tv_heading.setText(searchDetails.getFull_name());
+            holder.tv_subheading.setText(searchDetails.getAddress_line1());
 
-            holder.cb_select_address.setOnClickListener((View.OnClickListener) v -> {
-                if (holder.cb_select_address.isChecked()) {
-                    for (int i = 0; i < addressList.size(); i++) {
-                        addressList.get(i).setChecked(false);
-                    }
-                    addressDetails = addressList.get(position);
-                    customerAddressId = addressList.get(position).getUser_address_id();
-                    customerAddress = addressList.get(position).getAddress_line1();
-                    addressList.get(position).setChecked(true);
+            holder.cv_mainlayout.setOnClickListener(v -> {
+                for (int i = 0; i < addressList.size(); i++) {
+                    addressList.get(i).setChecked(false);
                 }
+                addressDetails = addressList.get(position);
+                customerAddressId = addressList.get(position).getUser_address_id();
+                customerAddress = addressList.get(position).getAddress_line1();
+                addressList.get(position).setChecked(true);
                 notifyDataSetChanged();
             });
 
@@ -621,15 +620,16 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
-            private CheckBox cb_select_address;
+
+            private LinearLayout cv_mainlayout;
             private TextView tv_heading, tv_subheading;
             private View view_divider;
 
             public MyViewHolder(View view) {
                 super(view);
+                cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
                 tv_heading = view.findViewById(R.id.tv_heading);
                 tv_subheading = view.findViewById(R.id.tv_subheading);
-                cb_select_address = view.findViewById(R.id.cb_select_business);
                 view_divider = view.findViewById(R.id.view_divider);
             }
         }
@@ -843,5 +843,22 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
             }
         }
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Utilities.isNetworkAvailable(context))
+                new GetAddress().execute();
+            else
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    };
 
 }

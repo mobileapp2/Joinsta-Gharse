@@ -21,14 +21,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textColor="@color/darkGray"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_marginBottom="4dp"
-            android:background="@color/colorPrimary" />
+            android:background="@color/darkGray" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_products"

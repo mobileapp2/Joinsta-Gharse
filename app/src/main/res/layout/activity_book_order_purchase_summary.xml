@@ -23,7 +23,7 @@
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="start"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
@@ -31,6 +31,13 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                style="@style/MaterialButton"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:text="Place Order" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -48,112 +55,138 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_purchase_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
-                android:foreground="?android:attr/selectableItemBackground"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
                 app:cardUseCompatPadding="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
                     <TextView
+                        android:id="@+id/tv_business_owner_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:text="Order For"
+                        android:text="Your order is with - L0001 - Business Name"
                         android:textColor="@color/black"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
 
-                    <LinearLayout
-                        android:id="@+id/ll_individual_details"
+                    <TextView
+                        android:id="@+id/tv_order_by"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:paddingBottom="2dp"
+                        android:text="Ordered By – Product/Image/text"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/imv_user"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_margin="5dp"
-                            android:gravity="center_horizontal"
-                            android:padding="4dp"
-                            android:src="@drawable/icon_user" />
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_name"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Priyesh Pawar"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
-
-                            <TextView
-                                android:id="@+id/tv_mobile"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="+91 8149115089"
-                                android:textColor="@color/black"
-                                android:textSize="16sp" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_business"
+                    <TextView
+                        android:id="@+id/tv_purchase_order_type"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical"
-                        android:padding="5dp">
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="2dp"
+                        android:text="This order is for – (Individual/business)"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
-                        <TextView
-                            android:id="@+id/tv_business_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Priyesh Pawar"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-
-                        <TextView
-                            android:id="@+id/tv_business_type_subtype"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:text="+91 8149115089"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:visibility="gone" />
-
-                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_customer_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="2dp"
+                        android:text="Name – Based upon individual or Business"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="5dp"
+                app:cardElevation="2dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="2dp"
+                            android:text="You Selected "
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_delivery_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/button_focusfilled_orange"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="Home Delivery"
+                            android:textColor="@color/white"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_home_delivery_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="2dp"
+                        android:text="Your order will be delivered at below address"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_store_pickup_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="2dp"
+                        android:text="You can pick up your order from store"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tv_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="2dp"
+                        android:text="Address"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_text"
@@ -178,7 +211,7 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:text="Order Text"
+                        android:text="Text"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -186,73 +219,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
+                        android:background="@color/darkGray" />
 
                     <TextView
                         android:id="@+id/tv_order_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cv_delivery_details"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Delivery Details"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
-
-                    <TextView
-                        android:id="@+id/tv_delivery_type"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <TextView
-                        android:id="@+id/tv_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="false"
@@ -291,7 +261,7 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:text="Order Products"
+                        android:text="Products"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -299,7 +269,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
+                        android:background="@color/darkGray" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_products"
@@ -333,7 +303,7 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:paddingBottom="2dp"
-                        android:text="Order Images"
+                        android:text="Images"
                         android:textColor="@color/black"
                         android:textSize="18sp" />
 
@@ -341,11 +311,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
+                        android:background="@color/darkGray" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_order_images"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center" />
 
@@ -366,14 +336,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <android.widget.Button
-        android:id="@+id/btn_save"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Place Order"
-        android:textStyle="bold" />
 
 </LinearLayout>

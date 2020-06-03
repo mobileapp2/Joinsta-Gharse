@@ -73,7 +73,7 @@ public class MainDrawerActivity extends AppCompatActivity {
         session = new UserSessionManager(context);
         if (!Utilities.isNetworkAvailable(context)) {
             LayoutInflater layoutInflater = LayoutInflater.from(context);
-            View promptView = layoutInflater.inflate(R.layout.dialog_layout_error, null);
+            View promptView = layoutInflater.inflate(R.layout.dialog_layout_shopping, null);
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
             alertDialogBuilder.setView(promptView);
 

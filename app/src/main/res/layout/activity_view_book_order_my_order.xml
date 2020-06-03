@@ -8,7 +8,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
         <androidx.appcompat.widget.Toolbar
@@ -22,14 +22,22 @@
                 android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="start"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
                 android:text="Order Details"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_action"
+                style="@style/MaterialButton"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:backgroundTint="@color/green"
+                android:text="Next" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -43,6 +51,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants"
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
@@ -63,42 +72,20 @@
                     android:padding="5dp">
 
                     <TextView
+                        android:id="@+id/tv_order_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Order Details"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
-
-                    <TextView
-                        android:id="@+id/tv_order_type"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
+                        android:paddingBottom="1dp"
+                        android:text="Order ID - 20200520245238973"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/tv_order_id"
+                        android:id="@+id/tv_order_by"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
+                        android:paddingBottom="1dp"
+                        android:text="Ordered By – Product/Image/text"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -106,33 +93,69 @@
                         android:id="@+id/tv_purchase_order_type"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
+                        android:paddingBottom="1dp"
+                        android:text="This order is for – (Individual/business)"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <TextView
-                        android:id="@+id/tv_order_status"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/tv_customer_name"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
+                        android:paddingBottom="1dp"
+                        android:text="Name – Based upon individual or Business"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingBottom="1dp">
+
+                        <TextView
+                            android:id="@+id/tv_customer_mobile"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="Phone – Call Button"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <ImageButton
+                            android:id="@+id/ib_customer_mobile_call"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/icon_call" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_delivery_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="2dp"
+                        android:background="@drawable/button_focusfilled_orange"
                         android:paddingLeft="10dp"
                         android:paddingRight="10dp"
+                        android:text="Home Delivery"
                         android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
 
+                    <TextView
+                        android:id="@+id/tv_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Address"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cv_customer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -149,95 +172,37 @@
                     android:padding="5dp">
 
                     <TextView
+                        android:id="@+id/tv_supplier_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:paddingBottom="2dp"
-                        android:text="Vendor Details"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
-
-                    <TextView
-                        android:id="@+id/tv_customer_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
+                        android:paddingBottom="1dp"
+                        android:text="Supplier – L00001 – Mobile Shopee"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
                     <LinearLayout
-                        android:id="@+id/ll_mobile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/tv_customer_mobile"
+                            android:id="@+id/tv_supplier_mobile"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
+                            android:layout_weight="1"
                             android:gravity="center_vertical"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
+                            android:text="Phone – Call Button"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <ImageButton
-                            android:id="@+id/ib_call"
-                            android:layout_width="0dp"
-                            android:layout_height="25dp"
-                            android:layout_weight="0.1"
+                            android:id="@+id/ib_supplier_mobile_call"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/icon_call" />
 
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_email"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_customer_email"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.9"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="5dp"
-                            android:paddingRight="5dp"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-
-                        <ImageButton
-                            android:id="@+id/ib_email"
-                            android:layout_width="0dp"
-                            android:layout_height="25dp"
-                            android:layout_weight="0.1"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/icon_email" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_customer_address"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -274,7 +239,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
+                        android:background="@color/mediumGray" />
 
                     <TextView
                         android:id="@+id/tv_text"
@@ -324,7 +289,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
+                        android:background="@color/mediumGray" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_products"
@@ -365,7 +330,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="@color/colorPrimary" />
+                        android:background="@color/mediumGray" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_images"
@@ -418,7 +383,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginBottom="4dp"
-                        android:background="@color/colorPrimary" />
+                        android:background="@color/mediumGray" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_status"
@@ -433,16 +398,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn_action"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_margin="5dp"
-                    android:layout_weight="1"
-                    android:background="@color/green"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btn_reject"

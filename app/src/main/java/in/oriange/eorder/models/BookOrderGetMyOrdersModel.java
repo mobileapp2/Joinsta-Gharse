@@ -86,6 +86,14 @@ public class BookOrderGetMyOrdersModel implements Serializable {
         private String owner_address;
         private String is_pick_up_available;
         private String is_home_delivery_available;
+        private String delivery_option;
+        private String user_address_id;
+        private String user_address_line_one;
+        private String user_address_city;
+        private String user_address_pincode;
+        private String customer_name;
+        private String customer_country_code;
+        private String customer_mobile;
         private List<String> order_images;
         private List<ProductDetailsBean> product_details;
         private List<StatusDetailsBean> status_details;
@@ -211,7 +219,7 @@ public class BookOrderGetMyOrdersModel implements Serializable {
         }
 
         public String getOwner_country_code() {
-            return owner_country_code;
+            return "+" + owner_country_code;
         }
 
         public void setOwner_country_code(String owner_country_code) {
@@ -264,6 +272,70 @@ public class BookOrderGetMyOrdersModel implements Serializable {
 
         public void setIs_home_delivery_available(String is_home_delivery_available) {
             this.is_home_delivery_available = is_home_delivery_available;
+        }
+
+        public String getDelivery_option() {
+            return delivery_option;
+        }
+
+        public void setDelivery_option(String delivery_option) {
+            this.delivery_option = delivery_option;
+        }
+
+        public String getUser_address_id() {
+            return user_address_id;
+        }
+
+        public void setUser_address_id(String user_address_id) {
+            this.user_address_id = user_address_id;
+        }
+
+        public String getUser_address_line_one() {
+            return user_address_line_one;
+        }
+
+        public void setUser_address_line_one(String user_address_line_one) {
+            this.user_address_line_one = user_address_line_one;
+        }
+
+        public String getUser_address_city() {
+            return user_address_city;
+        }
+
+        public void setUser_address_city(String user_address_city) {
+            this.user_address_city = user_address_city;
+        }
+
+        public String getUser_address_pincode() {
+            return user_address_pincode;
+        }
+
+        public void setUser_address_pincode(String user_address_pincode) {
+            this.user_address_pincode = user_address_pincode;
+        }
+
+        public String getCustomer_name() {
+            return customer_name;
+        }
+
+        public void setCustomer_name(String customer_name) {
+            this.customer_name = customer_name;
+        }
+
+        public String getCustomer_country_code() {
+            return "+" + customer_country_code;
+        }
+
+        public void setCustomer_country_code(String customer_country_code) {
+            this.customer_country_code = customer_country_code;
+        }
+
+        public String getCustomer_mobile() {
+            return customer_mobile;
+        }
+
+        public void setCustomer_mobile(String customer_mobile) {
+            this.customer_mobile = customer_mobile;
         }
 
         public List<String> getOrder_images() {

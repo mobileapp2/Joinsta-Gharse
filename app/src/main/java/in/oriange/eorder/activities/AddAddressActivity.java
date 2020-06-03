@@ -193,6 +193,7 @@ public class AddAddressActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddressActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderSelectDeliveryTypeActivityAddressRefresh"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

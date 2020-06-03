@@ -91,6 +91,11 @@ public class BookOrderBusinessOwnerModel implements Serializable {
         private String customer_business_address;
         private String customer_business_email;
         private String customer_business_city;
+        private String delivery_option;
+        private String user_address_id;
+        private String user_address_line_one;
+        private String user_address_city;
+        private String user_address_pincode;
         private List<String> order_images;
         private List<ProductDetailsBean> product_details;
         private List<StatusDetailsBean> status_details;
@@ -210,7 +215,7 @@ public class BookOrderBusinessOwnerModel implements Serializable {
         }
 
         public String getCustomer_country_code() {
-            return customer_country_code;
+            return "+"+customer_country_code;
         }
 
         public void setCustomer_country_code(String customer_country_code) {
@@ -271,6 +276,46 @@ public class BookOrderBusinessOwnerModel implements Serializable {
 
         public void setCustomer_business_city(String customer_business_city) {
             this.customer_business_city = customer_business_city;
+        }
+
+        public String getDelivery_option() {
+            return delivery_option;
+        }
+
+        public void setDelivery_option(String delivery_option) {
+            this.delivery_option = delivery_option;
+        }
+
+        public String getUser_address_id() {
+            return user_address_id;
+        }
+
+        public void setUser_address_id(String user_address_id) {
+            this.user_address_id = user_address_id;
+        }
+
+        public String getUser_address_line_one() {
+            return user_address_line_one;
+        }
+
+        public void setUser_address_line_one(String user_address_line_one) {
+            this.user_address_line_one = user_address_line_one;
+        }
+
+        public String getUser_address_city() {
+            return user_address_city;
+        }
+
+        public void setUser_address_city(String user_address_city) {
+            this.user_address_city = user_address_city;
+        }
+
+        public String getUser_address_pincode() {
+            return user_address_pincode;
+        }
+
+        public void setUser_address_pincode(String user_address_pincode) {
+            this.user_address_pincode = user_address_pincode;
         }
 
         public List<String> getOrder_images() {

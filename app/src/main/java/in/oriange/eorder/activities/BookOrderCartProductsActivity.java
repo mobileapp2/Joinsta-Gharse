@@ -542,7 +542,10 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                 if (!result.equals("")) {
                     BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
                     type = pojoDetails.getType();
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragment"));
+
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SentOrdersFragment"));
+
                     if (type.equalsIgnoreCase("success")) {
                         ordersList = pojoDetails.getResult();
                         updateProductsList();
@@ -590,7 +593,9 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SentOrdersFragment"));
+
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);

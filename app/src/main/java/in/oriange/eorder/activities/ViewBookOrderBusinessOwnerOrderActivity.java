@@ -12,10 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -47,60 +48,54 @@ import in.oriange.eorder.utilities.Utilities;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.eorder.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 import static in.oriange.eorder.utilities.Utilities.provideCallPremission;
 
 public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
 
+
+    @BindView(R.id.toolbar_title)
+    AppCompatEditText toolbarTitle;
+    @BindView(R.id.btn_action)
+    MaterialButton btnAction;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.tv_order_id)
+    TextView tvOrderId;
+    @BindView(R.id.tv_order_by)
+    TextView tvOrderBy;
+    @BindView(R.id.tv_purchase_order_type)
+    TextView tvPurchaseOrderType;
     @BindView(R.id.tv_customer_name)
     TextView tvCustomerName;
     @BindView(R.id.tv_customer_mobile)
     TextView tvCustomerMobile;
-    @BindView(R.id.tv_customer_email)
-    TextView tvCustomerEmail;
-    @BindView(R.id.tv_customer_address)
-    TextView tvCustomerAddress;
-    @BindView(R.id.cv_customer)
-    CardView cvCustomer;
+    @BindView(R.id.ib_customer_mobile_call)
+    ImageButton ibCustomerMobileCall;
+    @BindView(R.id.tv_delivery_type)
+    TextView tvDeliveryType;
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
     @BindView(R.id.tv_text)
     TextView tvText;
     @BindView(R.id.cv_text)
     CardView cvText;
-    @BindView(R.id.rv_images)
-    RecyclerView rvImages;
-    @BindView(R.id.cv_images)
-    CardView cvImages;
     @BindView(R.id.rv_products)
     RecyclerView rvProducts;
     @BindView(R.id.cv_products)
     CardView cvProducts;
+    @BindView(R.id.rv_images)
+    RecyclerView rvImages;
+    @BindView(R.id.tv_more_order_images)
+    TextView tvMoreOrderImages;
+    @BindView(R.id.cv_images)
+    CardView cvImages;
     @BindView(R.id.rv_status)
     RecyclerView rvStatus;
     @BindView(R.id.cv_status)
     CardView cvStatus;
-    @BindView(R.id.btn_action)
-    Button btnAction;
     @BindView(R.id.btn_reject)
     Button btnReject;
-    @BindView(R.id.ib_call)
-    ImageButton ibCall;
-    @BindView(R.id.ll_mobile)
-    LinearLayout llMobile;
-    @BindView(R.id.ib_email)
-    ImageButton ibEmail;
-    @BindView(R.id.ll_email)
-    LinearLayout llEmail;
-    @BindView(R.id.tv_more_order_images)
-    TextView tvMoreOrderImages;
-    @BindView(R.id.tv_order_type)
-    TextView tvOrderType;
-    @BindView(R.id.tv_order_id)
-    TextView tvOrderId;
-    @BindView(R.id.tv_purchase_order_type)
-    TextView tvPurchaseOrderType;
-    @BindView(R.id.tv_order_status)
-    TextView tvOrderStatus;
 
     private Context context;
     private UserSessionManager session;
@@ -126,8 +121,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
         context = ViewBookOrderBusinessOwnerOrderActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-
-//        rvImages.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        changeStatusBar(context, getWindow());
         rvImages.setLayoutManager(new GridLayoutManager(context, 3));
         rvProducts.setLayoutManager(new LinearLayoutManager(context));
         rvStatus.setLayoutManager(new LinearLayoutManager(context));
@@ -148,74 +142,79 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
     private void setDefault() {
         orderDetails = (BookOrderBusinessOwnerModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
 
-        tvOrderId.setText("Order# - " + orderDetails.getOrder_id());
-
-        switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
-            case "1":
-                tvPurchaseOrderType.setText("Purchase Type - Individual");
-                tvCustomerName.setText(orderDetails.getCustomer_name());
-
-                tvCustomerMobile.setText("+" + orderDetails.getCustomer_country_code() + orderDetails.getCustomer_mobile());
-
-                tvCustomerEmail.setText(orderDetails.getCustomer_email());
-
-                break;
-            case "2":
-                tvPurchaseOrderType.setText("Purchase Type - Business");
-                tvCustomerName.setText(orderDetails.getCustomer_business_name());
-
-                List<BookOrderBusinessOwnerModel.ResultBean.CustomerBusinessMobileBean> mobilesList = orderDetails.getCustomer_business_mobile().get(0);
-                if (mobilesList != null) {
-                    if (mobilesList.size() != 0) {
-                        tvCustomerMobile.setText(mobilesList.get(0).getCountry_code() + mobilesList.get(0).getMobile_number());
-                    }
-                }
-
-                tvCustomerEmail.setText(orderDetails.getCustomer_business_email());
-                tvCustomerAddress.setText(orderDetails.getCustomer_business_address());
-                break;
-        }
-
-        if (tvCustomerMobile.getText().toString().trim().equals(""))
-            llMobile.setVisibility(View.GONE);
-
-        if (tvCustomerEmail.getText().toString().trim().equals(""))
-            llEmail.setVisibility(View.GONE);
-
-        if (tvCustomerAddress.getText().toString().trim().equals(""))
-            tvCustomerAddress.setVisibility(View.GONE);
+        tvOrderId.setText("Order ID - " + orderDetails.getOrder_id());
 
         switch (orderDetails.getOrder_type()) {
-            case "1":
-                tvOrderType.setText("Order by Product");
+            case "1": {
+                tvOrderBy.setText("Order by - Product");
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.VISIBLE);
 
-                rvProducts.setAdapter(new BookOrderProductsAdapter(context, orderDetails.getProduct_details()));
+                List<BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean> productsList = new ArrayList<>();
 
-                break;
-            case "2":
-                tvOrderType.setText("Order by Image");
+                for (BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean productDetails : orderDetails.getProduct_details()) {
+                    productsList.add(new BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean(
+                            productDetails.getId(),
+                            productDetails.getOrder_details_id(),
+                            productDetails.getProduct_id(),
+                            productDetails.getQuantity(),
+                            productDetails.getAmount(),
+                            productDetails.getCurrent_amount(),
+                            productDetails.getName(),
+                            productDetails.getDescription(),
+                            productDetails.getBusiness_id(),
+                            productDetails.getUnit_of_measure(),
+                            productDetails.getProduct_images()
+                    ));
+                }
+
+                rvProducts.setAdapter(new BookOrderProductsAdapter(context, productsList));
+            }
+            break;
+            case "2": {
+                tvOrderBy.setText("Order by - Image");
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.VISIBLE);
                 cvProducts.setVisibility(View.GONE);
-
-//                ArrayList<String> orderImagesList = new ArrayList<>();
-//
-//                for (int i = 0; i < orderDetails.getOrder_images().size(); i++)
-//                    orderImagesList.add(IMAGE_LINK + "orders/" + orderDetails.getOrder_images().get(i));
-//
-//                rvImages.setAdapter(new BookOrderOrderImagesAdapter(context, orderImagesList));
-                break;
-            case "3":
-                tvOrderType.setText("Order by Text");
+            }
+            break;
+            case "3": {
+                tvOrderBy.setText("Order by - Text");
                 cvText.setVisibility(View.VISIBLE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.GONE);
 
                 tvText.setText(orderDetails.getOrder_text());
-                break;
+            }
+            break;
+        }
+
+
+        switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
+            case "1": {
+                tvPurchaseOrderType.setText("This order is for individual");
+                tvCustomerName.setText("Name - " + orderDetails.getCustomer_name());
+            }
+            break;
+            case "2": {
+                tvPurchaseOrderType.setText("This order is for business");
+                tvCustomerName.setText(orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name());
+            }
+            break;
+        }
+        tvCustomerMobile.setText(orderDetails.getCustomer_country_code() + orderDetails.getCustomer_mobile());
+
+        if (orderDetails.getDelivery_option().equals("store_pickup")) {
+            tvDeliveryType.setText("Store Pickup");
+            tvAddress.setVisibility(View.GONE);
+        } else if (orderDetails.getDelivery_option().equals("home_delivery")) {
+            tvDeliveryType.setText("Home Delivery");
+
+            if (!orderDetails.getUser_address_line_one().equals(""))
+                tvAddress.setText("Delivery address - " + orderDetails.getUser_address_line_one());
+            else
+                tvAddress.setVisibility(View.GONE);
         }
 
         ArrayList<String> orderImagesList = new ArrayList<>();
@@ -241,39 +240,25 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
             case "1":
                 btnAction.setVisibility(View.GONE);
                 btnReject.setVisibility(View.GONE);
-                tvOrderStatus.setText("Order Added in Cart");
-                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_blue));
                 break;
             case "2":
                 btnAction.setText("Accept");
-                tvOrderStatus.setText("Order Placed");
-                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_yellow));
                 break;
             case "3":
                 btnAction.setText("In Progress");
-                tvOrderStatus.setText("Order Accepted");
-                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 break;
             case "4":
                 btnAction.setText("Delivered");
-                tvOrderStatus.setText("Order in Progress");
-                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_orange));
                 break;
             case "5":
                 btnAction.setText("Billing");
                 btnReject.setVisibility(View.GONE);
-                tvOrderStatus.setText("Order Delivered");
-                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 break;
             case "6":
-                tvOrderStatus.setText("Order Billing");
-                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 btnAction.setVisibility(View.GONE);
                 btnReject.setVisibility(View.GONE);
                 break;
             case "7":
-                tvOrderStatus.setText("Order Cancelled");
-                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
                 btnAction.setVisibility(View.GONE);
                 btnReject.setVisibility(View.GONE);
                 break;
@@ -331,7 +316,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
             alertDialogBuilder.create().show();
         });
 
-        ibCall.setOnClickListener(v -> {
+        ibCustomerMobileCall.setOnClickListener(v -> {
             if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 provideCallPremission(context);
             } else {
@@ -350,12 +335,6 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                 androidx.appcompat.app.AlertDialog alertD = builder.create();
                 alertD.show();
             }
-        });
-
-        ibEmail.setOnClickListener(v -> {
-            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                    "mailto", tvCustomerEmail.getText().toString().trim(), null));
-            context.startActivity(Intent.createChooser(emailIntent, "Send email..."));
         });
 
         tvMoreOrderImages.setOnClickListener(v -> {
@@ -444,7 +423,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
     private void setUpToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        toolbar.setNavigationIcon(R.drawable.icon_backarrow);
+        toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
     }
 }

@@ -8,11 +8,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -21,10 +21,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -35,7 +35,6 @@ import java.util.regex.Matcher;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.eorder.R;
 import in.oriange.eorder.adapters.BookOrderOrderImagesAdapter;
 import in.oriange.eorder.adapters.BookOrderProductsAdapter;
@@ -52,46 +51,43 @@ import static in.oriange.eorder.utilities.Utilities.changeStatusBar;
 
 public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
+
+    @BindView(R.id.toolbar_title)
+    AppCompatEditText toolbarTitle;
+    @BindView(R.id.btn_save)
+    MaterialButton btnSave;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.tv_business_owner_name)
+    TextView tvBusinessOwnerName;
+    @BindView(R.id.tv_delivery_type)
+    TextView tvDeliveryType;
+    @BindView(R.id.tv_home_delivery_text)
+    TextView tvHomeDeliveryText;
+    @BindView(R.id.tv_store_pickup_text)
+    TextView tvStorePickupText;
+    @BindView(R.id.tv_address)
+    TextView tvAddress;
     @BindView(R.id.tv_order_text)
     TextView tvOrderText;
     @BindView(R.id.cv_text)
     CardView cvText;
-    @BindView(R.id.imv_user)
-    CircleImageView imvUser;
-    @BindView(R.id.tv_name)
-    TextView tvName;
-    @BindView(R.id.tv_mobile)
-    TextView tvMobile;
-    @BindView(R.id.ll_individual_details)
-    LinearLayout llIndividualDetails;
-    @BindView(R.id.tv_business_name)
-    TextView tvBusinessName;
-    @BindView(R.id.tv_business_type_subtype)
-    TextView tvBusinessTypeSubtype;
-    @BindView(R.id.ll_business)
-    LinearLayout llBusiness;
-    @BindView(R.id.cv_purchase_type)
-    CardView cvPurchaseType;
-    @BindView(R.id.btn_save)
-    Button btnSave;
-    @BindView(R.id.rv_order_images)
-    RecyclerView rvOrderImages;
-    @BindView(R.id.cv_images)
-    CardView cvImages;
     @BindView(R.id.rv_products)
     RecyclerView rvProducts;
     @BindView(R.id.cv_products)
     CardView cvProducts;
+    @BindView(R.id.rv_order_images)
+    RecyclerView rvOrderImages;
     @BindView(R.id.tv_more_order_images)
     TextView tvMoreOrderImages;
-    @BindView(R.id.tv_delivery_type)
-    TextView tvDeliveryType;
-    @BindView(R.id.tv_address)
-    TextView tvAddress;
-    @BindView(R.id.cv_delivery_details)
-    CardView cvDeliveryDetails;
+    @BindView(R.id.cv_images)
+    CardView cvImages;
+    @BindView(R.id.tv_order_by)
+    TextView tvOrderBy;
+    @BindView(R.id.tv_purchase_order_type)
+    TextView tvPurchaseOrderType;
+    @BindView(R.id.tv_customer_name)
+    TextView tvCustomerName;
 
     private Context context;
     private UserSessionManager session;
@@ -134,22 +130,6 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
             JSONObject json = user_info.getJSONObject(0);
 
             userId = json.getString("userid");
-            String imageUrl = json.getString("image_url");
-            String name = json.getString("first_name");
-            String country_code = json.getString("country_code");
-            String mobile = json.getString("mobile");
-
-            if (!imageUrl.equals("")) {
-                String url = IMAGE_LINK + userId + "/" + imageUrl;
-                Picasso.with(context)
-                        .load(url)
-                        .placeholder(R.drawable.icon_userphoto)
-                        .into(imvUser);
-            }
-
-            tvName.setText(name);
-            tvMobile.setText("+" + country_code + mobile);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -172,37 +152,38 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
             orderDetails = new BookOrderGetMyOrdersModel.ResultBean();
         }
 
-        if (purchaseOrderType.equals("1")) {
-            llIndividualDetails.setVisibility(View.VISIBLE);
-            llBusiness.setVisibility(View.GONE);
-        } else if (purchaseOrderType.equals("2")) {
-            llIndividualDetails.setVisibility(View.GONE);
-            llBusiness.setVisibility(View.VISIBLE);
-
-            customerBusinessId = businessDetails.getId();
-            tvBusinessName.setText(businessDetails.getBusiness_code() + " - " + businessDetails.getBusiness_name());
-            if (!businessDetails.getTypeSubTypeName().isEmpty())
-                tvBusinessTypeSubtype.setText(businessDetails.getTypeSubTypeName());
-            else
-                tvBusinessTypeSubtype.setText(businessDetails.getType_description());
-        }
-
         if (deliveryStatus.equals("store_pickup")) {
             tvDeliveryType.setText("Store Pickup");
             if (!businessOwnerAddress.equals("")) {
-                tvAddress.setText(businessOwnerAddress);
+                tvStorePickupText.setVisibility(View.VISIBLE);
+                tvAddress.setText("Address - " + businessOwnerAddress);
                 tvAddress.setTextColor(context.getResources().getColor(R.color.black));
             } else {
                 tvAddress.setText("Store address not available");
                 tvAddress.setTextColor(context.getResources().getColor(R.color.red));
             }
         } else if (deliveryStatus.equals("home_delivery")) {
+            tvHomeDeliveryText.setVisibility(View.VISIBLE);
             tvDeliveryType.setText("Home Delivery");
-            tvAddress.setText(customerAddress);
+            tvAddress.setText("Address - " + customerAddress);
+        }
+
+        switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
+            case "1": {
+                tvPurchaseOrderType.setText("This order is for individual");
+                tvCustomerName.setText("Name - " + orderDetails.getCustomer_name());
+            }
+            break;
+            case "2": {
+                tvPurchaseOrderType.setText("This order is for business");
+                tvCustomerName.setText(orderDetails.getBusiness_code() + " - " + orderDetails.getBusiness_name());
+            }
+            break;
         }
 
         switch (orderType) {
             case "1":
+                tvOrderBy.setText("Order by - Product");
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.VISIBLE);
@@ -228,12 +209,14 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
                 break;
             case "2":
+                tvOrderBy.setText("Order by - Image");
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.VISIBLE);
                 cvProducts.setVisibility(View.GONE);
 
                 break;
             case "3":
+                tvOrderBy.setText("Order by - Text");
                 cvText.setVisibility(View.VISIBLE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.GONE);
@@ -383,9 +366,16 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SentOrdersFragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderMyOrdersActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderCartProductsActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderSelectDeliveryTypeActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeTextActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImageActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderImageUploadActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderMyOrderActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivity"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
@@ -397,7 +387,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Your order is placed successfully, thank you");
+                        tv_title.setText("Order placed successfully! Thank you for your order!");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
@@ -450,6 +440,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SentOrdersFragment"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderMyOrdersActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderCartProductsActivity"));
@@ -470,7 +461,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                         Button btn_ok = promptView.findViewById(R.id.btn_ok);
 
                         animation_view.playAnimation();
-                        tv_title.setText("Your order is placed successfully, thank you");
+                        tv_title.setText("Order placed successfully! Thank you for your order!");
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 

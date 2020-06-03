@@ -72,7 +72,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitXY"
                 android:src="@drawable/icon_filter"
-                android:tint="@color/darkGray" />
+                android:tint="@color/darkGray"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_notifications_count"

@@ -329,7 +329,6 @@ public class BookOrderPurchaseTypeSelectionActivity extends AppCompatActivity {
                 super(view);
                 tv_heading = view.findViewById(R.id.tv_heading);
                 tv_subheading = view.findViewById(R.id.tv_subheading);
-                cb_select_business = view.findViewById(R.id.cb_select_business);
             }
         }
     }

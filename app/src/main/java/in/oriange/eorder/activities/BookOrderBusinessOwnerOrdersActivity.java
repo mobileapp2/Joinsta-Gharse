@@ -107,13 +107,13 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
 
         // status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
 
-        orderStatusList.add(new MasterModel("Orders added in cart", "1", false));
-        orderStatusList.add(new MasterModel("Placed Orders", "2", false));
-        orderStatusList.add(new MasterModel("Accepted Orders", "3", false));
-        orderStatusList.add(new MasterModel("Orders in Progress", "4", false));
-        orderStatusList.add(new MasterModel("Delivered Orders", "5", false));
-        orderStatusList.add(new MasterModel("Orders applicable for Billing", "6", false));
-        orderStatusList.add(new MasterModel("Cancelled Orders", "7", false));
+        orderStatusList.add(new MasterModel("Added in Cart", "1", false));
+        orderStatusList.add(new MasterModel("Placed", "2", false));
+        orderStatusList.add(new MasterModel("Accepted", "3", false));
+        orderStatusList.add(new MasterModel("In Progress", "4", false));
+        orderStatusList.add(new MasterModel("Delivered", "5", false));
+        orderStatusList.add(new MasterModel("Applicable for Billing", "6", false));
+        orderStatusList.add(new MasterModel("Cancelled", "7", false));
     }
 
     private void getSessionDetails() {
@@ -341,7 +341,7 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
                     type = pojoDetails.getType();
 
                     if (type.equalsIgnoreCase("success")) {
-                        List<BookOrderBusinessOwnerModel.ResultBean> orderList = pojoDetails.getResult();
+                        orderList = pojoDetails.getResult();
 
                         if (orderList.size() != 0) {
                             mFilteredOrderList = orderList;

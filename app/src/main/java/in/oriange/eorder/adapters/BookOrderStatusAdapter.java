@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -47,48 +46,40 @@ public class BookOrderStatusAdapter extends RecyclerView.Adapter<BookOrderStatus
         switch (statusDetails.getStatus()) {
             //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
             case "1":
-                holder.tv_status.setText("Order Added in Cart");
-                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_circle_outline));
-                holder.imv_status.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.tv_status.setText("Added in Cart");
+                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "2":
-                holder.tv_status.setText("Order Placed");
-                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_circle_outline));
-                holder.imv_status.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.tv_status.setText("Placed");
+                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "3":
-                holder.tv_status.setText("Order Accepted");
-                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_circle_outline));
-                holder.imv_status.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.tv_status.setText("Accepted");
+                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "4":
-                holder.tv_status.setText("Order in Progress");
-                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_circle_outline));
-                holder.imv_status.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.tv_status.setText("In Progress");
+                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "5":
-                holder.tv_status.setText("Order Delivered");
-                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_circle_outline));
-                holder.imv_status.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.tv_status.setText("Delivered");
+                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "6":
-                holder.tv_status.setText("Order Billing");
-                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_circle_outline));
-                holder.imv_status.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.tv_status.setText("Billing");
+                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "7":
-                holder.tv_status.setText("Order Cancelled");
-                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_circle_filled));
-                holder.imv_status.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+                holder.tv_status.setText("Cancelled");
+                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_red_cross));
                 break;
         }
 
         if (position == statusList.size() - 1) {
             holder.view_divider.setVisibility(View.GONE);
-            if (!statusDetails.getStatus().equals("7")) {
-                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_circle_filled));
-                holder.imv_status.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
-            }
+//            if (!statusDetails.getStatus().equals("7")) {
+//                holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
+//            }
         }
     }
 
