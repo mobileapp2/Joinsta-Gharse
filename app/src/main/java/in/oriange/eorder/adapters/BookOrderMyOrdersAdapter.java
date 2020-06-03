@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,9 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.JsonArray;
-
 import java.util.List;
 
 import in.oriange.eorder.R;
-import in.oriange.eorder.activities.BookOrderSelectDeliveryTypeActivity;
 import in.oriange.eorder.activities.ViewBookOrderMyOrderActivity;
 import in.oriange.eorder.models.BookOrderGetMyOrdersModel;
 
@@ -52,7 +50,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
         int position = holder.getAdapterPosition();
         BookOrderGetMyOrdersModel.ResultBean orderDetails = orderList.get(position);
 
-        holder.tv_order_id.setText("Order ID - " + orderDetails.getOrder_id());
+        holder.tv_order_id.setText("Order ID # " + orderDetails.getOrder_id());
         holder.tv_supplier.setText("Supplier – " + orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
 
         switch (orderDetails.getOrder_type()) {         //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
@@ -66,7 +64,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
                     else
                         price = price + (Integer.parseInt(productDetailsBean.getAmount())
                                 * Integer.parseInt(productDetailsBean.getQuantity()));
-                holder.tv_price.setText("Total Amount - ₹ " + getCommaSeparatedNumber(price));
+                holder.tv_price.setText(Html.fromHtml("Total Amount - <font color=\"#000000\"> <b>₹ " + getCommaSeparatedNumber(price) + "</b></font>"));
             }
             break;
             case "2": {
@@ -157,8 +155,8 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
 //                        .putExtra("orderDetails", orderDetails)
 //                        .putExtra("orderImageArray", new JsonArray().toString()));
 //            else
-                context.startActivity(new Intent(context, ViewBookOrderMyOrderActivity.class)
-                        .putExtra("orderDetails", orderDetails));
+            context.startActivity(new Intent(context, ViewBookOrderMyOrderActivity.class)
+                    .putExtra("orderDetails", orderDetails));
         });
     }
 

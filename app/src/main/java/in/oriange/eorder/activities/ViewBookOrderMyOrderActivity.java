@@ -154,7 +154,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
     private void setDefault() {
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
 
-        tvOrderId.setText("Order ID - " + orderDetails.getOrder_id());
+        tvOrderId.setText("Order ID # " + orderDetails.getOrder_id());
 
         switch (orderDetails.getOrder_type()) {
             case "1": {

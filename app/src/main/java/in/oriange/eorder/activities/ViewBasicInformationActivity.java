@@ -244,7 +244,7 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
                         salutation = "Ms. ";
                     }
 
-                    String shareMessage = "Welcome to Joinsta Ghar Se\n\n" +
+                    String shareMessage = "Welcome to Joinsta Gharse\n\n" +
                             "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
                             "Enter referral code of " + salutation + edt_fname.getText().toString().trim() + " - " + edt_referral_code.getText().toString().trim() + "\n" +
                             "Below is the link to download the app.\n" +

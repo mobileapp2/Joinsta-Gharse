@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +51,7 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
         BookOrderBusinessOwnerModel.ResultBean orderDetails = orderList.get(position);
 
 
-        holder.tv_order_id.setText("Order ID - " + orderDetails.getOrder_id());
+        holder.tv_order_id.setText("Order ID # " + orderDetails.getOrder_id());
 
         switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
             case "1": {
@@ -75,7 +76,7 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
                     else
                         price = price + (Integer.parseInt(productDetailsBean.getAmount())
                                 * Integer.parseInt(productDetailsBean.getQuantity()));
-                holder.tv_price.setText("Total Amount - ₹ " + getCommaSeparatedNumber(price));
+                holder.tv_price.setText(Html.fromHtml("Total Amount - <font color=\"#000000\"> <b>₹ " + getCommaSeparatedNumber(price) + "</b></font>"));
             }
             break;
             case "2": {

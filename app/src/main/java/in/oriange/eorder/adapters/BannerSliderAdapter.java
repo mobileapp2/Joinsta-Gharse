@@ -194,7 +194,7 @@ public class BannerSliderAdapter extends SliderViewAdapter<BannerSliderAdapter.S
             Uri uri = Uri.parse("file:///" + file);
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/html");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, subject + "\n" + description+ "\n" + "Joinsta Ghar Se\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, subject + "\n" + description+ "\n" + "Joinsta Gharse\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             context.startActivity(Intent.createChooser(shareIntent, "Share Deal"));
         }

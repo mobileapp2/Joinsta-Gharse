@@ -62,7 +62,7 @@
                 android:gravity="center_vertical"
                 android:text="Mobile"
                 android:textColor="@color/darkGray"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_city"
@@ -73,7 +73,7 @@
                 android:gravity="center_vertical"
                 android:text="City"
                 android:textColor="@color/darkGray"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 

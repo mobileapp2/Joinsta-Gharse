@@ -70,7 +70,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
-                        android:text="Thanks for using Joinsta Ghar Se app! We are happy to help you. If you have any questions and looking for support please feel free to contact us."
+                        android:text="Thanks for using Joinsta Gharse app! We are happy to help you. If you have any questions and looking for support please feel free to contact us."
                         android:textSize="16sp" />
 
 

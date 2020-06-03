@@ -868,10 +868,10 @@ public class LoginActivity extends AppCompatActivity {
                         JSONArray jsonarr = mainObj.getJSONArray("result");
                         if (jsonarr.length() > 0) {
                             session.createUserLoginSession(jsonarr.toString());
-//                            saveRegistrationID();
                             startActivity(new Intent(context, MainDrawerActivity.class)
                                     .putExtra("startOrigin", 0));
-
+//                            saveRegistrationID();
+                            finish();
                         }
                     } else {
                         Utilities.showMessage(message, context, 3);

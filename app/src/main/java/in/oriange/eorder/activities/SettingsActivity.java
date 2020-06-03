@@ -102,14 +102,14 @@ public class SettingsActivity extends AppCompatActivity {
                 salutation = "Ms. ";
             }
             if (!referral_code.trim().equals("")) {
-                shareMessage = "Welcome to Joinsta Ghar Se\n\n" +
+                shareMessage = "Welcome to Joinsta Gharse\n\n" +
                         "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
                         "Enter referral code of " + salutation + name + " - " + referral_code + "\n" +
                         "Below is the link to download the app.\n" +
                         "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
                         "Joinsta - Team";
             } else {
-                shareMessage = "Welcome to Joinsta Ghar Se\n\n" +
+                shareMessage = "Welcome to Joinsta Gharse\n\n" +
                         "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
                         "Below is the link to download the app.\n" +
                         "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
