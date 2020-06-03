@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="in.oriange.eorder"
+    package="in.oriange.joinstagharse"
     tools:ignore="LockedOrientationActivity">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -346,7 +346,11 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBqsk7EvFj-f7wQ2QtR9x8NZJ2IvfusP2o" />
-
+        <service android:name=".services.FirebaseMessageService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

@@ -48,7 +48,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <in.oriange.eorder.utilities.NonSwipeableViewPager
+    <in.oriange.joinstagharse.utilities.NonSwipeableViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

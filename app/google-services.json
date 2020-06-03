@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "863546564044",
+    "firebase_url": "https://joinsta-gharse.firebaseio.com",
+    "project_id": "joinsta-gharse",
+    "storage_bucket": "joinsta-gharse.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:863546564044:android:792bf0edfb681c2d10d169",
+        "android_client_info": {
+          "package_name": "in.oriange.joinstagharse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "863546564044-ruqfjnc47ln72n22r8knbikgr6keni7n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8VZ-yVzst2Z_v7YFiiDKu8WHqzqonFAc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "863546564044-ruqfjnc47ln72n22r8knbikgr6keni7n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
