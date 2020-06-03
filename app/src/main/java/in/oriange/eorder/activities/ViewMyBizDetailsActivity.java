@@ -420,7 +420,7 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
             sb.append("Website - " + searchDetails.getWebsite() + "\n");
         }
 
-        String details = sb.toString() + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+        String details = sb.toString() + "\n" + "Joinsta Ghar Se\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
 
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");

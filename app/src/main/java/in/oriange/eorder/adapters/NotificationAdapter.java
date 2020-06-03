@@ -303,7 +303,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             if (notificationDetails.getImage().equals("") || notificationDetails.getImage().equals("0")) {
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setType("text/html");
-                shareIntent.putExtra(Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "Joinsta Ghar Se\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
                 context.startActivity(Intent.createChooser(shareIntent, "Share via"));
             } else {
                 if (Utilities.isNetworkAvailable(context)) {
@@ -590,7 +590,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/html");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "shared via Joinsta\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, title + "\n" + description + "\n" + "Joinsta Ghar Se\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK);
             shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
             context.startActivity(Intent.createChooser(shareIntent, "Share via"));
 
