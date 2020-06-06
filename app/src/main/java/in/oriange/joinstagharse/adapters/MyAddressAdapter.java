@@ -51,6 +51,7 @@ public class MyAddressAdapter extends RecyclerView.Adapter<MyAddressAdapter.MyVi
         int position = holder.getAdapterPosition();
         AddressModel.ResultBean addressDetails = addressList.get(position);
 
+        holder.tv_address_name.setText(addressDetails.getFull_name());
         holder.tv_address.setText(addressDetails.getAddress_line1());
 
         holder.btn_edit.setOnClickListener(v -> {
@@ -83,11 +84,12 @@ public class MyAddressAdapter extends RecyclerView.Adapter<MyAddressAdapter.MyVi
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView tv_address;
+        private TextView tv_address_name, tv_address;
         private Button btn_edit, btn_delete;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            tv_address_name = itemView.findViewById(R.id.tv_address_name);
             tv_address = itemView.findViewById(R.id.tv_address);
             btn_edit = itemView.findViewById(R.id.btn_edit);
             btn_delete = itemView.findViewById(R.id.btn_delete);

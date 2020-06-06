@@ -89,6 +89,11 @@
 
         </LinearLayout>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btn_add"
+            style="@style/FloatingActionButton"
+            android:src="@drawable/icon_add" />
+
     </FrameLayout>
 
 </LinearLayout>

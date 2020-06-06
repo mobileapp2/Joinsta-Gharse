@@ -13,7 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
+import in.oriange.joinstagharse.activities.BookOrderCartProductsActivity;
 import in.oriange.joinstagharse.adapters.SearchBusinessAdapter;
 import in.oriange.joinstagharse.models.SearchDetailsModel;
 import in.oriange.joinstagharse.utilities.APICall;
@@ -47,7 +50,9 @@ public class SearchFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView rv_searchlist;
     private LinearLayout ll_nopreview;
+    private ImageButton ib_cart;
     private EditText edt_search;
+    private TextView tv_cart_count;
     private SpinKitView progressBar;
     private List<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
 
@@ -56,6 +61,7 @@ public class SearchFragment extends Fragment {
     private ProgressDialog pd;
 
     private LocalBroadcastManager localBroadcastManager;
+    private LocalBroadcastManager localBroadcastManager2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -72,6 +78,8 @@ public class SearchFragment extends Fragment {
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
+        ib_cart = rootView.findViewById(R.id.ib_cart);
+        tv_cart_count = rootView.findViewById(R.id.tv_cart_count);
         progressBar = rootView.findViewById(R.id.progressBar);
         edt_search = rootView.findViewById(R.id.edt_search);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
@@ -92,6 +100,10 @@ public class SearchFragment extends Fragment {
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("SearchFragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+
+        localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter2 = new IntentFilter("SearchFragmentUpdateCartCount");
+        localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
 
     }
 
@@ -116,6 +128,10 @@ public class SearchFragment extends Fragment {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 swipeRefreshLayout.setRefreshing(false);
             }
+        });
+
+        ib_cart.setOnClickListener(v -> {
+            startActivity(new Intent(context, BookOrderCartProductsActivity.class));
         });
 
         edt_search.addTextChangedListener(new TextWatcher() {
@@ -237,9 +253,24 @@ public class SearchFragment extends Fragment {
         }
     };
 
+    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int cartCount = intent.getIntExtra("cartCount", 0);
+            if (cartCount == 0) {
+                tv_cart_count.setVisibility(View.GONE);
+                tv_cart_count.setText("");
+            } else {
+                tv_cart_count.setVisibility(View.VISIBLE);
+                tv_cart_count.setText(String.valueOf(cartCount));
+            }
+        }
+    };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
     }
 }

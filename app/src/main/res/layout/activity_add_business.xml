@@ -37,7 +37,7 @@
                 style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Save"/>
+                android:text="Save" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -187,7 +187,7 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.85"
+                            android:layout_weight="0.8"
                             android:orientation="vertical">
 
                             <TextView
@@ -204,9 +204,9 @@
                             android:id="@+id/btn_add_tag"
                             style="@style/Widget.AppCompat.Button.Borderless.Colored"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
-                            android:layout_weight="0.15"
+                            android:layout_weight="0.2"
                             android:text="Add"
                             android:textAllCaps="false" />
 
@@ -354,7 +354,7 @@
 
                         <TextView
                             style="@style/TitleTextView"
-                            android:text="Address" />
+                            android:text="Address *" />
 
                         <EditText
                             android:id="@+id/edt_address"
@@ -469,6 +469,7 @@
                     <CheckBox
                         android:id="@+id/cb_is_pick_up_available"
                         style="@style/CheckBox"
+                        android:checked="true"
                         android:text="Do you allow store pickup?" />
 
                     <CheckBox
@@ -479,7 +480,8 @@
                     <CheckBox
                         android:id="@+id/cb_show_in_search"
                         style="@style/CheckBox"
-                        android:text="Show business in business listing?" />
+                        android:text="Show business in business listing?"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

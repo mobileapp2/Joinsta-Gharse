@@ -77,7 +77,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 
         notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
-        if (remoteMessage.getData().get("notification_type").equals("2") || remoteMessage.getData().get("notification_type").equals("1")) {
+        if (remoteMessage.getData().get("notification_type").equals("1")) {
             if (remoteMessage.getData().get("image") != null && remoteMessage.getData().get("image").isEmpty()) {
                 showNewNotification(
                         getApplicationContext(),

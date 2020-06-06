@@ -67,7 +67,7 @@ import static in.oriange.joinstagharse.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinstagharse.utilities.Utilities.setPaddingForView;
 import static in.oriange.joinstagharse.utilities.Utilities.yyyyMMddDate;
 
-public class AddOffers_Activity extends AppCompatActivity {
+public class AddOffersActivity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -78,7 +78,7 @@ public class AddOffers_Activity extends AppCompatActivity {
     private MaterialButton btn_save;
 
     private int mYear, mMonth, mDay, mYear1, mMonth1, mDay1;
-    private String userId, startDate, endDate, detailId, categoryTypeId, categoryId, categoryTypeName;
+    private String userId, startDate, endDate, recordId, categoryTypeId, categoryId, categoryTypeName;
 
     private File photoFileFolder;
     private Uri photoURI;
@@ -101,7 +101,7 @@ public class AddOffers_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = AddOffers_Activity.this;
+        context = AddOffersActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
         changeStatusBar(context, getWindow());
@@ -120,7 +120,7 @@ public class AddOffers_Activity extends AppCompatActivity {
         btn_save = findViewById(R.id.btn_save);
 
 
-        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Offer Images");
+        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Offer Images");
         if (!photoFileFolder.exists())
             photoFileFolder.mkdirs();
 
@@ -144,7 +144,7 @@ public class AddOffers_Activity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        detailId = getIntent().getStringExtra("detailId");
+        recordId = getIntent().getStringExtra("recordId");
         categoryTypeId = getIntent().getStringExtra("categoryTypeId");
         categoryId = getIntent().getStringExtra("categoryId");
         categoryTypeName = getIntent().getStringExtra("categoryTypeName");
@@ -349,11 +349,11 @@ public class AddOffers_Activity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();
-                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(AddOffers_Activity.this);
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(AddOffersActivity.this);
             }
 
             if (requestCode == CAMERA_REQUEST) {
-                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(AddOffers_Activity.this);
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(AddOffersActivity.this);
             }
         }
 
@@ -369,7 +369,7 @@ public class AddOffers_Activity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta Gharse/"
                 + "Offer Images/" + "uplimg.png";
 
         BufferedInputStream bis = null;
@@ -541,7 +541,7 @@ public class AddOffers_Activity extends AppCompatActivity {
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "addOfferDetails");
         mainObj.addProperty("category_type_id", categoryTypeId);
-        mainObj.addProperty("record_id", detailId);
+        mainObj.addProperty("record_id", recordId);
         mainObj.addProperty("user_id", userId);
         mainObj.addProperty("title", edt_title.getText().toString().trim());
         mainObj.addProperty("description", edt_description.getText().toString().trim());
@@ -671,6 +671,6 @@ public class AddOffers_Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        hideSoftKeyboard(AddOffers_Activity.this);
+        hideSoftKeyboard(AddOffersActivity.this);
     }
 }

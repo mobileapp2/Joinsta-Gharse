@@ -64,6 +64,7 @@
                     android:id="@+id/imb_share"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:src="@drawable/icon_share" />
 
@@ -79,7 +80,7 @@
                 android:maxLines="1"
                 android:text="Joinsta Offer"
                 android:textColor="@color/darkGray"
-                android:textSize="14sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_description"
@@ -89,7 +90,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="This is the sub headingThis is the sub headingThis is the sub headingThis is the sub heading"
-                android:textColor="@color/darkGray" />
+                android:textColor="@color/darkGray"/>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_promo_code"

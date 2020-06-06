@@ -41,7 +41,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.activities.ViewOfferDetails_Activity;
+import in.oriange.joinstagharse.activities.ViewMyOfferDetailsActivity;
 import in.oriange.joinstagharse.models.BannerListModel;
 import in.oriange.joinstagharse.models.MyOffersListModel;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
@@ -53,11 +53,11 @@ import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK
 import static in.oriange.joinstagharse.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinstagharse.utilities.Utilities.diffBetweenTwoDates;
 
-public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdapter.MyViewHolder> {
+public class OffersAdapter extends RecyclerView.Adapter<OffersAdapter.MyViewHolder> {
 
     private Context context;
     private List<MyOffersListModel.ResultBean> myOffersList;
-    private String isFromMyOfferOrFromParticularOffer;            //1 = My Offers  2 = Particular record offer
+    private String CALLTYPE;            //CALLTYPE  1 == My Businesss Offer and My Offers  2 == Search Business offer
     private String userId;
     private int mYear, mMonth, mDay;
     private String startDate;
@@ -67,12 +67,12 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
     private int numOfFilesDownloaded = 0;
     private File downloadedDocsfolder;
 
-    public MyAddedOffersAdapter(Context context, List<MyOffersListModel.ResultBean> myOffersList, String isFromMyOfferOrFromParticularOffer) {
+    public OffersAdapter(Context context, List<MyOffersListModel.ResultBean> myOffersList, String CALLTYPE) {
         this.context = context;
         this.myOffersList = myOffersList;
-        this.isFromMyOfferOrFromParticularOffer = isFromMyOfferOrFromParticularOffer;
+        this.CALLTYPE = CALLTYPE;
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/eorder/" + "Offer Images");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Offer Images");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 
@@ -124,14 +124,6 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
         } else {
             holder.tv_business_name.setVisibility(View.GONE);
         }
-
-//        if (!offerDetails.getRecord_name().isEmpty() && !offerDetails.getSub_category().isEmpty()) {
-//            holder.tv_business_name.setText(Html.fromHtml("<font color=\"#01579B\"> <b>"+ offerDetails.getRecord_name() +"</b> </font>" + " (" + offerDetails.getSub_category() + ")"));
-//        } else if (offerDetails.getRecord_name().isEmpty() && offerDetails.getSub_category().isEmpty()) {
-//            holder.tv_business_name.setVisibility(View.GONE);
-//        } else if (!offerDetails.getRecord_name().isEmpty()) {
-//            holder.tv_business_name.setText("<font color=\"#01579B\"> <b>"+ offerDetails.getRecord_name() +"</b> </font>");
-//        }
 
         holder.tv_title.setText(offerDetails.getTitle());
         holder.tv_description.setText(offerDetails.getDescription());
@@ -198,16 +190,14 @@ public class MyAddedOffersAdapter extends RecyclerView.Adapter<MyAddedOffersAdap
         holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String isRecordAddedByCurrentUserId = "0";            //0 = No  1 = Yes
-                if (offerDetails.getCreated_by().equals(userId)) {
-                    isRecordAddedByCurrentUserId = "1";
-                }
-
-                context.startActivity(new Intent(context, ViewOfferDetails_Activity.class)
+//                if (CALLTYPE.equals("1")) {
+                context.startActivity(new Intent(context, ViewMyOfferDetailsActivity.class)
                         .putExtra("offerDetails", offerDetails)
-                        .putExtra("isFromMyOfferOrFromParticularOffer", isFromMyOfferOrFromParticularOffer)
-                        .putExtra("isRecordAddedByCurrentUserId", isRecordAddedByCurrentUserId));
-
+                        .putExtra("CALLTYPE", CALLTYPE));
+//                } else if (CALLTYPE.equals("2")) {
+//                    context.startActivity(new Intent(context, ViewBusinessOfferDetailsActivity.class)
+//                            .putExtra("offerDetails", offerDetails));
+//                }
             }
         });
 

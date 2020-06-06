@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.adapters.MyAddedOffersAdapter;
+import in.oriange.joinstagharse.adapters.OffersAdapter;
 import in.oriange.joinstagharse.models.MyOffersListModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
@@ -152,7 +152,7 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
                         if (myOffersList.size() > 0) {
                             rv_myoffers.setVisibility(View.VISIBLE);
                             ll_nopreview.setVisibility(View.GONE);
-                            rv_myoffers.setAdapter(new MyAddedOffersAdapter(context, myOffersList, "1"));
+                            rv_myoffers.setAdapter(new OffersAdapter(context, myOffersList, "1"));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_myoffers.setVisibility(View.GONE);

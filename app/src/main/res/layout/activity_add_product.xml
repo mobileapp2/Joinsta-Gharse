@@ -62,7 +62,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Product Code *" />
+                    android:text="Product Code" />
 
                 <EditText
                     android:id="@+id/edt_code"
@@ -94,7 +94,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Product Description *" />
+                    android:text="Product Description" />
 
                 <EditText
                     android:id="@+id/edt_description"
@@ -144,7 +144,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Max Retail Price (₹)" />
+                    android:text="Price (₹)" />
 
                 <EditText
                     android:id="@+id/edt_max_retail_price"

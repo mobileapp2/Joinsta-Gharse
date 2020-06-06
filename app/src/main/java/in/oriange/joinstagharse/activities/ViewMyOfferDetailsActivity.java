@@ -5,9 +5,9 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -24,7 +24,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.example.library.banner.BannerLayout;
+import com.smarteist.autoimageslider.IndicatorAnimations;
+import com.smarteist.autoimageslider.SliderAnimations;
+import com.smarteist.autoimageslider.SliderView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -40,7 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.adapters.RecyclerBannerAdapter;
+import in.oriange.joinstagharse.adapters.OfferImageSliderAdapter;
+import in.oriange.joinstagharse.models.BannerListModel;
 import in.oriange.joinstagharse.models.MyOffersListModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
@@ -50,24 +53,26 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeDateFormat;
+import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 
-public class ViewOfferDetails_Activity extends AppCompatActivity {
+public class ViewMyOfferDetailsActivity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private BannerLayout rv_offer_images;
     private TextView tv_business_name, tv_title, tv_description, tv_validity, tv_url, tv_promo_code;
     private CardView cv_url, cv_promo_code;
     private ImageButton imb_share;
+    private SliderView imageSlider;
 
     private MyOffersListModel.ResultBean offerDetails;
-    private String userId, isFromMyOfferOrFromParticularOffer, isRecordAddedByCurrentUserId;
+    private String userId;
 
     private String shareMessage;
     private ArrayList<Uri> downloadedImagesUriList;
     private int numOfDocuments = 0;
     private int numOfFilesDownloaded = 0;
+    private String CALLTYPE;
     private File file, downloadedDocsfolder;
 
     @Override
@@ -83,40 +88,36 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = ViewOfferDetails_Activity.this;
+        context = ViewMyOfferDetailsActivity.this;
         session = new UserSessionManager(context);
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-
+        changeStatusBar(context, getWindow());
         tv_business_name = findViewById(R.id.tv_business_name);
         tv_title = findViewById(R.id.tv_title);
         tv_description = findViewById(R.id.tv_description);
         tv_validity = findViewById(R.id.tv_validity);
         tv_url = findViewById(R.id.tv_url);
         tv_promo_code = findViewById(R.id.tv_promo_code);
-        rv_offer_images = findViewById(R.id.rv_offer_images);
         imb_share = findViewById(R.id.imb_share);
+        imageSlider = findViewById(R.id.imageSlider);
 
         cv_url = findViewById(R.id.cv_url);
         cv_promo_code = findViewById(R.id.cv_promo_code);
 
         downloadedImagesUriList = new ArrayList<>();
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/eorder/" + "Offer Images");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Offer Images");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            builder.detectFileUriExposure();
-        }
+        builder.detectFileUriExposure();
     }
 
     private void setDefault() {
+        CALLTYPE = getIntent().getStringExtra("CALLTYPE");
         offerDetails = (MyOffersListModel.ResultBean) getIntent().getSerializableExtra("offerDetails");
-        isFromMyOfferOrFromParticularOffer = getIntent().getStringExtra("isFromMyOfferOrFromParticularOffer");
-        isRecordAddedByCurrentUserId = getIntent().getStringExtra("isRecordAddedByCurrentUserId");
-
 //        if (!offerDetails.getRecord_name().isEmpty() && !offerDetails.getSub_category().isEmpty()) {
 //            tv_business_name.setText(offerDetails.getRecord_name() + " (" + offerDetails.getSub_category() + ")");
 //        } else if (offerDetails.getRecord_name().isEmpty() && offerDetails.getSub_category().isEmpty()) {
@@ -154,14 +155,21 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         }
 
         if (offerDetails.getDocuments().size() == 0) {
-            rv_offer_images.setVisibility(View.GONE);
+            imageSlider.setVisibility(View.GONE);
         } else {
-            final List<String> offerImages = new ArrayList<>();
+            List<BannerListModel.ResultBean> bannerList = new ArrayList<>();
             for (int i = 0; i < offerDetails.getDocuments().size(); i++) {
-                offerImages.add(IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(i).getDocument());
+                bannerList.add(new BannerListModel.ResultBean("", "", IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(i).getDocument()));
             }
-            RecyclerBannerAdapter webBannerAdapter = new RecyclerBannerAdapter(this, offerImages);
-            rv_offer_images.setAdapter(webBannerAdapter);
+
+            OfferImageSliderAdapter adapter = new OfferImageSliderAdapter(context, bannerList);
+            imageSlider.setSliderAdapter(adapter);
+            imageSlider.setIndicatorAnimation(IndicatorAnimations.WORM); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+            imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+            imageSlider.setIndicatorSelectedColor(Color.WHITE);
+            imageSlider.setIndicatorUnselectedColor(Color.GRAY);
+            imageSlider.setAutoCycle(true);
+            imageSlider.setScrollTimeInSec(10);
         }
     }
 
@@ -230,7 +238,7 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (isRecordAddedByCurrentUserId.equals("1")) {
+        if (CALLTYPE.equals("1")) {
             MenuInflater inflater = getMenuInflater();
             inflater.inflate(R.menu.menus_edit_delete, menu);
 
@@ -238,9 +246,8 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
                 menu.getItem(0).setVisible(false);
             }
             return true;
-        } else {
+        } else
             return false;
-        }
     }
 
     @Override
@@ -271,11 +278,10 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
                 alertD.show();
                 break;
             case R.id.action_edit:
-                startActivity(new Intent(context, EditOffers_Activity.class)
+                startActivity(new Intent(context, EditOffersActivity.class)
                         .putExtra("offerDetails", offerDetails)
                         .putExtra("categoryTypeId", "1")
-                        .putExtra("categoryTypeName", "business")
-                        .putExtra("isFromMyOfferOrFromParticularOffer", isFromMyOfferOrFromParticularOffer));
+                        .putExtra("categoryTypeName", "business"));
                 finish();
                 break;
             default:
@@ -315,12 +321,8 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        if (isFromMyOfferOrFromParticularOffer.equals("1")) {
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffers_Actvity"));
-                        } else if (isFromMyOfferOrFromParticularOffer.equals("2")) {
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecord_Activity"));
-                        }
-
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffers_Actvity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecord_Activity"));
                         Utilities.showMessage("Offer deleted successfully", context, 1);
                         finish();
                     }
@@ -461,13 +463,8 @@ public class ViewOfferDetails_Activity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationIcon(R.drawable.icon_backarrow);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+        mToolbar.setNavigationOnClickListener(view -> finish());
     }
 
 }

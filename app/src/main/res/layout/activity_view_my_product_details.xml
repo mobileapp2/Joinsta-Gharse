@@ -63,7 +63,7 @@
                     <ImageView
                         android:layout_width="120dp"
                         android:layout_height="100dp"
-                        android:src="@drawable/icon_nopreview" />
+                        android:src="@drawable/icon_preview" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="match_parent"

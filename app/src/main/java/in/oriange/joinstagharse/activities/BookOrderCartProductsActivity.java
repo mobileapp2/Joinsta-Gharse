@@ -255,19 +255,19 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                         .into(holder.imv_productimage, new Callback() {
                             @Override
                             public void onSuccess() {
-                                holder.tv_nopreview.setVisibility(View.GONE);
+                                holder.imv_image_not_available.setVisibility(View.GONE);
                                 holder.imv_productimage.setVisibility(View.VISIBLE);
                             }
 
                             @Override
                             public void onError() {
-                                holder.tv_nopreview.setVisibility(View.VISIBLE);
+                                holder.imv_image_not_available.setVisibility(View.VISIBLE);
                                 holder.imv_productimage.setVisibility(View.GONE);
                             }
                         });
 
             } else {
-                holder.tv_nopreview.setVisibility(View.VISIBLE);
+                holder.imv_image_not_available.setVisibility(View.VISIBLE);
                 holder.imv_productimage.setVisibility(View.GONE);
             }
 
@@ -330,8 +330,8 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            private ImageView imv_productimage;
-            private TextView tv_nopreview, tv_product_name, tv_product_info, tv_total_product_price, tv_no_price_available, tv_quantity;
+            private ImageView imv_productimage, imv_image_not_available;
+            private TextView tv_product_name, tv_product_info, tv_total_product_price, tv_no_price_available, tv_quantity;
             private ImageButton btn_remove, btn_add, btn_delete;
             private Button btn_addtocart;
             private View view_divider;
@@ -339,7 +339,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
             public MyViewHolder(@NonNull View view) {
                 super(view);
                 imv_productimage = view.findViewById(R.id.imv_productimage);
-                tv_nopreview = view.findViewById(R.id.tv_nopreview);
+                imv_image_not_available = view.findViewById(R.id.imv_image_not_available);
                 tv_product_name = view.findViewById(R.id.tv_product_name);
                 tv_product_info = view.findViewById(R.id.tv_product_info);
                 tv_total_product_price = view.findViewById(R.id.tv_total_product_price);
@@ -543,6 +543,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                     BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
                     type = pojoDetails.getType();
 
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivityRefreshOrderList"));
                     LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
                     LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SentOrdersFragment"));
 

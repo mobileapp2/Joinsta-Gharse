@@ -28,8 +28,8 @@ public class ApplicationConstants {
     public static final String TRANSSTATUSURL = "https://meravahan.in/paytm/transaction_status.php";
 
     // BETA API LINK
-//    private static final String API_LINK = "https://gstkhata.com/Joinsta eOrder/Api/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/Joinsta eOrder/images/";
+//    private static final String API_LINK = "https://gstkhata.com/Joinsta Gharse/Api/";
+//    public static final String IMAGE_LINK = "https://gstkhata.com/Joinsta Gharse/images/";
 
 //    // BETA API LINK V2
 //    private static final String API_LINK = "https://gstkhata.com/joinsta_test/joinsta_updated_live/Api_v12/";

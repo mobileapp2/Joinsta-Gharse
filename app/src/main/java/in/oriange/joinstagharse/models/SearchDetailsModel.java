@@ -546,8 +546,8 @@ public class SearchDetailsModel implements Serializable {
             }
 
             public String getOffer_count() {
-                if (can_book_order != null) {
-                    return can_book_order;
+                if (offer_count != null) {
+                    return offer_count;
                 } else {
                     return "0";
                 }
@@ -655,7 +655,8 @@ public class SearchDetailsModel implements Serializable {
                     if (getSub_categories().get(0) != null)
                         if (getSub_categories().get(0).size() > 0)
                             for (SearchDetailsModel.ResultBean.BusinessesBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0))
-                                list.add(subCategoriesBean.getSubtype_description());
+                                if (!subCategoriesBean.getSubtype_description().trim().equals(""))
+                                    list.add(subCategoriesBean.getSubtype_description());
 
                 if (getTag().get(0) != null)
                     if (getTag().get(0).size() > 0)

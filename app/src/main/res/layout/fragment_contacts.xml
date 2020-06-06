@@ -65,7 +65,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@color/white"
-                android:src="@drawable/icon_refresh"
+                android:src="@drawable/icon_sync"
                 android:tint="@color/mediumGray" />
 
         </androidx.cardview.widget.CardView>

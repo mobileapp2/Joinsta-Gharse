@@ -4,7 +4,7 @@ import android.app.Application;
 
 import in.oriange.joinstagharse.utilities.TypefaceUtil;
 
-public class EOrder extends Application {
+public class JoinstaGharse extends Application {
 
 
     @Override

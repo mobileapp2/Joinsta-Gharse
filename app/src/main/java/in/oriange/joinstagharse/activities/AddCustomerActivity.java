@@ -124,12 +124,6 @@ public class AddCustomerActivity extends AppCompatActivity {
 
         edtBusinessCode.setText(getIntent().getStringExtra("businessCode"));
         edtBusinessName.setText(getIntent().getStringExtra("businessName"));
-
-        if (edtBusinessCode.getText().toString().trim().isEmpty())
-            llBusinessCode.setVisibility(View.GONE);
-
-        if (edtBusinessName.getText().toString().trim().isEmpty())
-            llBusinessName.setVisibility(View.GONE);
     }
 
     private void setEventListner() {

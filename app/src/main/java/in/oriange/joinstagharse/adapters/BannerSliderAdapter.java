@@ -43,7 +43,7 @@ public class BannerSliderAdapter extends SliderViewAdapter<BannerSliderAdapter.S
         this.context = context;
         this.bannerList = bannerList;
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Banners");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Banners");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 

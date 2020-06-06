@@ -321,19 +321,30 @@ public class HomeFragment extends Fragment {
                         if (numberOfProducts != 0) {
                             tv_cart_count.setVisibility(View.VISIBLE);
                             tv_cart_count.setText(String.valueOf(numberOfProducts));
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragmentUpdateCartCount")
+                                    .putExtra("cartCount", numberOfProducts));
                         } else {
                             tv_cart_count.setVisibility(View.GONE);
                             tv_cart_count.setText("");
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragmentUpdateCartCount")
+                                    .putExtra("cartCount", 0));
+
                         }
                     } else {
                         tv_cart_count.setVisibility(View.GONE);
                         tv_cart_count.setText("");
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragmentUpdateCartCount")
+                                .putExtra("cartCount", 0));
+
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 tv_cart_count.setVisibility(View.GONE);
                 tv_cart_count.setText("");
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragmentUpdateCartCount")
+                        .putExtra("cartCount", 0));
+
             }
         }
     }

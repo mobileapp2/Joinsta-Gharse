@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.ContactUsActivity;
 import in.oriange.joinstagharse.activities.EnquiriesActivity;
+import in.oriange.joinstagharse.activities.MyAddedOffers_Actvity;
 import in.oriange.joinstagharse.activities.MyAddressActivity;
 import in.oriange.joinstagharse.activities.MyBusinessActivity;
 import in.oriange.joinstagharse.activities.SettingsActivity;
@@ -24,7 +25,7 @@ import in.oriange.joinstagharse.activities.ViewBasicInformationActivity;
 public class MoreFragment extends Fragment {
 
     private Context context;
-    private CardView cv_basicinfo, cv_mybusiness, cv_myaddress, cv_settings, cv_enquires, cv_contactus;
+    private CardView cv_basicinfo, cv_mybusiness, cv_myaddress, cv_settings, cv_enquires, cv_contactus, cv_myoffres;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class MoreFragment extends Fragment {
         cv_settings = rootView.findViewById(R.id.cv_settings);
         cv_enquires = rootView.findViewById(R.id.cv_enquires);
         cv_contactus = rootView.findViewById(R.id.cv_contactus);
+        cv_myoffres = rootView.findViewById(R.id.cv_myoffres);
     }
 
     private void setDefault() {
@@ -71,5 +73,7 @@ public class MoreFragment extends Fragment {
         cv_enquires.setOnClickListener(v -> startActivity(new Intent(context, EnquiriesActivity.class)));
 
         cv_contactus.setOnClickListener(v -> startActivity(new Intent(context, ContactUsActivity.class)));
+
+        cv_myoffres.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffers_Actvity.class)));
     }
 }

@@ -69,7 +69,7 @@ public class FullScreenImagesActivity extends AppCompatActivity {
         changeStatusBar(context, getWindow());
         imageUrlList = new ArrayList<>();
 
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Images");
+        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Images");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();
 

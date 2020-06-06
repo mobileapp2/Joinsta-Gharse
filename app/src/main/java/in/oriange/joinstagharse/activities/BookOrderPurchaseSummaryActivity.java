@@ -51,7 +51,6 @@ import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 
 public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
-
     @BindView(R.id.toolbar_title)
     AppCompatEditText toolbarTitle;
     @BindView(R.id.btn_save)
@@ -92,7 +91,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private String userId, businessOwnerId = "0", purchaseOrderType, orderType, orderText = "", status,
+    private String userId, businessOwnerId = "0", purchaseOrderType, orderType, orderText = "",
             customerBusinessId = "0", orderImageArray = "", businessOwnerAddress, deliveryStatus, customerAddressId,
             customerAddress;
     private GetBusinessModel.ResultBean businessDetails;
@@ -141,9 +140,11 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
         deliveryStatus = getIntent().getStringExtra("deliveryStatus");
         customerAddressId = getIntent().getStringExtra("customerAddressId");
         customerAddress = getIntent().getStringExtra("customerAddress");
+        customerBusinessId = getIntent().getStringExtra("customerBusinessId");
         purchaseOrderType = getIntent().getStringExtra("purchaseOrderType");     // purchase_order_type = 'individual' - 1, 'business' -2
         orderType = getIntent().getStringExtra("orderType");                     //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
         orderText = getIntent().getStringExtra("orderText");
+        String customerName = getIntent().getStringExtra("customerName");
         orderImageArray = getIntent().getStringExtra("orderImageArray");
         businessDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("businessDetails");
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
@@ -168,15 +169,15 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
             tvAddress.setText("Address - " + customerAddress);
         }
 
-        switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
+        switch (purchaseOrderType) {      //purchase_order_type = 'individual' - 1, 'business' -2
             case "1": {
                 tvPurchaseOrderType.setText("This order is for individual");
-                tvCustomerName.setText("Name - " + orderDetails.getCustomer_name());
+                tvCustomerName.setText("Name - " + customerName);
             }
             break;
             case "2": {
                 tvPurchaseOrderType.setText("This order is for business");
-                tvCustomerName.setText(orderDetails.getBusiness_code() + " - " + orderDetails.getBusiness_name());
+                tvCustomerName.setText("Name - " + customerName);
             }
             break;
         }

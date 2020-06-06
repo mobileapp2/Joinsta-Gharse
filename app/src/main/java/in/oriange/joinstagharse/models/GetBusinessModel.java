@@ -672,17 +672,18 @@ public class GetBusinessModel implements Serializable {
         public List<String> getSubTypesTagsList(String type) {   //    type == 1 (return subtype and tags)  type == 2 (return tags only)
             List<String> list = new ArrayList<>();
 
+            if (type.equals("1"))
+                if (getSub_categories().get(0) != null)
+                    if (getSub_categories().get(0).size() > 0)
+                        for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0))
+                            if (!subCategoriesBean.getSubtype_description().trim().equals(""))
+                                list.add(subCategoriesBean.getSubtype_description());
+
             if (getTag().get(0) != null)
                 if (getTag().get(0).size() > 0)
                     for (GetBusinessModel.ResultBean.TagBean tags : getTag().get(0))
                         if (!tags.getTag_name().trim().equals(""))
                             list.add(tags.getTag_name());
-
-            if (type.equals("1"))
-                if (getSub_categories().get(0) != null)
-                    if (getSub_categories().get(0).size() > 0)
-                        for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0))
-                            list.add(subCategoriesBean.getSubtype_description());
 
             return list;
         }

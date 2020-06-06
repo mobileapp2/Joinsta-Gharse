@@ -362,7 +362,7 @@
 
                         <TextView
                             style="@style/TitleTextView"
-                            android:text="Address" />
+                            android:text="Address *" />
 
                         <EditText
                             android:id="@+id/edt_address"
@@ -487,7 +487,8 @@
                     <CheckBox
                         android:id="@+id/cb_show_in_search"
                         style="@style/CheckBox"
-                        android:text="Show business in business listing?" />
+                        android:text="Show business in business listing?"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

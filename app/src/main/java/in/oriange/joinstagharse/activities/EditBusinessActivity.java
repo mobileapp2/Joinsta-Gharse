@@ -200,7 +200,7 @@ public class EditBusinessActivity extends AppCompatActivity {
         tagJSONArray = new JsonArray();
         subCategoryJsonArray = new JsonArray();
 
-        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Business");
+        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Business");
         if (!profilPicFolder.exists())
             profilPicFolder.mkdirs();
 
@@ -301,6 +301,10 @@ public class EditBusinessActivity extends AppCompatActivity {
                     ((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).setText(mobilesList.get(i).getMobile_number());
                     ((TextView) mobileLayoutsList.get(i).findViewById(R.id.tv_countrycode_mobile)).setText(mobilesList.get(i).getCountry_code());
                 }
+            else
+                addMobileLayout();
+        else
+            addMobileLayout();
 
         List<GetBusinessModel.ResultBean.LandlineBean> landlineList = searchDetails.getLandline().get(0);
 
@@ -316,6 +320,10 @@ public class EditBusinessActivity extends AppCompatActivity {
                     ((EditText) landlineLayoutsList.get(i).findViewById(R.id.edt_landline)).setText(landlineList.get(i).getLandline_number());
                     ((TextView) landlineLayoutsList.get(i).findViewById(R.id.tv_countrycode_landline)).setText(landlineList.get(i).getCountry_code());
                 }
+            else
+                addLandlineLayout();
+        else
+            addLandlineLayout();
 
         categoryId = searchDetails.getType_id();
         latitude = searchDetails.getLatitude();
@@ -1050,6 +1058,13 @@ public class EditBusinessActivity extends AppCompatActivity {
             }
         }
 
+        if (edtAddress.getText().toString().trim().isEmpty()) {
+            edtAddress.setError("Please select address");
+            edtAddress.requestFocus();
+            edtAddress.getParent().requestChildFocus(edtAddress, edtAddress);
+            return;
+        }
+
         if (!edtPincode.getText().toString().trim().isEmpty()) {
             if (edtPincode.getText().toString().trim().length() != 6) {
                 edtPincode.setError("Please enter pincode");
@@ -1060,7 +1075,7 @@ public class EditBusinessActivity extends AppCompatActivity {
         }
 
         if (edtCity.getText().toString().trim().isEmpty()) {
-            edtCity.setError("Please select area");
+            edtCity.setError("Please select city");
             edtCity.requestFocus();
             edtCity.getParent().requestChildFocus(edtCity, edtCity);
             return;
@@ -1092,10 +1107,16 @@ public class EditBusinessActivity extends AppCompatActivity {
             tagJSONArray.add(tagsJSONObj);
         }
 
-        String isVisible = cbShowInSearch.isChecked() ? "1" : "0";
+//        String isVisible = cbShowInSearch.isChecked() ? "1" : "0";
+        String isVisible = "1";
         String isEnquiryAvailable = cbIsEnquiryAvailable.isChecked() ? "1" : "0";
         String isPickUpAvailable = cbIsPickUpAvailable.isChecked() ? "1" : "0";
         String isHomeDeliveryAvailable = cbIsHomeDeliveryAvailable.isChecked() ? "1" : "0";
+
+        if (isPickUpAvailable.equals("0") && isHomeDeliveryAvailable.equals("0")) {
+            Utilities.showMessage("Please select delivery type", context, 2);
+            return;
+        }
 
         JsonObject mainObj = new JsonObject();
 
@@ -1197,7 +1218,7 @@ public class EditBusinessActivity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta Gharse/"
                 + "Business/" + "uplimg.png";
 
         BufferedInputStream bis = null;

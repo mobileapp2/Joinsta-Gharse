@@ -179,6 +179,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                finish();
                 if (session.isUserLoggedIn()) {
                     startActivity(new Intent(context, MainDrawerActivity.class).putExtra("startOrigin", 0));
                 } else {

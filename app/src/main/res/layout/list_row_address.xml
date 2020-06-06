@@ -19,12 +19,21 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/tv_address"
+            android:id="@+id/tv_address_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:textColor="@color/black"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="@color/darkGray"
             android:textSize="16sp" />
 
         <LinearLayout

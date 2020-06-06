@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -77,12 +78,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     Toolbar toolbar;
     @BindView(R.id.rb_individual)
     RadioButton rbIndividual;
-    @BindView(R.id.ll_ind)
-    LinearLayout llInd;
     @BindView(R.id.rb_business)
     RadioButton rbBusiness;
-    @BindView(R.id.ll_biz)
-    LinearLayout llBiz;
     @BindView(R.id.imv_user)
     CircleImageView imvUser;
     @BindView(R.id.tv_name)
@@ -97,12 +94,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     LinearLayout llBusiness;
     @BindView(R.id.rb_store_pickup)
     RadioButton rbStorePickup;
-    @BindView(R.id.ll_store)
-    LinearLayout llStore;
     @BindView(R.id.rb_home_delivery)
     RadioButton rbHomeDelivery;
-    @BindView(R.id.ll_home)
-    LinearLayout llHome;
     @BindView(R.id.tv_store_address)
     TextView tvStoreAddress;
     @BindView(R.id.ll_store_pickup)
@@ -119,12 +112,20 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     MaterialButton btnSave;
     @BindView(R.id.btn_address)
     Button btnAddress;
+    @BindView(R.id.ll_ind)
+    RelativeLayout llInd;
+    @BindView(R.id.ll_biz)
+    RelativeLayout llBiz;
+    @BindView(R.id.ll_store)
+    RelativeLayout llStore;
+    @BindView(R.id.ll_home)
+    RelativeLayout llHome;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId, businessOwnerId, businessOwnerAddress, isHomeDeliveryAvailable, isPickUpAvailable,
-            orderType, orderText = "", customerBusinessId = "", customerAddressId = "0", customerAddress = "", orderImageArray = "";
+            orderType, orderText = "", customerBusinessId = "0", customerAddressId = "0", customerAddress = "", orderImageArray = "";
 
     private List<GetBusinessModel.ResultBean> businessList;
     private List<AddressModel.ResultBean> addressList;
@@ -174,7 +175,7 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         imageList.add(new MasterModel("", ""));
         rvImages.setAdapter(new ImagesAdapter());
 
-        orderFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Book Order");
+        orderFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Book Order");
         if (!orderFileFolder.exists())
             orderFileFolder.mkdirs();
 
@@ -321,12 +322,15 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
 
     private void submitData() {
         String purchaseOrderType = "0";
+        String customerName = "";
         String deliveryStatus = "";
         JsonArray imageJsonArray = new JsonArray();
 
         if (rbIndividual.isChecked()) {
             purchaseOrderType = "1";
+            customerName = tvName.getText().toString().trim();
         } else if (rbBusiness.isChecked()) {
+            customerName = businessDetails.getBusiness_code() + " - " + businessDetails.getBusiness_name();
             if (customerBusinessId.equals("")) {
                 Utilities.showMessage("Please select business", context, 2);
                 return;
@@ -370,7 +374,9 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 .putExtra("orderText", orderText)
                 .putExtra("businessDetails", businessDetails)
                 .putExtra("orderImageArray", orderImageArray)
-                .putExtra("orderDetails", orderDetails));
+                .putExtra("orderDetails", orderDetails)
+                .putExtra("customerBusinessId", customerBusinessId)
+                .putExtra("customerName", customerName));
     }
 
     private void setUpToolbar() {
@@ -764,7 +770,7 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta Gharse/"
                 + "Book Order/" + "uplimg.png";
 
         BufferedInputStream bis = null;

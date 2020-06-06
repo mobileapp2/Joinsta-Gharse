@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.adapters.MyAddedOffersAdapter;
+import in.oriange.joinstagharse.adapters.OffersAdapter;
 import in.oriange.joinstagharse.models.MyOffersListModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
@@ -34,6 +35,7 @@ import in.oriange.joinstagharse.utilities.ParamsPojo;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
+import static android.view.View.GONE;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 
 public class OffersForParticularRecordActivity extends AppCompatActivity {
@@ -44,7 +46,8 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
-    private String userId;
+    private FloatingActionButton btn_add;
+    private String userId, CALLTYPE, recordId, categoryType, categoryId;   //CALLTYPE  1 == My Businesss Offer and My Offers  2 == Search Business offer
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -69,6 +72,7 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         ll_nopreview = findViewById(R.id.ll_nopreview);
+        btn_add = findViewById(R.id.btn_add);
 
         rv_myoffers = findViewById(R.id.rv_myoffers);
         rv_myoffers.setLayoutManager(new LinearLayoutManager(context));
@@ -88,11 +92,19 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        CALLTYPE = getIntent().getStringExtra("CALLTYPE");
+        recordId = getIntent().getStringExtra("recordId");
+        categoryType = getIntent().getStringExtra("categoryType");
+        categoryId = getIntent().getStringExtra("categoryId");
+
         if (Utilities.isNetworkAvailable(context)) {
             new GetAddedOffers().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
+
+        if (CALLTYPE.equals("2"))
+            btn_add.setVisibility(GONE);
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("OffersForParticularRecordActivity");
@@ -100,20 +112,23 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new GetAddedOffers().execute();
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    swipeRefreshLayout.setRefreshing(false);
-                }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new GetAddedOffers().execute();
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
+        btn_add.setOnClickListener(v -> {
+            startActivity(new Intent(context, AddOffersActivity.class)
+                    .putExtra("recordId", recordId)
+                    .putExtra("categoryTypeId", "1")
+                    .putExtra("categoryTypeName", "business")
+                    .putExtra("categoryId", categoryId));
+        });
     }
-
 
     private class GetAddedOffers extends AsyncTask<String, Void, String> {
 
@@ -121,8 +136,8 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
-            ll_nopreview.setVisibility(View.GONE);
-            rv_myoffers.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(GONE);
+            rv_myoffers.setVisibility(GONE);
             swipeRefreshLayout.setRefreshing(false);
         }
 
@@ -131,8 +146,8 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
             String res;
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("type", "giveAllRecordOfferDetails"));
-            param.add(new ParamsPojo("record_id", getIntent().getStringExtra("recordId")));
-            param.add(new ParamsPojo("category_type_id", getIntent().getStringExtra("categoryType")));
+            param.add(new ParamsPojo("record_id", recordId));
+            param.add(new ParamsPojo("category_type_id", categoryType));
             res = APICall.FORMDATAAPICall(ApplicationConstants.OFFERSAPI, param);
             return res.trim();
         }
@@ -140,7 +155,7 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(GONE);
             rv_myoffers.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
@@ -154,23 +169,23 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
 
                         if (myOffersList.size() > 0) {
                             rv_myoffers.setVisibility(View.VISIBLE);
-                            ll_nopreview.setVisibility(View.GONE);
-                            rv_myoffers.setAdapter(new MyAddedOffersAdapter(context, myOffersList, "2"));
+                            ll_nopreview.setVisibility(GONE);
+                            rv_myoffers.setAdapter(new OffersAdapter(context, myOffersList, CALLTYPE));
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
-                            rv_myoffers.setVisibility(View.GONE);
+                            rv_myoffers.setVisibility(GONE);
                         }
 
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
-                        rv_myoffers.setVisibility(View.GONE);
+                        rv_myoffers.setVisibility(GONE);
 
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 ll_nopreview.setVisibility(View.VISIBLE);
-                rv_myoffers.setVisibility(View.GONE);
+                rv_myoffers.setVisibility(GONE);
             }
         }
     }

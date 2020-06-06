@@ -26,14 +26,13 @@
                 android:scaleType="centerCrop"
                 android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tv_nopreview"
+            <ImageView
+                android:id="@+id/imv_image_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="No Preview Available"
-                android:textColor="@color/darkGray"
-                android:textSize="16sp"
+                android:padding="10dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_preview"
                 android:visibility="gone" />
 
         </FrameLayout>

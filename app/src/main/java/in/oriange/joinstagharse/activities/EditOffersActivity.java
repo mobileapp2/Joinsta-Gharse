@@ -36,7 +36,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.rengwuxian.materialedittext.MaterialEditText;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -71,7 +70,7 @@ import static in.oriange.joinstagharse.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinstagharse.utilities.Utilities.setPaddingForView;
 import static in.oriange.joinstagharse.utilities.Utilities.yyyyMMddDate;
 
-public class EditOffers_Activity extends AppCompatActivity {
+public class EditOffersActivity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -82,7 +81,7 @@ public class EditOffers_Activity extends AppCompatActivity {
     private MaterialButton btn_save;
 
     private int mYear, mMonth, mDay, mYear1, mMonth1, mDay1;
-    private String userId, startDate, endDate, categoryTypeId, categoryTypeName, isFromMyOfferOrFromParticularOffer;
+    private String userId, startDate, endDate, categoryTypeId, categoryTypeName;
 
     private File photoFileFolder;
     private Uri photoURI;
@@ -106,7 +105,7 @@ public class EditOffers_Activity extends AppCompatActivity {
     }
 
     private void init() {
-        context = EditOffers_Activity.this;
+        context = EditOffersActivity.this;
         session = new UserSessionManager(context);
         changeStatusBar(context, getWindow());
         pd = new ProgressDialog(context, R.style.CustomDialogTheme);
@@ -126,7 +125,7 @@ public class EditOffers_Activity extends AppCompatActivity {
         btn_save = findViewById(R.id.btn_save);
 
 
-        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Offer Images");
+        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Offer Images");
         if (!photoFileFolder.exists())
             photoFileFolder.mkdirs();
 
@@ -154,7 +153,6 @@ public class EditOffers_Activity extends AppCompatActivity {
 
         categoryTypeId = getIntent().getStringExtra("categoryTypeId");
         categoryTypeName = getIntent().getStringExtra("categoryTypeName");
-        isFromMyOfferOrFromParticularOffer = getIntent().getStringExtra("isFromMyOfferOrFromParticularOffer");
 
         Calendar calendar = Calendar.getInstance();
 
@@ -413,11 +411,11 @@ public class EditOffers_Activity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();
-                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditOffers_Activity.this);
+                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(EditOffersActivity.this);
             }
 
             if (requestCode == CAMERA_REQUEST) {
-                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditOffers_Activity.this);
+                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(EditOffersActivity.this);
             }
         }
 
@@ -433,7 +431,7 @@ public class EditOffers_Activity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta Gharse/"
                 + "Offer Images/" + "uplimg.png";
 
         BufferedInputStream bis = null;
@@ -653,11 +651,8 @@ public class EditOffers_Activity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        if (isFromMyOfferOrFromParticularOffer.equals("1")) {
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffers_Actvity"));
-                        } else if (isFromMyOfferOrFromParticularOffer.equals("2")) {
-                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecord_Activity"));
-                        }
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffers_Actvity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecord_Activity"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
@@ -742,6 +737,6 @@ public class EditOffers_Activity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        hideSoftKeyboard(EditOffers_Activity.this);
+        hideSoftKeyboard(EditOffersActivity.this);
     }
 }

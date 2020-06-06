@@ -41,7 +41,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.list_row_orders_v2, parent, false);
+        View view = inflater.inflate(R.layout.list_row_orders, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -51,7 +51,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
         BookOrderGetMyOrdersModel.ResultBean orderDetails = orderList.get(position);
 
         holder.tv_order_id.setText("Order ID # " + orderDetails.getOrder_id());
-        holder.tv_supplier.setText("Supplier – " + orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
+        holder.tv_supplier.setText(orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
 
         switch (orderDetails.getOrder_type()) {         //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
             case "1": {

@@ -41,7 +41,7 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.list_row_orders_v2, parent, false);
+        View view = inflater.inflate(R.layout.list_row_orders, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -55,11 +55,11 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
 
         switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
             case "1": {
-                holder.tv_supplier.setText("Name - " + orderDetails.getCustomer_name());
+                holder.tv_supplier.setText(orderDetails.getCustomer_name());
             }
             break;
             case "2": {
-                holder.tv_supplier.setText(orderDetails.getCustomer_country_code() + " - " + orderDetails.getCustomer_business_name());
+                holder.tv_supplier.setText(orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name());
             }
             break;
         }

@@ -175,7 +175,7 @@
 
                 <EditText
                     android:id="@+id/edt_business_code"
-                    style="@style/UnEditableEditText"
+                    style="@style/EditableEditText"
                     android:inputType="textCapWords" />
 
             </LinearLayout>
@@ -192,7 +192,7 @@
 
                 <EditText
                     android:id="@+id/edt_business_name"
-                    style="@style/UnEditableEditText"
+                    style="@style/EditableEditText"
                     android:inputType="textCapWords" />
 
             </LinearLayout>

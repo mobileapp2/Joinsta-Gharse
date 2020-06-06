@@ -142,7 +142,7 @@ public class EditProductActivity extends AppCompatActivity {
         productCategoriesList = new ArrayList<>();
         unitOfMeasuresList = new ArrayList<>();
 
-        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta eOrder/" + "Products");
+        photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Products");
         if (!photoFileFolder.exists())
             photoFileFolder.mkdirs();
 
@@ -257,12 +257,12 @@ public class EditProductActivity extends AppCompatActivity {
     }
 
     private void submitData() {
-        if (edtCode.getText().toString().trim().isEmpty()) {
-            edtCode.setError("Please enter product code");
-            edtCode.requestFocus();
-            edtCode.getParent().requestChildFocus(edtCode, edtCode);
-            return;
-        }
+//        if (edtCode.getText().toString().trim().isEmpty()) {
+//            edtCode.setError("Please enter product code");
+//            edtCode.requestFocus();
+//            edtCode.getParent().requestChildFocus(edtCode, edtCode);
+//            return;
+//        }
 
         if (edtName.getText().toString().trim().isEmpty()) {
             edtName.setError("Please enter product name");
@@ -271,12 +271,12 @@ public class EditProductActivity extends AppCompatActivity {
             return;
         }
 
-        if (edtDescription.getText().toString().trim().isEmpty()) {
-            edtDescription.setError("Please enter product description");
-            edtDescription.requestFocus();
-            edtDescription.getParent().requestChildFocus(edtDescription, edtDescription);
-            return;
-        }
+//        if (edtDescription.getText().toString().trim().isEmpty()) {
+//            edtDescription.setError("Please enter product description");
+//            edtDescription.requestFocus();
+//            edtDescription.getParent().requestChildFocus(edtDescription, edtDescription);
+//            return;
+//        }
 
         if (edtUnitOfMeasure.getText().toString().trim().isEmpty()) {
             Utilities.showMessage("Please select unit of measurement", context, 2);
@@ -598,7 +598,7 @@ public class EditProductActivity extends AppCompatActivity {
     private void savefile(Uri sourceuri) {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
-        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta eOrder/"
+        String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta Gharse/"
                 + "Products/" + "uplimg.png";
 
         BufferedInputStream bis = null;

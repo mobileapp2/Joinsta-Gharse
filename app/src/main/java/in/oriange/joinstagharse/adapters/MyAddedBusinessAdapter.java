@@ -19,6 +19,7 @@ import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.BookOrderBusinessOwnerOrdersActivity;
 import in.oriange.joinstagharse.activities.BusinessProductsActivity;
+import in.oriange.joinstagharse.activities.OffersForParticularRecordActivity;
 import in.oriange.joinstagharse.activities.ViewMyBizDetailsActivity;
 import in.oriange.joinstagharse.models.GetBusinessModel;
 
@@ -89,6 +90,11 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
                 .putExtra("searchDetails", searchDetails)));
 
         holder.ll_offer.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, OffersForParticularRecordActivity.class)
+                    .putExtra("recordId", searchDetails.getId())
+                    .putExtra("categoryType", "1")
+                    .putExtra("CALLTYPE", "1")
+                    .putExtra("categoryId", searchDetails.getType_id()));
 
         });
 

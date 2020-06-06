@@ -42,7 +42,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -82,55 +82,75 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:id="@+id/ll_ind"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:layout_weight="1">
 
                             <ImageView
+                                android:id="@+id/imv_ind"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_gravity="center"
+                                android:layout_centerHorizontal="true"
                                 android:padding="2dp"
                                 android:src="@drawable/icon_individual_order" />
 
                             <RadioButton
                                 android:id="@+id/rb_individual"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
                                 android:gravity="center"
-                                android:paddingLeft="-30dp"
-                                android:text="Individual"
                                 android:textSize="16sp" />
 
-                        </LinearLayout>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/imv_ind"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginTop="5dp"
+                                android:gravity="center_horizontal"
+                                android:text="Individual"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
-                        <LinearLayout
+                        </RelativeLayout>
+
+                        <RelativeLayout
                             android:id="@+id/ll_biz"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:layout_weight="1">
 
                             <ImageView
+                                android:id="@+id/imv_biz"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_gravity="center"
+                                android:layout_centerHorizontal="true"
                                 android:padding="2dp"
                                 android:src="@drawable/icon_business_order" />
 
                             <RadioButton
                                 android:id="@+id/rb_business"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
                                 android:gravity="center"
-                                android:paddingLeft="-30dp"
-                                android:text="Business"
                                 android:textSize="16sp" />
 
-                        </LinearLayout>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/imv_biz"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginTop="5dp"
+                                android:gravity="center_horizontal"
+                                android:text="Business"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                        </RelativeLayout>
 
                     </RadioGroup>
 
@@ -234,55 +254,75 @@
                         android:orientation="horizontal"
                         android:weightSum="2">
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:id="@+id/ll_store"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:layout_weight="1">
 
                             <ImageView
+                                android:id="@+id/imv_store"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_gravity="center"
+                                android:layout_centerHorizontal="true"
                                 android:padding="2dp"
                                 android:src="@drawable/icon_store_pickup" />
 
                             <RadioButton
                                 android:id="@+id/rb_store_pickup"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
                                 android:gravity="center"
-                                android:paddingLeft="-30dp"
-                                android:text="Store Pickup"
                                 android:textSize="16sp" />
 
-                        </LinearLayout>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/imv_store"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginTop="5dp"
+                                android:gravity="center_horizontal"
+                                android:text="Store Pickup"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
 
-                        <LinearLayout
+                        </RelativeLayout>
+
+                        <RelativeLayout
                             android:id="@+id/ll_home"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
+                            android:layout_weight="1">
 
                             <ImageView
+                                android:id="@+id/imv_home"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:layout_gravity="center"
+                                android:layout_centerHorizontal="true"
                                 android:padding="2dp"
                                 android:src="@drawable/icon_home_delivery" />
 
                             <RadioButton
                                 android:id="@+id/rb_home_delivery"
-                                android:layout_width="match_parent"
+                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
                                 android:gravity="center"
-                                android:paddingLeft="-30dp"
-                                android:text="Home Delivery"
                                 android:textSize="16sp" />
 
-                        </LinearLayout>
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/imv_home"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginTop="5dp"
+                                android:gravity="center_horizontal"
+                                android:text="Home Delivery"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                        </RelativeLayout>
 
                     </RadioGroup>
 
@@ -375,6 +415,6 @@ Write on paper, click a photo and upload" />
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </LinearLayout>

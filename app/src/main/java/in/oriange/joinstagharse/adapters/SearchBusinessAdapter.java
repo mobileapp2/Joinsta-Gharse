@@ -162,10 +162,12 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         });
 
         holder.ll_offer.setOnClickListener(v -> {
-            if (searchDetails.getOffer_count().equals("1"))
+            if (Integer.parseInt(searchDetails.getOffer_count()) > 0)
                 context.startActivity(new Intent(context, OffersForParticularRecordActivity.class)
                         .putExtra("recordId", searchDetails.getId())
-                        .putExtra("categoryType", "1"));
+                        .putExtra("categoryType", "1")
+                        .putExtra("CALLTYPE", "2")
+                        .putExtra("categoryId", searchDetails.getType_id()));
             else
                 Utilities.showMessage("Offers not available", context, 2);
         });
@@ -224,6 +226,8 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
     private void showContextMenu(View view, SearchDetailsModel.ResultBean.BusinessesBean searchDetails) {
         PopupMenu popup = new PopupMenu(context, view);
         popup.inflate(R.menu.menu_vendor_cudtomer);
+        popup.getMenu().getItem(0).setTitle("Vendor");
+        popup.getMenu().getItem(1).setTitle("Customer");
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_vendor:

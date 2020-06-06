@@ -76,7 +76,7 @@ public class ContactUsActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                             context.startActivity(new Intent(Intent.ACTION_CALL,
-                                    Uri.parse("tel:9175326801")));
+                                    Uri.parse("tel:+919175326801")));
                         }
                     });
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

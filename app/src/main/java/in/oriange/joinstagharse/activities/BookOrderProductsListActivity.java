@@ -366,7 +366,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         @Override
         public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.list_row_book_order_products_v2, parent, false);
+            View view = inflater.inflate(R.layout.list_row_book_order_products, parent, false);
             return new MyViewHolder(view);
         }
 
@@ -382,19 +382,19 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                         .into(holder.imv_productimage, new Callback() {
                             @Override
                             public void onSuccess() {
-                                holder.tv_nopreview.setVisibility(View.GONE);
+                                holder.imv_image_not_available.setVisibility(View.GONE);
                                 holder.imv_productimage.setVisibility(View.VISIBLE);
                             }
 
                             @Override
                             public void onError() {
-                                holder.tv_nopreview.setVisibility(View.VISIBLE);
+                                holder.imv_image_not_available.setVisibility(View.VISIBLE);
                                 holder.imv_productimage.setVisibility(View.GONE);
                             }
                         });
 
             } else {
-                holder.tv_nopreview.setVisibility(View.VISIBLE);
+                holder.imv_image_not_available.setVisibility(View.VISIBLE);
                 holder.imv_productimage.setVisibility(View.GONE);
             }
 
@@ -467,9 +467,9 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private CardView cv_mainlayout;
-            private ImageView imv_productimage;
+            private ImageView imv_productimage, imv_image_not_available;
             private LinearLayout ll_prices;
-            private TextView tv_nopreview, tv_product_name, tv_selling_price, tv_max_retail_price,
+            private TextView tv_product_name, tv_selling_price, tv_max_retail_price,
                     tv_precentage_off, tv_quantity, tv_no_price_available, tv_you_save, tv_out_of_stock;
             private ImageButton btn_remove, btn_add;
             private Button btn_addtocart;
@@ -479,7 +479,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                 cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
                 imv_productimage = view.findViewById(R.id.imv_productimage);
                 ll_prices = view.findViewById(R.id.ll_prices);
-                tv_nopreview = view.findViewById(R.id.tv_nopreview);
+                imv_image_not_available = view.findViewById(R.id.imv_image_not_available);
                 tv_product_name = view.findViewById(R.id.tv_product_name);
                 tv_selling_price = view.findViewById(R.id.tv_selling_price);
                 tv_max_retail_price = view.findViewById(R.id.tv_max_retail_price);
