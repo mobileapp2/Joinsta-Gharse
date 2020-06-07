@@ -1007,8 +1007,6 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.action_settings:
-                return true;
         }
         if (item.getTitle() == "Share") {
             shareDetails();

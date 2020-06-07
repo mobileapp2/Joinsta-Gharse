@@ -99,6 +99,7 @@
                 <EditText
                     android:id="@+id/edt_start_date"
                     style="@style/SelectableEditText"
+                    android:drawableRight="@drawable/icon_date"
                     android:hint="Select Start Date" />
 
             </LinearLayout>
@@ -115,6 +116,7 @@
                 <EditText
                     android:id="@+id/edt_end_date"
                     style="@style/SelectableEditText"
+                    android:drawableRight="@drawable/icon_date"
                     android:hint="Select End Date" />
 
             </LinearLayout>

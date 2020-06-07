@@ -20,8 +20,7 @@
             android:id="@+id/imv_category"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:src="@drawable/img_dummy_1" />
+            android:layout_gravity="center" />
 
         <TextView
             android:id="@+id/tv_categoty"
