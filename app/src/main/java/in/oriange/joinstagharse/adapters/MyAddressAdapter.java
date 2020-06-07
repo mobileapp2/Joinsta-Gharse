@@ -122,15 +122,16 @@ public class MyAddressAdapter extends RecyclerView.Adapter<MyAddressAdapter.MyVi
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            String type = "";
+            String type = "", message = "";
             try {
                 pd.dismiss();
                 if (!result.equals("")) {
                     JSONObject mainObj = new JSONObject(result);
                     type = mainObj.getString("type");
+                    message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddressActivity"));
-                        Utilities.showMessage("Address deleted successfully", context, 1);
+                        Utilities.showMessage(message, context, 1);
                     }
                 }
             } catch (Exception e) {

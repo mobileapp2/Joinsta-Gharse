@@ -40,7 +40,6 @@ import in.oriange.joinstagharse.adapters.BookOrderOrderImagesAdapter;
 import in.oriange.joinstagharse.adapters.BookOrderProductsAdapter;
 import in.oriange.joinstagharse.models.BookOrderBusinessOwnerModel;
 import in.oriange.joinstagharse.models.BookOrderGetMyOrdersModel;
-import in.oriange.joinstagharse.models.GetBusinessModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
@@ -92,9 +91,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId, businessOwnerId = "0", purchaseOrderType, orderType, orderText = "",
-            customerBusinessId = "0", orderImageArray = "", businessOwnerAddress, deliveryStatus, customerAddressId,
-            customerAddress;
-    private GetBusinessModel.ResultBean businessDetails;
+            customerBusinessId = "0", orderImageArray = "", deliveryStatus, customerAddressId;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
     private JsonArray orderImageJsonArray;
     private boolean isOrderImagesExpanded = false;
@@ -136,18 +133,21 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
-        businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
+        String businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
+        String businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
+        String businessOwnerName = getIntent().getStringExtra("businessOwnerName");
         deliveryStatus = getIntent().getStringExtra("deliveryStatus");
         customerAddressId = getIntent().getStringExtra("customerAddressId");
-        customerAddress = getIntent().getStringExtra("customerAddress");
+        String customerAddress = getIntent().getStringExtra("customerAddress");
         customerBusinessId = getIntent().getStringExtra("customerBusinessId");
         purchaseOrderType = getIntent().getStringExtra("purchaseOrderType");     // purchase_order_type = 'individual' - 1, 'business' -2
         orderType = getIntent().getStringExtra("orderType");                     //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
         orderText = getIntent().getStringExtra("orderText");
         String customerName = getIntent().getStringExtra("customerName");
         orderImageArray = getIntent().getStringExtra("orderImageArray");
-        businessDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("businessDetails");
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
+
+        tvBusinessOwnerName.setText("Your order is with - " + businessOwnerCode + " - " + businessOwnerName);
 
         if (orderDetails == null) {
             orderDetails = new BookOrderGetMyOrdersModel.ResultBean();

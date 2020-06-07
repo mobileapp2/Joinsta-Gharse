@@ -47,7 +47,7 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
     private FloatingActionButton btn_add;
-    private String userId, CALLTYPE, recordId, categoryType, categoryId;   //CALLTYPE  1 == My Businesss Offer and My Offers  2 == Search Business offer
+    private String userId, CALLTYPE, APITYPE, recordId, categoryType, categoryId;   //CALLTYPE  1 == My Businesss Offer and My Offers  2 == Search Business offer
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -96,6 +96,7 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
         recordId = getIntent().getStringExtra("recordId");
         categoryType = getIntent().getStringExtra("categoryType");
         categoryId = getIntent().getStringExtra("categoryId");
+        APITYPE = getIntent().getStringExtra("APITYPE");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetAddedOffers().execute();
@@ -145,7 +146,7 @@ public class OffersForParticularRecordActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res;
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
-            param.add(new ParamsPojo("type", "giveAllRecordOfferDetails"));
+            param.add(new ParamsPojo("type", APITYPE));
             param.add(new ParamsPojo("record_id", recordId));
             param.add(new ParamsPojo("category_type_id", categoryType));
             res = APICall.FORMDATAAPICall(ApplicationConstants.OFFERSAPI, param);

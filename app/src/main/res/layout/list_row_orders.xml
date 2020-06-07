@@ -37,13 +37,14 @@
                 android:layout_weight="1"
                 android:text="Supplier – L00001 – Mobile Shopee"
                 android:textColor="@color/darkGray"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <ImageButton
                 android:id="@+id/ib_call"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
+                android:scaleType="fitCenter"
                 android:src="@drawable/icon_call" />
 
         </LinearLayout>
@@ -54,7 +55,7 @@
             android:layout_height="wrap_content"
             android:text="Ordered By – Product/Image/text"
             android:textColor="@color/darkGray"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_price"
@@ -62,7 +63,7 @@
             android:layout_height="wrap_content"
             android:text="Total Amount - Rs. 10,000"
             android:textColor="@color/darkGray"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -102,7 +103,7 @@
                 android:paddingRight="10dp"
                 android:text="Home Delivery"
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_order_status"
@@ -115,7 +116,7 @@
                 android:paddingRight="10dp"
                 android:text="In Cart"
                 android:textColor="@color/white"
-                android:textSize="15sp" />
+                android:textSize="14sp" />
 
         </RelativeLayout>
 

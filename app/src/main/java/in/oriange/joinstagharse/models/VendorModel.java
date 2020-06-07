@@ -198,13 +198,27 @@ public class VendorModel implements Serializable {
 
         public String getVendorCodeName() {
             if (!getVendor_code().trim().isEmpty() && !getName().trim().isEmpty()) {
-                return getVendor_code() + " | " + getName();
+                return getVendor_code() + " - " + getName();
             } else if (getVendor_code().trim().isEmpty() && getName().trim().isEmpty()) {
                 return "";
             } else if (!getVendor_code().trim().isEmpty() && getName().trim().isEmpty()) {
                 return getVendor_code();
             } else if (getVendor_code().trim().isEmpty() && !getName().trim().isEmpty()) {
                 return getName();
+            } else {
+                return "";
+            }
+        }
+
+        public String getBusinessCodeName() {
+            if (!getBusiness_code().trim().isEmpty() && !getBusiness_name().trim().isEmpty()) {
+                return getBusiness_code() + " - " + getBusiness_name();
+            } else if (getBusiness_code().trim().isEmpty() && getBusiness_name().trim().isEmpty()) {
+                return "";
+            } else if (!getBusiness_code().trim().isEmpty() && getBusiness_name().trim().isEmpty()) {
+                return getBusiness_code();
+            } else if (getBusiness_code().trim().isEmpty() && !getBusiness_name().trim().isEmpty()) {
+                return getBusiness_name();
             } else {
                 return "";
             }

@@ -104,8 +104,8 @@ public class ViewVendorDetailsActivity extends AppCompatActivity {
         else
             tvCity.setVisibility(View.GONE);
 
-        if (!vendorDetails.getBusiness_name().equals(""))
-            tvBusinessCodeName.setText("Business: " + vendorDetails.getBusiness_code() + " - " + vendorDetails.getBusiness_name());
+        if (!vendorDetails.getBusinessCodeName().equals(""))
+            tvBusinessCodeName.setText("Business - " + vendorDetails.getBusinessCodeName());
         else
             tvBusinessCodeName.setVisibility(View.GONE);
 

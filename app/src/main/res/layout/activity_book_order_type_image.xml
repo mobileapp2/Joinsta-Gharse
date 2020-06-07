@@ -22,10 +22,11 @@
             <androidx.appcompat.widget.AppCompatEditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="start"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
+                android:gravity="start"
                 android:text="Order by Image"
                 android:textColor="@color/black"
                 android:textStyle="bold"
@@ -36,7 +37,7 @@
                 style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Next"/>
+                android:text="Next" />
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -83,8 +84,8 @@ Write on paper, click a photo and upload" />
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:visibility="gone"
-                    android:text="ADD Photo" />
+                    android:text="ADD Photo"
+                    android:visibility="gone" />
 
             </LinearLayout>
 

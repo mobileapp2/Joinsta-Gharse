@@ -5,20 +5,22 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/edt_email"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.6"
-        android:clickable="false"
-        android:focusable="false"
-        android:hint="Email"
-        android:inputType="textEmailAddress|textNoSuggestions"
-        android:longClickable="false"
-        android:textSize="16sp"
-        app:met_floatingLabel="highlight"
-        app:met_textColorHint="@color/darkGray"
-        app:met_underlineColor="@color/mediumGray" />
+        android:layout_weight="0.8"
+        android:orientation="vertical">
+
+        <TextView
+            style="@style/TitleTextView"
+            android:text="Email" />
+
+        <EditText
+            android:id="@+id/edt_email"
+            style="@style/EditableEditText"
+            android:inputType="textEmailAddress" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_verify"

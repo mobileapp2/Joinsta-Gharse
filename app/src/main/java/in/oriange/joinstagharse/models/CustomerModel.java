@@ -196,13 +196,27 @@ public class CustomerModel implements Serializable {
 
         public String getCustomerCodeName() {
             if (!getCustomer_code().trim().isEmpty() && !getName().trim().isEmpty()) {
-                return getCustomer_code() + " | " + getName();
+                return getCustomer_code() + " - " + getName();
             } else if (getCustomer_code().trim().isEmpty() && getName().trim().isEmpty()) {
                 return "";
             } else if (!getCustomer_code().trim().isEmpty() && getName().trim().isEmpty()) {
                 return getCustomer_code();
             } else if (getCustomer_code().trim().isEmpty() && !getName().trim().isEmpty()) {
                 return getName();
+            } else {
+                return "";
+            }
+        }
+
+        public String getBusinessCodeName() {
+            if (!getBusiness_code().trim().isEmpty() && !getBusiness_name().trim().isEmpty()) {
+                return getBusiness_code() + " - " + getBusiness_name();
+            } else if (getBusiness_code().trim().isEmpty() && getBusiness_name().trim().isEmpty()) {
+                return "";
+            } else if (!getBusiness_code().trim().isEmpty() && getBusiness_name().trim().isEmpty()) {
+                return getBusiness_code();
+            } else if (getBusiness_code().trim().isEmpty() && !getBusiness_name().trim().isEmpty()) {
+                return getBusiness_name();
             } else {
                 return "";
             }

@@ -29,9 +29,8 @@
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
             android:text="Joinsta Development"
-            android:textColor="@color/darkGray"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textColor="@color/black"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/tv_address"
@@ -41,7 +40,7 @@
             android:paddingRight="5dp"
             android:text="This is the sub sub heading"
             android:textColor="@color/darkGray"
-            android:textSize="16sp" />
+            android:textSize="14sp" />
 
         <co.lujun.androidtagview.TagContainerLayout
             android:id="@+id/container_tags"
@@ -54,14 +53,14 @@
             app:container_border_width="0dp"
             app:container_enable_drag="false"
             app:horizontal_interval="5dp"
-            app:tag_background_color="@color/lightred"
-            app:tag_border_color="@color/lightred"
+            app:tag_background_color="@color/lightGray"
+            app:tag_border_color="@color/lightGray"
             app:tag_clickable="false"
             app:tag_enable_cross="false"
             app:tag_text_color="@color/darkGray"
-            app:tag_text_size="14sp"
+            app:tag_text_size="12sp"
             app:tag_theme="none"
-            app:vertical_interval="10dp" />
+            app:vertical_interval="5dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -81,7 +80,7 @@
                     android:id="@+id/ll_store_pickup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_focusfilled_green"
+                    android:background="@drawable/button_focusfilled_grey"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingLeft="5dp"
@@ -91,8 +90,8 @@
 
                     <ImageView
                         android:id="@+id/imv_store_pickup"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/icon_check"
                         android:tint="@color/white" />
 
@@ -103,7 +102,7 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:text="Store Pickup"
-                        android:textColor="@color/white"
+                        android:textColor="@color/darkGray"
                         android:textSize="12sp" />
 
                 </LinearLayout>
@@ -120,7 +119,7 @@
                     android:id="@+id/ll_home_delivery"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/button_focusfilled_green"
+                    android:background="@drawable/button_focusfilled_grey"
                     android:gravity="center"
                     android:orientation="horizontal"
                     android:paddingLeft="5dp"
@@ -130,8 +129,8 @@
 
                     <ImageView
                         android:id="@+id/imv_home_delivery"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
                         android:src="@drawable/icon_check"
                         android:tint="@color/white" />
 
@@ -142,7 +141,7 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:text="Home Delivery"
-                        android:textColor="@color/white"
+                        android:textColor="@color/darkGray"
                         android:textSize="12sp" />
 
                 </LinearLayout>

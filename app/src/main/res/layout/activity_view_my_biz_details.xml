@@ -21,9 +21,8 @@
 
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
@@ -377,15 +376,15 @@
                             app:container_border_width="0dp"
                             app:container_enable_drag="false"
                             app:horizontal_interval="5dp"
-                            app:tag_background_color="@color/lightred"
-                            app:tag_border_color="@color/lightred"
+                            app:tag_background_color="@color/lightGray"
+                            app:tag_border_color="@color/lightGray"
                             app:tag_border_width="1dp"
                             app:tag_clickable="false"
                             app:tag_enable_cross="false"
                             app:tag_text_color="@color/darkGray"
                             app:tag_text_size="16sp"
                             app:tag_theme="none"
-                            app:vertical_interval="10dp" />
+                            app:vertical_interval="5dp" />
 
                     </LinearLayout>
 

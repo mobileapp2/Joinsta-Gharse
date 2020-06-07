@@ -74,7 +74,6 @@ import java.util.regex.Matcher;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.models.ContryCodeModel;
 import in.oriange.joinstagharse.models.MasterModel;
 import in.oriange.joinstagharse.models.MasterPojo;
 import in.oriange.joinstagharse.models.PrimaryPublicMobileSelectionModel;
@@ -96,7 +95,6 @@ import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermi
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinstagharse.utilities.Utilities.isLocationEnabled;
-import static in.oriange.joinstagharse.utilities.Utilities.loadJSONForCountryCode;
 import static in.oriange.joinstagharse.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinstagharse.utilities.Utilities.turnOnLocation;
 
@@ -129,10 +127,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     private final int GALLERY_REQUEST = 200;
     private File file, photoFileToUpload, profilPicFolder;
     private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-
-    private AlertDialog countryCodeDialog;
-    private TextView tv_selected_forconcode = null;
-    private ArrayList<ContryCodeModel> countryCodeList;
 
     List<UserProfileDetailsModel.ResultBean.MobileNumbersBean> mobileSessionList;
     List<UserProfileDetailsModel.ResultBean.LandlineNumbersBean> landlineSessionList;
@@ -190,7 +184,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         mobileList = new ArrayList<>();
         landlineList = new ArrayList<>();
         emailList = new ArrayList<>();
-        countryCodeList = new ArrayList<>();
 
         mobileSessionList = new ArrayList<>();
         landlineSessionList = new ArrayList<>();
@@ -207,24 +200,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
-
-        try {
-            JSONArray m_jArry = new JSONArray(loadJSONForCountryCode(context));
-            countryCodeList = new ArrayList<>();
-
-            for (int i = 0; i < m_jArry.length(); i++) {
-                JSONObject jo_inside = m_jArry.getJSONObject(i);
-                countryCodeList.add(new ContryCodeModel(
-                        jo_inside.getString("name"),
-                        jo_inside.getString("dial_code"),
-                        jo_inside.getString("code")
-                ));
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         try {
             JSONArray user_info = new JSONArray(session.getUserDetails().get(
                     ApplicationConstants.KEY_LOGIN_INFO));
@@ -337,7 +312,7 @@ public class EditBasicInformationActivity extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View rowView = inflater.inflate(R.layout.layout_add_email, null);
                     emailLayoutsList.add((LinearLayout) rowView);
-                    ll_email.addView(rowView, ll_email.getChildCount());
+                    ll_email.addView(rowView, ll_email.getChildCount() - 1);
                     ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailSessionList.get(i).getEmail());
                     if (emailSessionList.get(i).getEmail_verification().equals("0")) {
                         (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
@@ -871,10 +846,10 @@ public class EditBasicInformationActivity extends AppCompatActivity {
 
     public void verifyEmail(View view) {
         LinearLayout ll_email = (LinearLayout) view.getParent();
-        MaterialEditText edt_email = ll_email.findViewById(R.id.edt_email);
+        EditText edt_email = ll_email.findViewById(R.id.edt_email);
 
         JsonObject obj = new JsonObject();
-        obj.addProperty("type", "SendVerificationLink");
+        obj.addProperty("type", "sendverificationlink");
         obj.addProperty("email_id", edt_email.getText().toString().trim());
         obj.addProperty("user_id", userId);
 
@@ -984,7 +959,7 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     }
 
     public void selectContryCode(View v) {
-        tv_selected_forconcode = (TextView) v;
+        TextView tv_selected_forconcode = (TextView) v;
         new CountryCodeSelection(context, tv_selected_forconcode);
     }
 

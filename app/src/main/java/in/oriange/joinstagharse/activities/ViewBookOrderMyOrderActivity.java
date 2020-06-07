@@ -322,6 +322,8 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
             startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
                     .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
                     .putExtra("businessOwnerAddress", orderDetails.getOwner_address())
+                    .putExtra("businessOwnerCode", orderDetails.getOwner_business_code())
+                    .putExtra("businessOwnerName", orderDetails.getOwner_business_name())
                     .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
                     .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
                     .putExtra("orderType", "1")
@@ -424,6 +426,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SentOrdersFragment"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderMyOrdersActivity"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);

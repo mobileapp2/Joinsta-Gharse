@@ -125,7 +125,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId, businessOwnerId, businessOwnerAddress, isHomeDeliveryAvailable, isPickUpAvailable,
-            orderType, orderText = "", customerBusinessId = "0", customerAddressId = "0", customerAddress = "", orderImageArray = "";
+            orderType, orderText = "", customerBusinessId = "0", customerAddressId = "0", customerAddress = "", orderImageArray = "",
+            businessOwnerCode, businessOwnerName;
 
     private List<GetBusinessModel.ResultBean> businessList;
     private List<AddressModel.ResultBean> addressList;
@@ -215,6 +216,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
         businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
+        businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
+        businessOwnerName = getIntent().getStringExtra("businessOwnerName");
         isHomeDeliveryAvailable = getIntent().getStringExtra("isHomeDeliveryAvailable");
         isPickUpAvailable = getIntent().getStringExtra("isPickUpAvailable");
         orderType = getIntent().getStringExtra("orderType");  //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
@@ -330,11 +333,12 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
             purchaseOrderType = "1";
             customerName = tvName.getText().toString().trim();
         } else if (rbBusiness.isChecked()) {
-            customerName = businessDetails.getBusiness_code() + " - " + businessDetails.getBusiness_name();
-            if (customerBusinessId.equals("")) {
+            if (customerBusinessId.equals("0")) {
                 Utilities.showMessage("Please select business", context, 2);
                 return;
             }
+
+            customerName = businessDetails.getBusiness_code() + " - " + businessDetails.getBusiness_name();
             purchaseOrderType = "2";
         } else {
             Utilities.showMessage("Please select purchase type", context, 2);
@@ -368,6 +372,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 .putExtra("deliveryStatus", deliveryStatus)
                 .putExtra("businessOwnerId", businessOwnerId)
                 .putExtra("businessOwnerAddress", businessOwnerAddress)
+                .putExtra("businessOwnerCode", businessOwnerCode)
+                .putExtra("businessOwnerName", businessOwnerName)
                 .putExtra("customerAddressId", customerAddressId)
                 .putExtra("customerAddress", customerAddress)
                 .putExtra("orderType", orderType)                   //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3

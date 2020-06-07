@@ -321,7 +321,8 @@
                                 android:layout_gravity="center"
                                 android:layout_marginRight="10dp"
                                 android:background="?attr/selectableItemBackgroundBorderless"
-                                android:src="@drawable/icon_share" />
+                                android:src="@drawable/icon_share"
+                                android:tint="@color/darkGray" />
 
                         </LinearLayout>
 
@@ -344,48 +345,6 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                style="@style/TitleTextView"
-                                android:text="Mobile" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="3dp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tv_countrycode_mobile"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:text="+91"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-
-                                <View
-                                    android:layout_width="1dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginRight="5dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:background="@color/darkGray" />
-
-                                <EditText
-                                    android:id="@+id/edt_mobile"
-                                    style="@style/UnEditableEditText"
-                                    android:inputType="number"
-                                    android:maxLength="14" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -407,48 +366,6 @@
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-
-                            <TextView
-                                style="@style/TitleTextView"
-                                android:text="Landline" />
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="3dp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tv_countrycode_landline"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center"
-                                    android:text="+91"
-                                    android:textColor="@color/black"
-                                    android:textSize="14sp" />
-
-                                <View
-                                    android:layout_width="1dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginTop="10dp"
-                                    android:layout_marginRight="5dp"
-                                    android:layout_marginBottom="10dp"
-                                    android:background="@color/darkGray" />
-
-                                <EditText
-                                    android:id="@+id/edt_landline"
-                                    style="@style/UnEditableEditText"
-                                    android:inputType="number"
-                                    android:maxLength="14" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -468,53 +385,6 @@
                         android:orientation="vertical"
                         android:paddingLeft="5dp"
                         android:paddingRight="5dp">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    style="@style/TitleTextView"
-                                    android:text="Email" />
-
-                                <EditText
-                                    android:id="@+id/edt_email"
-                                    style="@style/EditableEditText"
-                                    android:inputType="textEmailAddress" />
-
-                            </LinearLayout>
-
-                            <TextView
-                                android:id="@+id/tv_verify"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.15"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="Verify"
-                                android:textColor="@color/green"
-                                android:textSize="14sp"
-                                android:visibility="gone" />
-
-                            <TextView
-                                android:id="@+id/tv_verified"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="0.15"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="Verified"
-                                android:textColor="@android:color/holo_green_dark"
-                                android:textSize="14sp"
-                                android:visibility="gone" />
-
-                        </LinearLayout>
 
                     </LinearLayout>
 

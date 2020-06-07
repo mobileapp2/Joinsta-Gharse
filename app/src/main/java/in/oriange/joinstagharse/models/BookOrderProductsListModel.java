@@ -85,6 +85,8 @@ public class BookOrderProductsListModel implements Serializable {
         private String updated_at;
         private String unit_of_measure_id;
         private String product_category_name;
+        private boolean isAlreadyAddedInCart;
+        private int quantity = 1;
         private List<String> product_images;
         private List<String> product_brouchure;
 
@@ -262,6 +264,22 @@ public class BookOrderProductsListModel implements Serializable {
 
         public void setProduct_category_name(String product_category_name) {
             this.product_category_name = product_category_name;
+        }
+
+        public boolean isAlreadyAddedInCart() {
+            return isAlreadyAddedInCart;
+        }
+
+        public void setAlreadyAddedInCart(boolean alreadyAddedInCart) {
+            isAlreadyAddedInCart = alreadyAddedInCart;
+        }
+
+        public int getQuantity() {
+            return quantity;
+        }
+
+        public void setQuantity(int quantity) {
+            this.quantity = quantity;
         }
 
         public List<String> getProduct_images() {

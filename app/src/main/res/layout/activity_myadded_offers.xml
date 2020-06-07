@@ -27,7 +27,7 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="false"
                 android:focusable="false"
-                android:text="My Added Offers"
+                android:text="My Offers"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white" />

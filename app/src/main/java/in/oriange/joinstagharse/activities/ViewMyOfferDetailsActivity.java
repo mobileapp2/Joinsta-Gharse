@@ -321,8 +321,8 @@ public class ViewMyOfferDetailsActivity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffers_Actvity"));
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecord_Activity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffersActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecordActivity"));
                         Utilities.showMessage("Offer deleted successfully", context, 1);
                         finish();
                     }

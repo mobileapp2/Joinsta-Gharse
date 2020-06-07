@@ -99,15 +99,14 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
         customersDetails = (CustomerModel.ResultBean) getIntent().getSerializableExtra("customersDetails");
 
         tvName.setText(customersDetails.getCustomerCodeName());
-        tvCity.setText(customersDetails.getCity());
 
         if (!customersDetails.getCity().equals(""))
             tvCity.setText(customersDetails.getCity());
         else
             tvCity.setVisibility(View.GONE);
 
-        if (!customersDetails.getBusiness_name().equals(""))
-            tvBusinessCodeName.setText("Business - " + customersDetails.getBusiness_code() + " | " + customersDetails.getBusiness_name());
+        if (!customersDetails.getBusinessCodeName().equals(""))
+            tvBusinessCodeName.setText("Business - " + customersDetails.getBusinessCodeName());
         else
             tvBusinessCodeName.setVisibility(View.GONE);
 

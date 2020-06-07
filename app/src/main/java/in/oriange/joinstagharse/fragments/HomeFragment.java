@@ -145,7 +145,8 @@ public class HomeFragment extends Fragment {
         });
 
         ib_cart.setOnClickListener(v -> {
-            startActivity(new Intent(context, BookOrderCartProductsActivity.class));
+            startActivity(new Intent(context, BookOrderCartProductsActivity.class)
+                    .putExtra("particularBusinessId", "0"));
         });
 
         ib_notifications.setOnClickListener(v -> {

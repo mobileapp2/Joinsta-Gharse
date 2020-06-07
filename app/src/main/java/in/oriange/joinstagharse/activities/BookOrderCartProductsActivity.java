@@ -27,6 +27,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -73,7 +74,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
     private LocalBroadcastManager localBroadcastManager;
     private BookOrderListAdapter bookOrderListAdapter;
-    private String userId /*,businessOwnerId*/;
+    private String userId, particularBusinessId = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +117,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        particularBusinessId = getIntent().getStringExtra("particularBusinessId");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetOrders().execute();
@@ -168,6 +170,8 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                 startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
                         .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
                         .putExtra("businessOwnerAddress", orderDetails.getOwner_address())
+                        .putExtra("businessOwnerCode", orderDetails.getOwner_business_code())
+                        .putExtra("businessOwnerName", orderDetails.getOwner_business_name())
                         .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
                         .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
                         .putExtra("orderType", "1")
@@ -205,7 +209,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
 
             private TextView tv_order_for;
             private RecyclerView rv_products;
-            private Button btn_save, btn_reject;
+            private MaterialButton btn_save, btn_reject;
 
             public MyViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -639,6 +643,20 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
 
         ordersList.clear();
         ordersList.addAll(filteredOrderList);
+
+        if (!particularBusinessId.equals("0")) {
+            List<BookOrderGetMyOrdersModel.ResultBean> filteredOrderListForParticularBusiness = new ArrayList<>();
+            for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList)
+                if (orderDetail.getStatus_details().size() == 1)
+                    if (orderDetail.getStatus_details().get(0).getStatus().equals("1"))
+                        if (orderDetail.getOwner_business_id().equals(particularBusinessId))
+                            filteredOrderListForParticularBusiness.add(orderDetail);
+
+
+            ordersList.clear();
+            ordersList.addAll(filteredOrderListForParticularBusiness);
+        }
+
 
         if (ordersList.size() != 0) {
             llNopreview.setVisibility(View.GONE);

@@ -221,7 +221,7 @@
                         app:container_border_color="@color/white"
                         app:container_border_width="0dp"
                         app:container_enable_drag="true"
-                        app:horizontal_interval="10dp"
+                        app:horizontal_interval="5dp"
                         app:tag_background_color="@color/lightGray"
                         app:tag_border_color="@color/lightGray"
                         app:tag_border_width="1dp"
@@ -231,7 +231,7 @@
                         app:tag_text_color="@color/darkGray"
                         app:tag_text_size="16sp"
                         app:tag_theme="none"
-                        app:vertical_interval="10dp" />
+                        app:vertical_interval="5dp" />
 
                 </LinearLayout>
 

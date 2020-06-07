@@ -131,7 +131,8 @@ public class SearchFragment extends Fragment {
         });
 
         ib_cart.setOnClickListener(v -> {
-            startActivity(new Intent(context, BookOrderCartProductsActivity.class));
+            startActivity(new Intent(context, BookOrderCartProductsActivity.class)
+                    .putExtra("particularBusinessId", "0"));
         });
 
         edt_search.addTextChangedListener(new TextWatcher() {

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -52,27 +53,26 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         if (searchDetails.getIs_pick_up_available().equals("1")) {
 //            holder.tv_store_pickup.setTextColor(context.getResources().getColor(R.color.green));
             holder.imv_store_pickup.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_check));
-            holder.ll_store_pickup.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
-//            holder.imv_store_pickup.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+//            holder.ll_store_pickup.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
+            holder.imv_store_pickup.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
         } else {
 //            holder.tv_store_pickup.setTextColor(context.getResources().getColor(R.color.red));
             holder.imv_store_pickup.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cross));
-            holder.ll_store_pickup.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
-//            holder.imv_store_pickup.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+//            holder.ll_store_pickup.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
+            holder.imv_store_pickup.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
         if (searchDetails.getIs_home_delivery_available().equals("1")) {
 //            holder.tv_home_delivery.setTextColor(context.getResources().getColor(R.color.green));
             holder.imv_home_delivery.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_check));
-            holder.ll_home_delivery.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
-//            holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+//            holder.ll_home_delivery.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
+            holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
         } else {
 //            holder.tv_home_delivery.setTextColor(context.getResources().getColor(R.color.red));
             holder.imv_home_delivery.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cross));
-            holder.ll_home_delivery.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
-//            holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+//            holder.ll_home_delivery.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
+            holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
         }
-
 
         List<String> tagsList = searchDetails.getSubTypesTagsList("1");
         List<String> topFiveTagsList = new ArrayList<>();
@@ -81,7 +81,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
             for (int i = 0; i < 5; i++)
                 topFiveTagsList.add(tagsList.get(i));
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
 
         holder.container_tags.setTags(topFiveTagsList);
@@ -94,6 +94,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
                     .putExtra("recordId", searchDetails.getId())
                     .putExtra("categoryType", "1")
                     .putExtra("CALLTYPE", "1")
+                    .putExtra("APITYPE", "getOfferDetails")
                     .putExtra("categoryId", searchDetails.getType_id()));
 
         });

@@ -36,7 +36,7 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 
-public class MyAddedOffers_Actvity extends AppCompatActivity {
+public class MyAddedOffersActivity extends AppCompatActivity {
 
     private Context context;
     private UserSessionManager session;
@@ -62,7 +62,7 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
 
     private void init() {
 
-        context = MyAddedOffers_Actvity.this;
+        context = MyAddedOffersActivity.this;
         changeStatusBar(context, getWindow());
         session = new UserSessionManager(context);
 
@@ -95,7 +95,7 @@ public class MyAddedOffers_Actvity extends AppCompatActivity {
         }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("MyAddedOffers_Actvity");
+        IntentFilter intentFilter = new IntentFilter("MyAddedOffersActivity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 

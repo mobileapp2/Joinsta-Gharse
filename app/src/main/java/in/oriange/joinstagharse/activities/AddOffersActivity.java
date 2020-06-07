@@ -30,6 +30,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
@@ -505,14 +506,12 @@ public class AddOffersActivity extends AppCompatActivity {
         }
 
         if (edt_start_date.getText().toString().trim().isEmpty()) {
-            edt_start_date.setError("Please select start date");
-            edt_start_date.requestFocus();
+            Utilities.showMessage("Please select start date", context, 2);
             return;
         }
 
         if (edt_end_date.getText().toString().trim().isEmpty()) {
-            edt_end_date.setError("Please select end date");
-            edt_end_date.requestFocus();
+            Utilities.showMessage("Please select end date", context, 2);
             return;
         }
 
@@ -587,6 +586,9 @@ public class AddOffersActivity extends AppCompatActivity {
                     type = mainObj.getString("type");
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
+
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyAddedOffersActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("OffersForParticularRecordActivity"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

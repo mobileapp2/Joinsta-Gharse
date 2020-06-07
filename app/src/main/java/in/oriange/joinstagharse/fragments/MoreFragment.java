@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.ContactUsActivity;
 import in.oriange.joinstagharse.activities.EnquiriesActivity;
-import in.oriange.joinstagharse.activities.MyAddedOffers_Actvity;
+import in.oriange.joinstagharse.activities.MyAddedOffersActivity;
 import in.oriange.joinstagharse.activities.MyAddressActivity;
 import in.oriange.joinstagharse.activities.MyBusinessActivity;
 import in.oriange.joinstagharse.activities.SettingsActivity;
@@ -74,6 +74,6 @@ public class MoreFragment extends Fragment {
 
         cv_contactus.setOnClickListener(v -> startActivity(new Intent(context, ContactUsActivity.class)));
 
-        cv_myoffres.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffers_Actvity.class)));
+        cv_myoffres.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffersActivity.class)));
     }
 }

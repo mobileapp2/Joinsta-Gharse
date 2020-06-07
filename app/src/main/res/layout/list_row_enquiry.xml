@@ -24,17 +24,16 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingRight="5dp"
             android:paddingLeft="5dp"
+            android:paddingRight="5dp"
             android:text="Joinsta Development"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/colorPrimary" />
+            android:background="@color/darkGray" />
 
         <TextView
             android:id="@+id/tv_subject"
@@ -94,12 +93,6 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <View
-                android:id="@+id/view_divider"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/colorPrimary" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,8 +115,7 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
-                    android:drawableRight="@drawable/icon_delete"
-                    android:drawableTint="@color/darkGray"
+                    android:drawableRight="@drawable/icon_delete_red"
                     android:text="Delete"
                     android:textColor="@color/darkGray"
                     android:textStyle="bold" />
@@ -134,8 +126,7 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="0.5"
-                    android:drawableRight="@drawable/icon_share"
-                    android:drawableTint="@color/darkGray"
+                    android:drawableRight="@drawable/icon_share_red"
                     android:text="Share"
                     android:textColor="@color/darkGray"
                     android:textSize="14sp"

@@ -51,8 +51,7 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private CircleImageView imv_user;
     private EditText edt_fname, edt_mname, edt_lname, edt_bloodgroup, edt_education,
-            edt_specify, edt_mobile, edt_landline, edt_email, edt_nativeplace, edt_reg_mobile, edt_about, edt_referral_code;
-    private TextView tv_verify, tv_verified, tv_countrycode_mobile, tv_countrycode_landline;
+            edt_specify, edt_nativeplace, edt_reg_mobile, edt_about, edt_referral_code;
     private RadioButton rb_male, rb_female;
     private LinearLayout ll_mobile, ll_landline, ll_email;
     private ImageButton imv_share;
@@ -86,19 +85,11 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
         edt_bloodgroup = findViewById(R.id.edt_bloodgroup);
         edt_education = findViewById(R.id.edt_education);
         edt_specify = findViewById(R.id.edt_specify);
-        edt_mobile = findViewById(R.id.edt_mobile);
-        edt_landline = findViewById(R.id.edt_landline);
-        edt_email = findViewById(R.id.edt_email);
         edt_reg_mobile = findViewById(R.id.edt_reg_mobile);
         edt_nativeplace = findViewById(R.id.edt_nativeplace);
         edt_about = findViewById(R.id.edt_about);
         edt_referral_code = findViewById(R.id.edt_referral_code);
         imv_share = findViewById(R.id.imv_share);
-
-        tv_verify = findViewById(R.id.tv_verify);
-        tv_countrycode_mobile = findViewById(R.id.tv_countrycode_mobile);
-        tv_countrycode_landline = findViewById(R.id.tv_countrycode_landline);
-        tv_verified = findViewById(R.id.tv_verified);
 
         rb_male = findViewById(R.id.rb_male);
         rb_female = findViewById(R.id.rb_female);
@@ -206,7 +197,7 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     final View rowView = inflater.inflate(R.layout.layout_view_email, null);
                     emailLayoutsList.add((LinearLayout) rowView);
-                    ll_email.addView(rowView, ll_email.getChildCount());
+                    ll_email.addView(rowView, ll_email.getChildCount() - 1);
                     ((EditText) emailLayoutsList.get(i).findViewById(R.id.edt_email)).setText(emailList.get(i).getEmail());
                     if (emailList.get(i).getEmail_verification().equals("0")) {
                         (emailLayoutsList.get(i).findViewById(R.id.tv_verify)).setVisibility(View.VISIBLE);
@@ -220,68 +211,46 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
     }
 
     private void setEventHandlers() {
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                if (Utilities.isNetworkAvailable(context)) {
-                    new RefreshSession().execute(userId);
-                    swipeRefreshLayout.setRefreshing(false);
-                } else {
-                    swipeRefreshLayout.setRefreshing(false);
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new RefreshSession().execute(userId);
+                swipeRefreshLayout.setRefreshing(false);
+            } else {
+                swipeRefreshLayout.setRefreshing(false);
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
 
-        imv_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!edt_referral_code.getText().toString().trim().isEmpty()) {
-                    String salutation = "";
-                    if (genderId.equals("1")) {
-                        salutation = "Mr. ";
-                    } else if (genderId.equals("2")) {
-                        salutation = "Ms. ";
-                    }
-
-                    String shareMessage = "Welcome to Joinsta Gharse\n\n" +
-                            "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
-                            "Enter referral code of " + salutation + edt_fname.getText().toString().trim() + " - " + edt_referral_code.getText().toString().trim() + "\n" +
-                            "Below is the link to download the app.\n" +
-                            "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
-                            "Joinsta - Team";
-
-                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                    sharingIntent.setType("text/plain");
-                    sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+        imv_share.setOnClickListener(v -> {
+            if (!edt_referral_code.getText().toString().trim().isEmpty()) {
+                String salutation = "";
+                if (genderId.equals("1")) {
+                    salutation = "Mr. ";
+                } else if (genderId.equals("2")) {
+                    salutation = "Ms. ";
                 }
-            }
-        });
 
-        tv_verify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JsonObject obj = new JsonObject();
-                obj.addProperty("type", "SendVerificationLink");
-                obj.addProperty("email_id", edt_email.getText().toString().trim());
-                obj.addProperty("user_id", userId);
+                String shareMessage = "Welcome to Joinsta Gharse\n\n" +
+                        "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
+                        "Enter referral code of " + salutation + edt_fname.getText().toString().trim() + " - " + edt_referral_code.getText().toString().trim() + "\n" +
+                        "Below is the link to download the app.\n" +
+                        "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
+                        "Joinsta - Team";
 
-                if (Utilities.isNetworkAvailable(context)) {
-                    new SendVerificationLink().execute(obj.toString());
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
             }
         });
     }
 
     public void verifyEmail(View view) {
         LinearLayout ll_email = (LinearLayout) view.getParent();
-        MaterialEditText edt_email = ll_email.findViewById(R.id.edt_email);
+        EditText edt_email = ll_email.findViewById(R.id.edt_email);
 
         JsonObject obj = new JsonObject();
-        obj.addProperty("type", "SendVerificationLink");
+        obj.addProperty("type", "sendverificationlink");
         obj.addProperty("email_id", edt_email.getText().toString().trim());
         obj.addProperty("user_id", userId);
 

@@ -30,7 +30,7 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
     MaterialButton btnSave;
 
     private Context context;
-    private String businessOwnerId, businessOwnerAddress;
+    private String businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName;
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -59,6 +59,8 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
         businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
+        businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
+        businessOwnerName = getIntent().getStringExtra("businessOwnerName");
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderOrderTypeTextActivity");
@@ -75,6 +77,8 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
             startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
                     .putExtra("businessOwnerId", businessOwnerId)
                     .putExtra("businessOwnerAddress", businessOwnerAddress)
+                    .putExtra("businessOwnerCode", businessOwnerCode)
+                    .putExtra("businessOwnerName", businessOwnerName)
                     .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
                     .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))
                     .putExtra("orderType", "3")

@@ -50,6 +50,19 @@
                     android:src="@drawable/icon_preview"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/tv_added_in_cart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:background="@drawable/bg_overlay"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    android:text="Added in cart"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
+
             </FrameLayout>
 
         </androidx.cardview.widget.CardView>

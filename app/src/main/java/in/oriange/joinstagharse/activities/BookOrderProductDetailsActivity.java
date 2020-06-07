@@ -102,7 +102,7 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId, businessOwnerId;
-    private int quantity = 1;
+    private int quantity;
     private int sellingPrice, maxRetailPrice, savedAmount, applicablePrice = 0;
     private boolean appBarExpanded = true;
 
@@ -150,6 +150,8 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
         productDetails = (BookOrderProductsListModel.ResultBean) getIntent().getSerializableExtra("productDetails");
         ordersList = (List<BookOrderGetMyOrdersModel.ResultBean>) getIntent().getSerializableExtra("ordersList");
+
+        quantity = productDetails.getQuantity();
 
         if (productDetails.getProduct_images().size() == 0) {
             imageSlider.setVisibility(View.GONE);

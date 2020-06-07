@@ -385,6 +385,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                     if (type.equalsIgnoreCase("success")) {
 
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderBusinessOwnerOrdersActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ReceivedOrdersFragment"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);
