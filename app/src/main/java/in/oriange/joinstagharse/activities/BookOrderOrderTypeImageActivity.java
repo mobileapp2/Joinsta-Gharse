@@ -169,13 +169,6 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
                 imageJsonArray.add(imageList.get(i).getName());
             }
         }
-
-//        startActivity(new Intent(context, BookOrderPurchaseTypeSelectionActivity.class)
-//                .putExtra("businessOwnerId", businessOwnerId)
-//                .putExtra("orderType", "2")
-//                .putExtra("orderText", "")
-//                .putExtra("orderImageArray", imageJsonArray.toString()));
-
         startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
                 .putExtra("businessOwnerId", businessOwnerId)
                 .putExtra("businessOwnerAddress", businessOwnerAddress)

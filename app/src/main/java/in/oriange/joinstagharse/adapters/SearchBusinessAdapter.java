@@ -38,7 +38,7 @@ import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.AddCustomerActivity;
 import in.oriange.joinstagharse.activities.AddVendorActivity;
-import in.oriange.joinstagharse.activities.BookOrderProductsListActivity_v2;
+import in.oriange.joinstagharse.activities.BookOrderProductsListActivity;
 import in.oriange.joinstagharse.activities.OffersForParticularRecordActivity;
 import in.oriange.joinstagharse.activities.ViewSearchBizDetailsActivity;
 import in.oriange.joinstagharse.models.SearchDetailsModel;
@@ -176,12 +176,7 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
         holder.ll_book_order.setOnClickListener(v -> {
             if (searchDetails.getCan_book_order().equals("1"))
-//                context.startActivity(new Intent(context, BookOrderProductsListActivity.class)
-//                        .putExtra("businessOwnerId", searchDetails.getId())
-//                        .putExtra("businessOwnerAddress", searchDetails.getAddress())
-//                        .putExtra("isHomeDeliveryAvailable", searchDetails.getIs_home_delivery_available())
-//                        .putExtra("isPickUpAvailable", searchDetails.getIs_pick_up_available()));
-                context.startActivity(new Intent(context, BookOrderProductsListActivity_v2.class)
+                context.startActivity(new Intent(context, BookOrderProductsListActivity.class)
                         .putExtra("businessOwnerId", searchDetails.getId())
                         .putExtra("businessOwnerAddress", searchDetails.getAddress())
                         .putExtra("businessOwnerCode", searchDetails.getBusiness_code())

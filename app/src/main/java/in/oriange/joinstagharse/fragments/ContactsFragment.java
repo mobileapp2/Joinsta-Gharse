@@ -1,6 +1,7 @@
 package in.oriange.joinstagharse.fragments;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +34,9 @@ import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.adapters.ContactsAdapter;
 import in.oriange.joinstagharse.models.ContactsModel;
 
+import static android.Manifest.permission.READ_CONTACTS;
+import static in.oriange.joinstagharse.utilities.Utilities.provideReadContactsPremission;
+
 public class ContactsFragment extends Fragment {
 
     private Context context;
@@ -38,6 +44,7 @@ public class ContactsFragment extends Fragment {
     private EditText edt_search;
     private ImageButton imb_refresh;
     private RecyclerView rv_contacts;
+    private AppCompatTextView tv_no_review;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
     private List<ContactsModel> contactList;
@@ -57,6 +64,7 @@ public class ContactsFragment extends Fragment {
     private void init(View rootView) {
         edt_search = rootView.findViewById(R.id.edt_search);
         imb_refresh = rootView.findViewById(R.id.imb_refresh);
+        tv_no_review = rootView.findViewById(R.id.tv_no_review);
         rv_contacts = rootView.findViewById(R.id.rv_contacts);
         progressBar = rootView.findViewById(R.id.progressBar);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
@@ -66,14 +74,27 @@ public class ContactsFragment extends Fragment {
     }
 
     private void setDefault() {
-        new GetPhoneBookContacts().execute();
+        if (ActivityCompat.checkSelfPermission(context, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            new GetPhoneBookContacts().execute();
+        } else {
+            rv_contacts.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(View.VISIBLE);
+            tv_no_review.setText("Please provide premission to read contacts");
+        }
+
     }
 
     private void getSessionDetails() {
     }
 
     private void setEventHandler() {
-        imb_refresh.setOnClickListener(v -> new GetPhoneBookContacts().execute());
+        imb_refresh.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(context, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                new GetPhoneBookContacts().execute();
+            } else {
+                provideReadContactsPremission(context);
+            }
+        });
 
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override

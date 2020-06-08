@@ -64,10 +64,22 @@ import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumb
 
 public class BookOrderProductsListActivity extends AppCompatActivity {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
+    @BindView(R.id.ib_back)
+    ImageButton ibBack;
     @BindView(R.id.edt_search)
     EditText edtSearch;
+    @BindView(R.id.ib_cart)
+    ImageButton ibCart;
+    @BindView(R.id.tv_cart_count)
+    TextView tvCartCount;
+    @BindView(R.id.fl_cart)
+    FrameLayout flCart;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.cv_text)
+    CardView cvText;
+    @BindView(R.id.cv_image)
+    CardView cvImage;
     @BindView(R.id.rv_products)
     RecyclerView rvProducts;
     @BindView(R.id.swipeRefreshLayout)
@@ -76,24 +88,14 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     SpinKitView progressBar;
     @BindView(R.id.ll_nopreview)
     LinearLayout llNopreview;
-    @BindView(R.id.ib_cart)
-    ImageButton ibCart;
-    @BindView(R.id.tv_cart_count)
-    TextView tvCartCount;
-    @BindView(R.id.fl_cart)
-    FrameLayout flCart;
-    @BindView(R.id.ib_back)
-    ImageButton ibBack;
-    @BindView(R.id.cv_text)
-    CardView cvText;
-    @BindView(R.id.cv_image)
-    CardView cvImage;
+    @BindView(R.id.cv_this_business_cart)
+    CardView cvThisBusinessCart;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private String userId, businessOwnerId, businessOwnerAddress;
+    private String userId, businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
 
@@ -146,6 +148,9 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
         businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
+        businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
+        businessOwnerName = getIntent().getStringExtra("businessOwnerName");
+
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetAllProducts().execute();
@@ -215,6 +220,11 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                     .putExtra("particularBusinessId", "0"));
         });
 
+        cvThisBusinessCart.setOnClickListener(v -> {
+            startActivity(new Intent(context, BookOrderCartProductsActivity.class)
+                    .putExtra("particularBusinessId", businessOwnerId));
+        });
+
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (Utilities.isNetworkAvailable(context)) {
                 new GetAllProducts().execute();
@@ -228,12 +238,16 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         cvText.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
                 .putExtra("businessOwnerId", businessOwnerId)
                 .putExtra("businessOwnerAddress", businessOwnerAddress)
+                .putExtra("businessOwnerCode", businessOwnerCode)
+                .putExtra("businessOwnerName", businessOwnerName)
                 .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
                 .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
 
         cvImage.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeImageActivity.class)
                 .putExtra("businessOwnerId", businessOwnerId)
                 .putExtra("businessOwnerAddress", businessOwnerAddress)
+                .putExtra("businessOwnerCode", businessOwnerCode)
+                .putExtra("businessOwnerName", businessOwnerName)
                 .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
                 .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
 
@@ -347,10 +361,15 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     private void showCartCount() {
         int numberOfProducts = 0;
 
+        BookOrderGetMyOrdersModel.ResultBean thisBusinessOrder = null;
+
         for (BookOrderGetMyOrdersModel.ResultBean orderDetail : ordersList)
             if (orderDetail.getStatus_details().size() == 1)
-                if (orderDetail.getStatus_details().get(0).getStatus().equals("1"))
+                if (orderDetail.getStatus_details().get(0).getStatus().equals("1")) {
                     numberOfProducts = numberOfProducts + orderDetail.getProduct_details().size();
+                    if (orderDetail.getOwner_business_id().equals(businessOwnerId))
+                        thisBusinessOrder = orderDetail;
+                }
 
         if (numberOfProducts != 0) {
             flCart.setVisibility(View.VISIBLE);
@@ -359,6 +378,22 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             flCart.setVisibility(View.GONE);
             tvCartCount.setText("");
         }
+
+        if (thisBusinessOrder != null)
+            showAlreadyAddedStatusForProducts(thisBusinessOrder);
+    }
+
+    private void showAlreadyAddedStatusForProducts(BookOrderGetMyOrdersModel.ResultBean thisBusinessOrder) {
+        cvThisBusinessCart.setVisibility(View.VISIBLE);
+        for (int i = 0; i < productsList.size(); i++) {
+            for (BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean productDetailsBean : thisBusinessOrder.getProduct_details()) {
+                if (productDetailsBean.getProduct_id().equals(productsList.get(i).getId())) {
+                    productsList.get(i).setAlreadyAddedInCart(true);
+                    productsList.get(i).setQuantity(Integer.parseInt(productDetailsBean.getQuantity()));
+                }
+            }
+        }
+        rvProducts.setAdapter(new BookOrderProductsListAdapter());
     }
 
     private class BookOrderProductsListAdapter extends RecyclerView.Adapter<BookOrderProductsListAdapter.MyViewHolder> {
@@ -375,7 +410,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
             int position = holder.getAdapterPosition();
             final BookOrderProductsListModel.ResultBean productDetails = searchedProductsList.get(position);
-            final int[] quantity = {1};
+            final int[] quantity = {productDetails.getQuantity()};
 
             if (productDetails.getProduct_images().size() != 0) {
                 Picasso.with(context)
@@ -409,7 +444,6 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             else
                 holder.btn_addtocart.setVisibility(View.GONE);
 
-
             if (sellingPrice != 0) {
                 holder.tv_no_price_available.setVisibility(View.GONE);
                 float savedAmount = maxRetailPrice - sellingPrice;
@@ -429,6 +463,18 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             } else {
                 holder.ll_prices.setVisibility(View.GONE);
             }
+
+            if (productDetails.isAlreadyAddedInCart()) {
+                holder.tv_added_in_cart.setVisibility(View.VISIBLE);
+
+                if (quantity[0] == 1) {
+                    holder.tv_added_in_cart.setText(quantity[0] + " item in cart");
+                } else {
+                    holder.tv_added_in_cart.setText(quantity[0] + " items in cart");
+                }
+
+            } else
+                holder.tv_added_in_cart.setVisibility(View.GONE);
 
             holder.tv_quantity.setText(String.valueOf(quantity[0]));
 
@@ -470,7 +516,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             private CardView cv_mainlayout;
             private ImageView imv_productimage, imv_image_not_available;
             private LinearLayout ll_prices;
-            private TextView tv_product_name, tv_selling_price, tv_max_retail_price,
+            private TextView tv_added_in_cart, tv_product_name, tv_selling_price, tv_max_retail_price,
                     tv_precentage_off, tv_quantity, tv_no_price_available, tv_you_save, tv_out_of_stock;
             private ImageButton btn_remove, btn_add;
             private Button btn_addtocart;
@@ -481,6 +527,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                 imv_productimage = view.findViewById(R.id.imv_productimage);
                 ll_prices = view.findViewById(R.id.ll_prices);
                 imv_image_not_available = view.findViewById(R.id.imv_image_not_available);
+                tv_added_in_cart = view.findViewById(R.id.tv_added_in_cart);
                 tv_product_name = view.findViewById(R.id.tv_product_name);
                 tv_selling_price = view.findViewById(R.id.tv_selling_price);
                 tv_max_retail_price = view.findViewById(R.id.tv_max_retail_price);
@@ -738,106 +785,5 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
         localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
-    }
-
-    private void showProductDetailsDialog(BookOrderProductsListModel.ResultBean productDetails) {
-        final View dialogView = View.inflate(this, R.layout.dialog_book_order_product_details, null);
-        final Dialog dialog = new Dialog(context, R.style.MyAlertDialogStyle);
-        dialog.setContentView(dialogView);
-
-        quantity = 1;
-        ImageButton ib_close = dialog.findViewById(R.id.ib_close);
-        BannerLayout rv_images = dialog.findViewById(R.id.rv_images);
-        TextView tv_productname = dialog.findViewById(R.id.tv_productname);
-        TextView tv_productprice = dialog.findViewById(R.id.tv_productprice);
-        TextView tv_quantity = dialog.findViewById(R.id.tv_quantity);
-        TextView tv_productinfo = dialog.findViewById(R.id.tv_productinfo);
-        TextView tv_total_price = dialog.findViewById(R.id.tv_total_price);
-        TextView tv_saved = dialog.findViewById(R.id.tv_saved);
-        ImageButton imv_substract = dialog.findViewById(R.id.imv_substract);
-        ImageButton imv_add = dialog.findViewById(R.id.imv_add);
-        Button btn_addtocart = dialog.findViewById(R.id.btn_addtocart);
-        LinearLayout ll_description = dialog.findViewById(R.id.ll_description);
-
-        if (productDetails.getProduct_images().size() == 0)
-            rv_images.setVisibility(View.GONE);
-        else {
-            ArrayList<String> productsList = new ArrayList<>();
-            for (int i = 0; i < productDetails.getProduct_images().size(); i++) {
-                productsList.add(IMAGE_LINK + "product/" + productDetails.getProduct_images().get(i));
-            }
-
-            RecyclerBannerAdapter webBannerAdapter = new RecyclerBannerAdapter(this, productsList);
-            rv_images.setAdapter(webBannerAdapter);
-        }
-
-        tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#01579B\"> <b>" + quantity + "</b></font>"));
-        tv_productname.setText(productDetails.getName());
-        tv_productprice.setText("₹" + productDetails.getSelling_price() + " / " + productDetails.getUnit_of_measure());
-        tv_productinfo.setText(productDetails.getDescription());
-
-        if (tv_productinfo.getText().toString().trim().equals(""))
-            ll_description.setVisibility(View.GONE);
-
-        int maxRetailPrice = (int) Float.parseFloat(productDetails.getMax_retail_price());
-        sellingPrice = (int) Float.parseFloat(productDetails.getSelling_price());
-        int savedAmount = maxRetailPrice - sellingPrice;
-
-        if (savedAmount <= 0) {
-            applicablePrice = sellingPrice;
-            tv_saved.setVisibility(View.GONE);
-            tv_total_price.setText(Html.fromHtml("₹ " + sellingPrice));
-        } else {
-            applicablePrice = savedAmount;
-            tv_saved.setText(Html.fromHtml("<strike>₹ " + maxRetailPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount + "</i></font>"));
-            tv_total_price.setText(Html.fromHtml("₹ " + sellingPrice));
-        }
-
-        imv_substract.setOnClickListener(v -> {
-            if (quantity == 1) {
-                return;
-            }
-            quantity = quantity - 1;
-            tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#01579B\"> <b>" + quantity + "</b></font>"));
-
-            if (savedAmount <= 0) {
-                applicablePrice = maxRetailPrice * quantity;
-            } else {
-                int earlybirdPrice = sellingPrice * quantity;
-                int actualPrice = maxRetailPrice * quantity;
-                applicablePrice = earlybirdPrice;
-                int savedAmount1 = actualPrice - applicablePrice;
-                tv_saved.setText(Html.fromHtml("<strike>₹ " + actualPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount1 + "</i></font>"));
-            }
-
-            tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
-        });
-
-        imv_add.setOnClickListener(v -> {
-            quantity = quantity + 1;
-            tv_quantity.setText(Html.fromHtml("<font color=\"#616161\"> <b> Quantity - </b></font> <font color=\"#01579B\"> <b>" + quantity + "</b></font>"));
-
-            if (savedAmount <= 0) {
-                applicablePrice = maxRetailPrice * quantity;
-            } else {
-                int earlybirdPrice = sellingPrice * quantity;
-                int actualPrice = maxRetailPrice * quantity;
-                applicablePrice = earlybirdPrice;
-                int savedAmount12 = actualPrice - applicablePrice;
-                tv_saved.setText(Html.fromHtml("<strike>₹ " + actualPrice + "</strike> <font color=\"#ff0000\"> <i>You Saved ₹ " + savedAmount12 + "</i></font>"));
-            }
-
-            tv_total_price.setText(Html.fromHtml("₹ " + applicablePrice));
-        });
-
-        btn_addtocart.setOnClickListener(v -> {
-            findValidOrderId(productDetails, quantity);
-        });
-
-        ib_close.setOnClickListener(v -> {
-            dialog.dismiss();
-        });
-
-        dialog.show();
     }
 }

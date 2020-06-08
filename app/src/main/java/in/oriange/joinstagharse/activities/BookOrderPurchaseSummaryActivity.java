@@ -374,7 +374,6 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderSelectDeliveryTypeActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeTextActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImageActivity"));
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderImageUploadActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderMyOrderActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivity"));
 
@@ -448,7 +447,6 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderSelectDeliveryTypeActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeTextActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImageActivity"));
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderImageUploadActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderMyOrderActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivity"));
 

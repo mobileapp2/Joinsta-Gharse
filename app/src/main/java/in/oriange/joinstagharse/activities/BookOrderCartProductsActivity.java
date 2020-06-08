@@ -164,9 +164,6 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
             holder.rv_products.setAdapter(new BookOrderProductsListAdapter(orderDetails.getProduct_details()));
 
             holder.btn_save.setOnClickListener(v -> {
-//                startActivity(new Intent(context, BookOrderImageUploadActivity.class)
-//                        .putExtra("orderDetails", orderDetails));
-
                 startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
                         .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
                         .putExtra("businessOwnerAddress", orderDetails.getOwner_address())

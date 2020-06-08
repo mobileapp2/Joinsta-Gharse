@@ -133,14 +133,13 @@ public class AddAddressActivity extends AppCompatActivity {
             return;
         }
 
-        if (!edtPincode.getText().toString().trim().isEmpty()) {
-            if (edtPincode.getText().toString().trim().length() != 6) {
-                edtPincode.setError("Please enter pincode");
-                edtPincode.requestFocus();
-                edtPincode.getParent().requestChildFocus(edtPincode, edtPincode);
-                return;
-            }
+        if (edtPincode.getText().toString().trim().length() != 6) {
+            edtPincode.setError("Please enter pincode");
+            edtPincode.requestFocus();
+            edtPincode.getParent().requestChildFocus(edtPincode, edtPincode);
+            return;
         }
+
 
         JsonObject mainObj = new JsonObject();
         mainObj.addProperty("type", "addUserAddress");
