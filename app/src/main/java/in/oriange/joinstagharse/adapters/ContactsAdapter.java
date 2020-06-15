@@ -3,6 +3,8 @@ package in.oriange.joinstagharse.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +12,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -22,6 +26,9 @@ import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.AddCustomerActivity;
 import in.oriange.joinstagharse.activities.AddVendorActivity;
 import in.oriange.joinstagharse.models.ContactsModel;
+
+import static android.Manifest.permission.CALL_PHONE;
+import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyViewHolder> {
 
@@ -50,6 +57,27 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         holder.tv_name.setText(contactsModel.getName());
         holder.tv_mobile.setText(contactsModel.getPhoneNo());
 
+        holder.ib_call.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                provideCallPremission(context);
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setMessage("Are you sure you want to make a call?");
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.icon_call);
+                builder.setCancelable(false);
+                builder.setPositiveButton("YES", (dialog, id) ->
+                        context.startActivity(new Intent(Intent.ACTION_CALL,
+                                Uri.parse("tel:" + holder.tv_mobile.getText().toString().trim())))
+                );
+                builder.setNegativeButton("NO", (dialog, which) ->
+                        dialog.dismiss()
+                );
+                AlertDialog alertD = builder.create();
+                alertD.show();
+            }
+        });
+
         holder.imv_add.setOnClickListener(v -> showContextMenu(v, contactsModel));
     }
 
@@ -62,7 +90,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
 
         private CardView cv_main_layout;
         private TextView tv_initial, tv_name, tv_mobile;
-        private ImageButton imv_add;
+        private ImageButton imv_add, ib_call;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -71,6 +99,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
             tv_initial = itemView.findViewById(R.id.tv_initial);
             tv_name = itemView.findViewById(R.id.tv_name);
             tv_mobile = itemView.findViewById(R.id.tv_mobile);
+            ib_call = itemView.findViewById(R.id.ib_call);
         }
     }
 

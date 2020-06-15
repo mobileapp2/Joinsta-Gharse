@@ -72,14 +72,34 @@
                     android:orientation="vertical"
                     android:padding="5dp">
 
-                    <TextView
-                        android:id="@+id/tv_order_id"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="1dp"
-                        android:text="Order ID # 20200520245238973"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_order_id"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Order ID # 20200520245238973"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button_focusfilled_yellow"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="Rs. 10,000"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/tv_order_by"
@@ -97,7 +117,8 @@
                         android:paddingBottom="1dp"
                         android:text="This order is for – (Individual/business)"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_customer_name"
@@ -112,7 +133,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:paddingBottom="1dp">
+                        android:paddingBottom="1dp"
+                        android:visibility="gone">
 
                         <TextView
                             android:id="@+id/tv_customer_mobile"
@@ -134,6 +156,15 @@
                     </LinearLayout>
 
                     <TextView
+                        android:id="@+id/tv_delivery_type_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="1dp"
+                        android:text="Ordered By – Product/Image/text"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
                         android:id="@+id/tv_delivery_type"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
@@ -143,7 +174,8 @@
                         android:paddingRight="10dp"
                         android:text="Home Delivery"
                         android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_address"
@@ -152,6 +184,16 @@
                         android:text="Address"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_view_on_map"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:text="Get Direction"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="12sp" />
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
@@ -200,8 +242,40 @@
                             android:id="@+id/ib_supplier_mobile_call"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="5dp"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/icon_call" />
+
+                        <FrameLayout
+                            android:id="@+id/fl_cart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <ImageButton
+                                android:id="@+id/ib_chat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/icon_chat"
+                                android:tint="@color/darkGray" />
+
+                            <TextView
+                                android:id="@+id/tv_unread_count"
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:layout_gravity="right|top"
+                                android:layout_marginLeft="15dp"
+                                android:background="@drawable/bg_circularview_red"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="7sp"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+
+                        </FrameLayout>
 
                     </LinearLayout>
 

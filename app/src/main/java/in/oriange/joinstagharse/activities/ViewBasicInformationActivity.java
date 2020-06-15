@@ -42,6 +42,7 @@ import in.oriange.joinstagharse.utilities.Utilities;
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
+import static in.oriange.joinstagharse.utilities.Utilities.inviteMessage;
 
 public class ViewBasicInformationActivity extends AppCompatActivity {
 
@@ -221,28 +222,7 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
             }
         });
 
-        imv_share.setOnClickListener(v -> {
-            if (!edt_referral_code.getText().toString().trim().isEmpty()) {
-                String salutation = "";
-                if (genderId.equals("1")) {
-                    salutation = "Mr. ";
-                } else if (genderId.equals("2")) {
-                    salutation = "Ms. ";
-                }
-
-                String shareMessage = "Welcome to Joinsta Gharse\n\n" +
-                        "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
-                        "Enter referral code of " + salutation + edt_fname.getText().toString().trim() + " - " + edt_referral_code.getText().toString().trim() + "\n" +
-                        "Below is the link to download the app.\n" +
-                        "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
-                        "Joinsta - Team";
-
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
-            }
-        });
+        imv_share.setOnClickListener(v -> inviteMessage(context, edt_fname.getText().toString().trim(), edt_referral_code.getText().toString().trim()));
     }
 
     public void verifyEmail(View view) {

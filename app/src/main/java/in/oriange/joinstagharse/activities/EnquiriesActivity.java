@@ -43,7 +43,7 @@ public class EnquiriesActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefreshLayout;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
-    private String userId;
+    private String userId, businessId;
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -83,6 +83,8 @@ public class EnquiriesActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
+        businessId = getIntent().getStringExtra("businessId");
+
         if (Utilities.isNetworkAvailable(context)) {
             new GetEnquires().execute();
         } else {
@@ -123,8 +125,8 @@ public class EnquiriesActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getenquiry");
-            obj.addProperty("user_id", userId);
+            obj.addProperty("type", "getbusinessenquiry");
+            obj.addProperty("business_id", businessId);
             res = APICall.JSONAPICall(ApplicationConstants.ENQUIRYAPI, obj.toString());
             return res.trim();
         }

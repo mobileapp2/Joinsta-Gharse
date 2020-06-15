@@ -1,6 +1,5 @@
 package in.oriange.joinstagharse.fragments;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -41,6 +40,7 @@ import java.util.List;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.adapters.BookOrderBusinessOrdersAdapter;
 import in.oriange.joinstagharse.models.BookOrderBusinessOwnerModel;
+import in.oriange.joinstagharse.models.GetBusinessModel;
 import in.oriange.joinstagharse.models.MasterModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
@@ -53,19 +53,20 @@ public class ReceivedOrdersFragment extends Fragment {
 
     private Context context;
     private UserSessionManager session;
-    private ProgressDialog pd;
 
     private EditText edt_search;
     private ImageButton imb_filter;
     private TextView tv_filter_count;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView rv_orders;
+    private RecyclerView rv_orders, rv_business;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
 
     private List<MasterModel> orderStatusList;
-    private List<BookOrderBusinessOwnerModel.ResultBean> orderList, mFilteredOrderList;
-    private String userId;
+    private List<BookOrderBusinessOwnerModel.ResultBean> orderList;
+    private List<GetBusinessModel.ResultBean> businessListForFilter;
+    private BookOrderBusinessOrdersAdapter bookOrderBusinessOrdersAdapter;
+    private String userId, businessId = "0";
     private LocalBroadcastManager localBroadcastManager;
 
     @Override
@@ -81,30 +82,32 @@ public class ReceivedOrdersFragment extends Fragment {
 
     private void init(View rootView) {
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-
         edt_search = rootView.findViewById(R.id.edt_search);
         imb_filter = rootView.findViewById(R.id.imb_filter);
         tv_filter_count = rootView.findViewById(R.id.tv_filter_count);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
         rv_orders = rootView.findViewById(R.id.rv_orders);
+        rv_business = rootView.findViewById(R.id.rv_business);
         progressBar = rootView.findViewById(R.id.progressBar);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
 
         rv_orders.setLayoutManager(new LinearLayoutManager(context));
+        rv_business.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 
         orderStatusList = new ArrayList<>();
         orderList = new ArrayList<>();
-        mFilteredOrderList = new ArrayList<>();
+        businessListForFilter = new ArrayList<>();
 
-        // status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+        bookOrderBusinessOrdersAdapter = new BookOrderBusinessOrdersAdapter(context, orderList);
+        rv_orders.setAdapter(bookOrderBusinessOrdersAdapter);
+        // status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
 
-        orderStatusList.add(new MasterModel("Added in Cart", "1", false));
+//        orderStatusList.add(new MasterModel("In Cart", "1", false));
         orderStatusList.add(new MasterModel("Placed", "2", false));
         orderStatusList.add(new MasterModel("Accepted", "3", false));
-        orderStatusList.add(new MasterModel("In Progress", "4", false));
+        orderStatusList.add(new MasterModel("Ready to Deliver", "4", false));
         orderStatusList.add(new MasterModel("Delivered", "5", false));
-        orderStatusList.add(new MasterModel("Applicable for Billing", "6", false));
+        orderStatusList.add(new MasterModel("Billed", "6", false));
         orderStatusList.add(new MasterModel("Cancelled", "7", false));
     }
 
@@ -123,6 +126,7 @@ public class ReceivedOrdersFragment extends Fragment {
     private void setDefault() {
 
         if (Utilities.isNetworkAvailable(context)) {
+            new GetBusiness().execute();
             new GetReceivedOrders().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
@@ -136,6 +140,7 @@ public class ReceivedOrdersFragment extends Fragment {
     private void setEventHandler() {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (Utilities.isNetworkAvailable(context)) {
+                new GetBusiness().execute();
                 new GetReceivedOrders().execute();
             } else {
                 swipeRefreshLayout.setRefreshing(false);
@@ -153,33 +158,7 @@ public class ReceivedOrdersFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence query, int start, int before, int count) {
-
-                if (query.toString().isEmpty()) {
-                    rv_orders.setAdapter(new BookOrderBusinessOrdersAdapter(context, mFilteredOrderList));
-                    return;
-                }
-
-                if (mFilteredOrderList.size() == 0) {
-                    rv_orders.setVisibility(View.GONE);
-                    return;
-                }
-
-                if (!query.toString().equals("")) {
-                    ArrayList<BookOrderBusinessOwnerModel.ResultBean> ordersSearchedList = new ArrayList<>();
-                    for (BookOrderBusinessOwnerModel.ResultBean orderDetails : mFilteredOrderList) {
-
-                        String orderToBeSearched = orderDetails.getCustomer_business_code().toLowerCase() +
-                                orderDetails.getCustomer_business_name().toLowerCase() +
-                                orderDetails.getCustomer_name().toLowerCase();
-
-                        if (orderToBeSearched.contains(query.toString().toLowerCase())) {
-                            ordersSearchedList.add(orderDetails);
-                        }
-                    }
-                    rv_orders.setAdapter(new BookOrderBusinessOrdersAdapter(context, ordersSearchedList));
-                } else {
-                    rv_orders.setAdapter(new BookOrderBusinessOrdersAdapter(context, mFilteredOrderList));
-                }
+                setUpRecyclerView(orderList, businessId, query.toString(), orderStatusList);
             }
 
             @Override
@@ -203,40 +182,191 @@ public class ReceivedOrdersFragment extends Fragment {
         rv_groups.setAdapter(new OrderStatusAdapter());
 
         builder.setPositiveButton("Apply", (dialog, which) -> {
-            List<BookOrderBusinessOwnerModel.ResultBean> filteredOrderList = new ArrayList<>();
             int selectedTypeCount = 0;
 
             for (MasterModel orderStatus : orderStatusList)
                 if (orderStatus.isChecked()) {
                     selectedTypeCount = selectedTypeCount + 1;
-                    for (BookOrderBusinessOwnerModel.ResultBean orderDetails : orderList)
-                        if (orderStatus.getId().equals(orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()))
-                            filteredOrderList.add(orderDetails);
                 }
 
             if (selectedTypeCount == 0) {
-                mFilteredOrderList = orderList;
                 tv_filter_count.setVisibility(View.GONE);
-                rv_orders.setAdapter(new BookOrderBusinessOrdersAdapter(context, orderList));
             } else {
-                mFilteredOrderList = filteredOrderList;
                 tv_filter_count.setVisibility(View.VISIBLE);
                 tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                rv_orders.setAdapter(new BookOrderBusinessOrdersAdapter(context, mFilteredOrderList));
             }
+
+            setUpRecyclerView(orderList, businessId, edt_search.getText().toString().trim(), orderStatusList);
         });
 
         builder.setNegativeButton("Clear Filter", (dialog, which) -> {
-            edt_search.setText("");
             for (int i = 0; i < orderStatusList.size(); i++) {
                 orderStatusList.get(i).setChecked(false);
             }
 
             tv_filter_count.setVisibility(View.GONE);
-            rv_orders.setAdapter(new BookOrderBusinessOrdersAdapter(context, orderList));
+            setUpRecyclerView(orderList, businessId, edt_search.getText().toString().trim(), orderStatusList);
         });
 
         builder.create().show();
+    }
+
+    private class GetReceivedOrders extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            ll_nopreview.setVisibility(View.GONE);
+            rv_orders.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getAllReceivedOrders");
+            obj.addProperty("user_id", userId);
+            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressBar.setVisibility(View.GONE);
+            rv_orders.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setRefreshing(false);
+            String type = "";
+
+            try {
+                if (!result.equals("")) {
+                    BookOrderBusinessOwnerModel pojoDetails = new Gson().fromJson(result, BookOrderBusinessOwnerModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        orderList = pojoDetails.getResult();
+
+                        if (orderList.size() != 0) {
+                            setUpRecyclerView(orderList, businessId, edt_search.getText().toString().trim(), orderStatusList);
+                        } else {
+                            ll_nopreview.setVisibility(View.VISIBLE);
+                            rv_orders.setVisibility(View.GONE);
+                        }
+                    } else {
+                        ll_nopreview.setVisibility(View.VISIBLE);
+                        rv_orders.setVisibility(View.GONE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                ll_nopreview.setVisibility(View.VISIBLE);
+                rv_orders.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private class GetBusiness extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getbusiness");
+            obj.addProperty("user_id", userId);
+            obj.addProperty("current_user_id", userId);
+            res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    businessListForFilter = new ArrayList<>();
+                    GetBusinessModel pojoDetails = new Gson().fromJson(result, GetBusinessModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        businessListForFilter = pojoDetails.getResult();
+                        if (businessListForFilter.size() > 0) {
+                            businessListForFilter.add(0, new GetBusinessModel.ResultBean("0", "All", true));
+                            rv_business.setAdapter(new BusinessAdapter());
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class BusinessAdapter extends RecyclerView.Adapter<BusinessAdapter.MyViewHolder> {
+
+        @NonNull
+        @Override
+        public BusinessAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.hori_row_business_select, parent, false);
+            return new BusinessAdapter.MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull BusinessAdapter.MyViewHolder holder, int pos) {
+            final int position = holder.getAdapterPosition();
+            final GetBusinessModel.ResultBean searchDetails = businessListForFilter.get(position);
+
+            holder.tv_business_name.setText(searchDetails.getBusiness_name());
+
+            if (searchDetails.isChecked()) {
+                holder.tv_business_name.setBackground(getResources().getDrawable(R.drawable.button_focusfilled_red));
+                holder.tv_business_name.setTextColor(context.getResources().getColor(R.color.white));
+            } else {
+                holder.tv_business_name.setBackground(getResources().getDrawable(R.drawable.button_focusfilled_white));
+                holder.tv_business_name.setTextColor(context.getResources().getColor(R.color.darkGray));
+            }
+
+            holder.cv_mainlayout.setOnClickListener(v -> {
+                for (int i = 0; i < businessListForFilter.size(); i++) {
+                    businessListForFilter.get(i).setChecked(false);
+                }
+                businessId = businessListForFilter.get(position).getId();
+                businessListForFilter.get(position).setChecked(true);
+                notifyDataSetChanged();
+
+                setUpRecyclerView(orderList, businessId, edt_search.getText().toString().trim(), orderStatusList);
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return businessListForFilter.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private LinearLayout cv_mainlayout;
+            private TextView tv_business_name;
+
+            public MyViewHolder(View view) {
+                super(view);
+                cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+                tv_business_name = view.findViewById(R.id.tv_business_name);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
     }
 
     private class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.MyViewHolder> {
@@ -288,66 +418,71 @@ public class ReceivedOrdersFragment extends Fragment {
         }
     }
 
-    private class GetReceivedOrders extends AsyncTask<String, Void, String> {
+    private void setUpRecyclerView(List<BookOrderBusinessOwnerModel.ResultBean> orderList,
+                                   String businessId, String searchTerm, List<MasterModel> orderStatusList) {
+        if (orderList.size() == 0)
+            return;
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-            ll_nopreview.setVisibility(View.GONE);
-            rv_orders.setVisibility(View.GONE);
-            swipeRefreshLayout.setRefreshing(false);
+        List<BookOrderBusinessOwnerModel.ResultBean> filteredOrderList = new ArrayList<>(orderList);
+
+        List<BookOrderBusinessOwnerModel.ResultBean> orderOfSelectedBusinessList = new ArrayList<>();
+        if (!businessId.equals("0")) {
+            for (BookOrderBusinessOwnerModel.ResultBean orderDetails : orderList)
+                if (orderDetails.getOwner_business_id().equals(businessId))
+                    orderOfSelectedBusinessList.add(orderDetails);
+
+            filteredOrderList.clear();
+            filteredOrderList.addAll(orderOfSelectedBusinessList);
         }
 
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getAllReceivedOrders");
-            obj.addProperty("user_id", userId);
-            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, obj.toString());
-            return res.trim();
-        }
+        boolean isOrderFilterApplied = false;
 
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            progressBar.setVisibility(View.GONE);
-            rv_orders.setVisibility(View.VISIBLE);
-            swipeRefreshLayout.setRefreshing(false);
-            String type = "", message = "";
-
-            tv_filter_count.setVisibility(View.GONE);
-            for (int i = 0; i < orderStatusList.size(); i++) {
-                orderStatusList.get(i).setChecked(false);
+        for (MasterModel orderStatus : orderStatusList)
+            if (orderStatus.isChecked()) {
+                isOrderFilterApplied = true;
+                break;
             }
-            edt_search.setText("");
 
-            try {
-                if (!result.equals("")) {
-                    BookOrderBusinessOwnerModel pojoDetails = new Gson().fromJson(result, BookOrderBusinessOwnerModel.class);
-                    type = pojoDetails.getType();
-
-                    if (type.equalsIgnoreCase("success")) {
-                        orderList = pojoDetails.getResult();
-
-                        if (orderList.size() != 0) {
-                            mFilteredOrderList = orderList;
-                            rv_orders.setAdapter(new BookOrderBusinessOrdersAdapter(context, orderList));
-                        } else {
-                            ll_nopreview.setVisibility(View.VISIBLE);
-                            rv_orders.setVisibility(View.GONE);
-                        }
-                    } else {
-                        ll_nopreview.setVisibility(View.VISIBLE);
-                        rv_orders.setVisibility(View.GONE);
-                    }
+        if (isOrderFilterApplied) {
+            List<BookOrderBusinessOwnerModel.ResultBean> orderOfSelectedOrderStatusList = new ArrayList<>();
+            for (MasterModel orderStatus : orderStatusList) {
+                if (orderStatus.isChecked()) {
+                    for (BookOrderBusinessOwnerModel.ResultBean orderDetails : filteredOrderList)
+                        if (orderStatus.getId().equals(orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()))
+                            orderOfSelectedOrderStatusList.add(orderDetails);
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                ll_nopreview.setVisibility(View.VISIBLE);
-                rv_orders.setVisibility(View.GONE);
             }
+            filteredOrderList.clear();
+            filteredOrderList.addAll(orderOfSelectedOrderStatusList);
+        }
+
+        if (!searchTerm.equals("")) {
+            ArrayList<BookOrderBusinessOwnerModel.ResultBean> ordersSearchedList = new ArrayList<>();
+            for (BookOrderBusinessOwnerModel.ResultBean orderDetails : filteredOrderList) {
+
+                String orderToBeSearched = orderDetails.getOrder_id().toLowerCase() +
+                        orderDetails.getCustomer_business_code().toLowerCase() +
+                        orderDetails.getCustomer_business_name().toLowerCase() +
+                        orderDetails.getCustomer_name().toLowerCase();
+
+                if (orderToBeSearched.contains(searchTerm.toLowerCase())) {
+                    ordersSearchedList.add(orderDetails);
+                }
+            }
+
+            filteredOrderList.clear();
+            filteredOrderList.addAll(ordersSearchedList);
+        }
+
+        if (filteredOrderList.size() > 0) {
+            BookOrderBusinessOwnerModel.ResultBean orderDetails = filteredOrderList.get(bookOrderBusinessOrdersAdapter.itemClickedPosition);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderBusinessOwnerOrderActivity").putExtra("orderDetails", orderDetails));
+            bookOrderBusinessOrdersAdapter.refreshList(filteredOrderList);
+            ll_nopreview.setVisibility(View.GONE);
+            rv_orders.setVisibility(View.VISIBLE);
+        } else {
+            rv_orders.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(View.VISIBLE);
         }
     }
 

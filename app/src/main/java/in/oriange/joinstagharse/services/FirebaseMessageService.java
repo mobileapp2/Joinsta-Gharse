@@ -17,6 +17,7 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -29,7 +30,9 @@ import java.util.Date;
 import java.util.Random;
 
 import in.oriange.joinstagharse.R;
+import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.NotificationActivity;
+import in.oriange.joinstagharse.activities.SplashScreenActivity;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 
 public class FirebaseMessageService extends FirebaseMessagingService {
@@ -67,15 +70,24 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                 remoteMessage.getData().get("userId") + " " +
                 remoteMessage.getData().get("taskId"));
 
+
         remoteMessage.getData();
 
         Intent notificationIntent = null;
 
         if (remoteMessage.getData().get("notification_type").equals("1")) {     // General Notifications
             notificationIntent = new Intent(getApplicationContext(), NotificationActivity.class);
+            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        } else if (remoteMessage.getData().get("notification_type").equals("3")) {     // Enquiry Notifications
+            notificationIntent = new Intent(getApplicationContext(), EnquiriesActivity.class)
+                    .putExtra("businessId", remoteMessage.getData().get("business_id"));
+            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        } else if (remoteMessage.getData().get("notification_type").equals("4")) {     // Chat Notifications
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("ChatActivity"));
+        } else {
+            notificationIntent = new Intent(getApplicationContext(), SplashScreenActivity.class);
+            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         }
-
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         if (remoteMessage.getData().get("notification_type").equals("1")) {
             if (remoteMessage.getData().get("image") != null && remoteMessage.getData().get("image").isEmpty()) {
@@ -105,6 +117,16 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                         remoteMessage.getData().get("msg_id"),
                         remoteMessage.getData().get("group_name"));
             }
+        } else if (remoteMessage.getData().get("notification_type").equals("3")) {
+            showEnquiryNotification(
+                    getApplicationContext(),
+                    notificationIntent,
+                    remoteMessage.getData().get("enquiry_title"),
+                    remoteMessage.getData().get("business_name") + "\n" + remoteMessage.getData().get("from_user") + "\n" + remoteMessage.getData().get("subject") + " - " + remoteMessage.getData().get("msg"),
+                    remoteMessage.getData().get("communication_mode"),
+                    remoteMessage.getData().get("mobile"),
+                    remoteMessage.getData().get("email")
+            );
         }
     }
 
@@ -156,7 +178,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
         Notification notification;
         notification = builder
                 .setContentTitle(title)
-                .setContentText(msg)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
                 .setSmallIcon(R.drawable.icon_notification_logo)
                 .setSound(notificationSound)
                 .setLights(Color.YELLOW, 1000, 1000)
@@ -246,7 +268,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             if (result == null || this.imageUrl == null || this.imageUrl.isEmpty()) {
                 notification = builder
                         .setContentTitle(title)
-                        .setContentText(message)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                         .setSmallIcon(R.drawable.icon_notification_logo)
                         .setSound(notificationSound)
                         .setLights(Color.YELLOW, 1000, 1000)
@@ -260,7 +282,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             } else {
                 notification = builder
                         .setContentTitle(title)
-                        .setContentText(message)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                         .setSmallIcon(R.drawable.icon_notification_logo)
                         .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(result))
                         .setSound(notificationSound)
@@ -279,4 +301,56 @@ public class FirebaseMessageService extends FirebaseMessagingService {
             notificationManager.notify(m, notification);
         }
     }
+
+    private void showEnquiryNotification(Context mContext, Intent notificationIntent, String title, String message,
+                                         String communication_mode, String mobile, String email) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+        PendingIntent pendingIntent = PendingIntent.getActivity((mContext), 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        Uri notificationSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        String channelId = "channel-01";
+        String channelName = "Channel Name";
+        int importance = NotificationManager.IMPORTANCE_HIGH;
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel mChannel = new NotificationChannel(
+                    channelId, channelName, importance);
+            notificationManager.createNotificationChannel(mChannel);
+            builder = new NotificationCompat.Builder(mContext, channelId);
+        } else {
+            builder = new NotificationCompat.Builder(mContext);
+        }
+
+        Intent callIntent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mobile));
+        PendingIntent callPendingIntent = PendingIntent.getActivity(mContext, 0, callIntent, 0);
+
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", email, null));
+        PendingIntent emailPendingIntent = PendingIntent.getActivity(mContext, 0, emailIntent, 0);
+
+        builder.setStyle(new NotificationCompat.BigTextStyle().bigText(message));
+        builder.setContentTitle(title);
+        builder.setSmallIcon(R.drawable.icon_notification_logo);
+        builder.setSound(notificationSound);
+        builder.setLights(Color.YELLOW, 1000, 1000);
+        builder.setVibrate(new long[]{500, 500});
+        builder.setWhen(System.currentTimeMillis());
+        builder.setDefaults(Notification.DEFAULT_SOUND);
+        builder.setAutoCancel(true);
+        builder.setContentIntent(pendingIntent);
+        builder.setColor(getResources().getColor(R.color.colorPrimary));
+        if (communication_mode.equals("mobile"))
+            builder.addAction(R.drawable.icon_call, "CALL", callPendingIntent);
+        else if (communication_mode.equals("email"))
+            builder.addAction(R.drawable.icon_email, "EMAIL", emailPendingIntent);
+
+        Notification notification = builder.build();
+
+        Random random = new Random();
+        int m = random.nextInt(9999 - 1000) + 1000;
+
+        notificationManager.notify(m, notification);
+    }
+
 }

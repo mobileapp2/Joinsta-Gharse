@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:minHeight="?attr/actionBarSize"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:contentInsetStartWithNavigation="0dp"
@@ -19,14 +18,90 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:layout_marginLeft="10dp"
-            android:gravity="center">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="5dp"
+            android:paddingTop="10dp"
+            android:paddingRight="5dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_color_location" />
+
+                    <TextView
+                        android:id="@+id/tv_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="7dp"
+                        android:text="Latur"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <CheckBox
+                    android:id="@+id/cb_favourite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@id/fl_cart"
+                    android:background="@drawable/like_icon"
+                    android:button="@null"
+                    android:checked="false"
+                    android:stateListAnimator="@animator/scale" />
+
+                <FrameLayout
+                    android:id="@+id/fl_cart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp">
+
+                    <ImageButton
+                        android:id="@+id/ib_cart"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_cart"
+                        android:tint="@color/darkGray" />
+
+                    <TextView
+                        android:id="@+id/tv_cart_count"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_gravity="right|top"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/bg_circularview_red"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="7sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+            </RelativeLayout>
 
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginTop="5dp"
                 app:cardElevation="0dp"
                 app:cardUseCompatPadding="true">
 
@@ -51,8 +126,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
+                        android:focusable="false"
                         android:gravity="center_vertical"
                         android:hint="Search for business"
+                        android:longClickable="false"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:textColor="@color/black"
@@ -62,64 +139,6 @@
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
-            <FrameLayout
-                android:id="@+id/fl_cart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center"
-                android:layout_marginRight="10dp">
-
-                <ImageButton
-                    android:id="@+id/ib_cart"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/icon_cart"
-                    android:tint="@color/darkGray" />
-
-                <TextView
-                    android:id="@+id/tv_cart_count"
-                    android:layout_width="14dp"
-                    android:layout_height="14dp"
-                    android:layout_gravity="right|top"
-                    android:layout_marginLeft="15dp"
-                    android:background="@drawable/bg_circularview_red"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="7sp"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-            </FrameLayout>
-
-
-            <ImageButton
-                android:id="@+id/ib_filter"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_gravity="center"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:scaleType="fitXY"
-                android:src="@drawable/icon_filter"
-                android:tint="@color/darkGray"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tv_notifications_count"
-                android:layout_width="14dp"
-                android:layout_height="14dp"
-                android:layout_gravity="right|top"
-                android:layout_marginLeft="15dp"
-                android:background="@drawable/bg_circularview_red"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textSize="7sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
 
         </LinearLayout>
 

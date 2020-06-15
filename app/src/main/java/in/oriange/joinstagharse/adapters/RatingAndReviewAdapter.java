@@ -44,6 +44,7 @@ import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.Utilities.linkifyTextView;
 
 public class RatingAndReviewAdapter extends RecyclerView.Adapter<RatingAndReviewAdapter.MyViewHolder> {
 
@@ -146,7 +147,7 @@ public class RatingAndReviewAdapter extends RecyclerView.Adapter<RatingAndReview
             imv_more = itemView.findViewById(R.id.imv_more);
             rb_feedback_stars = itemView.findViewById(R.id.rb_feedback_stars);
 
-            Linkify.addLinks(tv_review, Linkify.ALL);
+            linkifyTextView(tv_review);
         }
     }
 

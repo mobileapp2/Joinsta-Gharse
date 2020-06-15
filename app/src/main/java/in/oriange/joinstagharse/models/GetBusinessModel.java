@@ -158,6 +158,15 @@ public class GetBusinessModel implements Serializable {
         private List<List<TagBean>> tag;
         private boolean isChecked;
 
+        public ResultBean() {
+        }
+
+        public ResultBean(String id, String business_name, boolean isChecked) {
+            this.id = id;
+            this.business_name = business_name;
+            this.isChecked = isChecked;
+        }
+
         public String getId() {
             return id;
         }

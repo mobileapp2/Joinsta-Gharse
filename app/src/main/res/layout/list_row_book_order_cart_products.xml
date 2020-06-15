@@ -71,8 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/icon_cross"
-                    android:tint="@color/darkGray" />
+                    android:src="@drawable/icon_delete_red" />
 
             </LinearLayout>
 

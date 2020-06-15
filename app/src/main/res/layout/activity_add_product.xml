@@ -209,7 +209,7 @@
 
                 <TextView
                     style="@style/TitleTextView"
-                    android:text="Broucher" />
+                    android:text="Brochure" />
 
                 <EditText
                     android:id="@+id/edt_brochure"

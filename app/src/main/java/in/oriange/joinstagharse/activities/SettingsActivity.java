@@ -34,6 +34,7 @@ import static in.oriange.joinstagharse.utilities.ApplicationConstants.JOINSTA_PL
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.getMd5;
 import static in.oriange.joinstagharse.utilities.Utilities.hideSoftKeyboard;
+import static in.oriange.joinstagharse.utilities.Utilities.inviteMessage;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -93,34 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void setEventHandler() {
         cv_password.setOnClickListener(v -> changePasswordAlert());
 
-        cv_invite.setOnClickListener(v -> {
-            String shareMessage;
-            String salutation = "";
-            if (genderId.equals("1")) {
-                salutation = "Mr. ";
-            } else if (genderId.equals("2")) {
-                salutation = "Ms. ";
-            }
-            if (!referral_code.trim().equals("")) {
-                shareMessage = "Welcome to Joinsta Gharse\n\n" +
-                        "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
-                        "Enter referral code of " + salutation + name + " - " + referral_code + "\n" +
-                        "Below is the link to download the app.\n" +
-                        "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
-                        "Joinsta - Team";
-            } else {
-                shareMessage = "Welcome to Joinsta Gharse\n\n" +
-                        "Connect with businesses, employees and professionals all over the world to collaborate and grow together.\n" +
-                        "Below is the link to download the app.\n" +
-                        "Google play store: " + JOINSTA_PLAYSTORELINK + "\n\n" +
-                        "Joinsta - Team";
-            }
-
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            sharingIntent.setType("text/plain");
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-            context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
-        });
+        cv_invite.setOnClickListener(v -> inviteMessage(context, name, referral_code));
 
         cv_feedback.setOnClickListener(v -> startActivity(new Intent(context, UserFeedbackActivity.class)));
 

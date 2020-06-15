@@ -76,7 +76,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="2dp"
-                        android:text="Your order is with - L0001 - Business Name"
+                        android:text="Vendor - L0001 - Business Name"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
@@ -97,7 +97,8 @@
                         android:paddingBottom="2dp"
                         android:text="This order is for – (Individual/business)"
                         android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_customer_name"
@@ -108,25 +109,6 @@
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="5dp"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -134,15 +116,15 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            android:id="@+id/tv_delivery_type"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingBottom="2dp"
-                            android:text="You Selected "
+                            android:text="Delivery Option"
                             android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <TextView
-                            android:id="@+id/tv_delivery_type"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@drawable/button_focusfilled_orange"
@@ -150,7 +132,8 @@
                             android:paddingRight="10dp"
                             android:text="Home Delivery"
                             android:textColor="@color/white"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
@@ -183,10 +166,38 @@
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
+                    <LinearLayout
+                        android:id="@+id/ll_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Amount "
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/button_focusfilled_yellow"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="Rs. 10,000"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_text"

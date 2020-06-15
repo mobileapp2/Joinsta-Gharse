@@ -1,6 +1,5 @@
 package in.oriange.joinstagharse.activities;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -31,7 +30,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.library.banner.BannerLayout;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -50,7 +48,6 @@ import java.util.regex.Matcher;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.adapters.RecyclerBannerAdapter;
 import in.oriange.joinstagharse.models.BookOrderGetMyOrdersModel;
 import in.oriange.joinstagharse.models.BookOrderProductsListModel;
 import in.oriange.joinstagharse.utilities.APICall;
@@ -98,10 +95,9 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     private String userId, businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
+    private BookOrderProductsListAdapter bookOrderProductsListAdapter;
 
     private LocalBroadcastManager localBroadcastManager, localBroadcastManager2;
-    private int quantity = 1;
-    private int sellingPrice, applicablePrice = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +123,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
         rvProducts.setLayoutManager(new LinearLayoutManager(context));
 //        rvProducts.setLayoutManager(new GridLayoutManager(context, 2));
+        bookOrderProductsListAdapter = new BookOrderProductsListAdapter();
 
         productsList = new ArrayList<>();
         ordersList = new ArrayList<>();
@@ -180,7 +177,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
                 if (query.toString().isEmpty()) {
                     searchedProductsList = productsList;
-                    rvProducts.setAdapter(new BookOrderProductsListAdapter());
+                    rvProducts.setAdapter(bookOrderProductsListAdapter);
                     return;
                 }
 
@@ -202,10 +199,10 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                         }
                     }
                     searchedProductsList = searchedList;
-                    rvProducts.setAdapter(new BookOrderProductsListAdapter());
+                    rvProducts.setAdapter(bookOrderProductsListAdapter);
                 } else {
                     searchedProductsList = productsList;
-                    rvProducts.setAdapter(new BookOrderProductsListAdapter());
+                    rvProducts.setAdapter(bookOrderProductsListAdapter);
                 }
             }
 
@@ -301,7 +298,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                         searchedProductsList.addAll(filterProductList);
 
                         if (productsList.size() != 0) {
-                            rvProducts.setAdapter(new BookOrderProductsListAdapter());
+                            rvProducts.setAdapter(bookOrderProductsListAdapter);
                         } else {
                             llNopreview.setVisibility(View.VISIBLE);
                             rvProducts.setVisibility(View.GONE);
@@ -381,6 +378,15 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
         if (thisBusinessOrder != null)
             showAlreadyAddedStatusForProducts(thisBusinessOrder);
+        else {
+            for (int i = 0; i < productsList.size(); i++) {
+                productsList.get(i).setAlreadyAddedInCart(false);
+                productsList.get(i).setQuantity(1);
+            }
+
+            searchedProductsList = productsList;
+            bookOrderProductsListAdapter.notifyDataSet();
+        }
     }
 
     private void showAlreadyAddedStatusForProducts(BookOrderGetMyOrdersModel.ResultBean thisBusinessOrder) {
@@ -393,7 +399,8 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                 }
             }
         }
-        rvProducts.setAdapter(new BookOrderProductsListAdapter());
+        searchedProductsList = productsList;
+        bookOrderProductsListAdapter.notifyDataSet();
     }
 
     private class BookOrderProductsListAdapter extends RecyclerView.Adapter<BookOrderProductsListAdapter.MyViewHolder> {
@@ -540,6 +547,10 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                 btn_add = view.findViewById(R.id.btn_add);
                 btn_addtocart = view.findViewById(R.id.btn_addtocart);
             }
+        }
+
+        private void notifyDataSet() {
+            notifyDataSetChanged();
         }
     }
 

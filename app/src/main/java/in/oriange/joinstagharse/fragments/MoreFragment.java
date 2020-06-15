@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.MyAddedOffersActivity;
 import in.oriange.joinstagharse.activities.MyAddressActivity;
 import in.oriange.joinstagharse.activities.MyBusinessActivity;
+import in.oriange.joinstagharse.activities.NotificationActivity;
 import in.oriange.joinstagharse.activities.SettingsActivity;
 import in.oriange.joinstagharse.activities.ViewBasicInformationActivity;
 
@@ -26,6 +28,7 @@ public class MoreFragment extends Fragment {
 
     private Context context;
     private CardView cv_basicinfo, cv_mybusiness, cv_myaddress, cv_settings, cv_enquires, cv_contactus, cv_myoffres;
+    private ImageButton ib_notifications;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,6 +58,7 @@ public class MoreFragment extends Fragment {
         cv_enquires = rootView.findViewById(R.id.cv_enquires);
         cv_contactus = rootView.findViewById(R.id.cv_contactus);
         cv_myoffres = rootView.findViewById(R.id.cv_myoffres);
+        ib_notifications = rootView.findViewById(R.id.ib_notifications);
     }
 
     private void setDefault() {
@@ -75,5 +79,8 @@ public class MoreFragment extends Fragment {
         cv_contactus.setOnClickListener(v -> startActivity(new Intent(context, ContactUsActivity.class)));
 
         cv_myoffres.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffersActivity.class)));
+
+        ib_notifications.setOnClickListener(v -> startActivity(new Intent(context, NotificationActivity.class)));
+
     }
 }

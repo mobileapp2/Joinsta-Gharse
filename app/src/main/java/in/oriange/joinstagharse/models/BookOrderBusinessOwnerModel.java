@@ -96,6 +96,10 @@ public class BookOrderBusinessOwnerModel implements Serializable {
         private String user_address_line_one;
         private String user_address_city;
         private String user_address_pincode;
+        private String customer_unread_msg_count;
+        private String vendor_unread_msg_count;
+        private String user_address_latitude;
+        private String user_address_longitude;
         private List<String> order_images;
         private List<ProductDetailsBean> product_details;
         private List<StatusDetailsBean> status_details;
@@ -318,6 +322,38 @@ public class BookOrderBusinessOwnerModel implements Serializable {
             this.user_address_pincode = user_address_pincode;
         }
 
+        public String getCustomer_unread_msg_count() {
+            return customer_unread_msg_count;
+        }
+
+        public void setCustomer_unread_msg_count(String customer_unread_msg_count) {
+            this.customer_unread_msg_count = customer_unread_msg_count;
+        }
+
+        public String getVendor_unread_msg_count() {
+            return vendor_unread_msg_count;
+        }
+
+        public void setVendor_unread_msg_count(String vendor_unread_msg_count) {
+            this.vendor_unread_msg_count = vendor_unread_msg_count;
+        }
+
+        public String getUser_address_latitude() {
+            return user_address_latitude;
+        }
+
+        public void setUser_address_latitude(String user_address_latitude) {
+            this.user_address_latitude = user_address_latitude;
+        }
+
+        public String getUser_address_longitude() {
+            return user_address_longitude;
+        }
+
+        public void setUser_address_longitude(String user_address_longitude) {
+            this.user_address_longitude = user_address_longitude;
+        }
+
         public List<String> getOrder_images() {
             return order_images;
         }
@@ -356,6 +392,78 @@ public class BookOrderBusinessOwnerModel implements Serializable {
 
         public void setCustomer_business_landline(List<List<CustomerBusinessLandlineBean>> customer_business_landline) {
             this.customer_business_landline = customer_business_landline;
+        }
+
+        public String getOrderTypePurchaseType() {
+            StringBuilder stringBuilder = new StringBuilder();
+            switch (getOrder_type()) {
+                case "1": {
+                    stringBuilder.append("Order by - Product");
+                }
+                break;
+                case "2": {
+                    stringBuilder.append("Order by - Image");
+                }
+                break;
+                case "3": {
+                    stringBuilder.append("Order by - Text");
+                }
+                break;
+
+            }
+
+            switch (getPurchase_order_type()) {
+                case "1": {
+                    stringBuilder.append(" | Order for Individual");
+                }
+                break;
+                case "2": {
+                    stringBuilder.append(" | Order for Business");
+                }
+                break;
+            }
+            return stringBuilder.toString();
+        }
+
+        public String getDeliveryAndStatus() {
+            StringBuilder stringBuilder = new StringBuilder();
+            switch (getDelivery_option()) {
+                case "store_pickup": {
+                    stringBuilder.append("Delivery - Store Pickup");
+                }
+                break;
+                case "home_delivery": {
+                    stringBuilder.append("Delivery - Home Delivery");
+                }
+                break;
+            }
+
+            switch (getStatus_details().get(getStatus_details().size() - 1).getStatus()) {
+                //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+                case "1":
+                    stringBuilder.append(" | Status - In Cart");
+                    break;
+                case "2":
+                    stringBuilder.append(" | Status - Placed");
+                    break;
+                case "3":
+                    stringBuilder.append(" | Status - Accepted");
+                    break;
+                case "4":
+                    stringBuilder.append(" | Status - Ready to Deliver");
+                    break;
+                case "5":
+                    stringBuilder.append(" | Status - Delivered");
+                    break;
+                case "6":
+                    stringBuilder.append(" | Status - Billed");
+                    break;
+                case "7":
+                        stringBuilder.append(" | Status - Cancelled");
+                    break;
+            }
+            return stringBuilder.toString();
+
         }
 
         public static class ProductDetailsBean implements Serializable {

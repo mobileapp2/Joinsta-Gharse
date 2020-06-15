@@ -75,13 +75,12 @@ public class ContactsFragment extends Fragment {
 
     private void setDefault() {
         if (ActivityCompat.checkSelfPermission(context, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            new GetPhoneBookContacts().execute();
-        } else {
             rv_contacts.setVisibility(View.GONE);
             ll_nopreview.setVisibility(View.VISIBLE);
             tv_no_review.setText("Please provide premission to read contacts");
+        } else {
+            new GetPhoneBookContacts().execute();
         }
-
     }
 
     private void getSessionDetails() {
@@ -90,9 +89,9 @@ public class ContactsFragment extends Fragment {
     private void setEventHandler() {
         imb_refresh.setOnClickListener(v -> {
             if (ActivityCompat.checkSelfPermission(context, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                new GetPhoneBookContacts().execute();
-            } else {
                 provideReadContactsPremission(context);
+            } else {
+                new GetPhoneBookContacts().execute();
             }
         });
 
@@ -159,6 +158,7 @@ public class ContactsFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
             if (list.size() != 0) {
                 rv_contacts.setVisibility(View.VISIBLE);
+                ll_nopreview.setVisibility(View.GONE);
                 rv_contacts.setAdapter(new ContactsAdapter(context, list));
             } else {
                 rv_contacts.setVisibility(View.GONE);

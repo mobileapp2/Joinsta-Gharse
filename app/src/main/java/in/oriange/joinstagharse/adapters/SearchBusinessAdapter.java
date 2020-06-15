@@ -144,6 +144,20 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
+        if (searchDetails.getIs_enquiry_available().equals("1"))
+            holder.imv_enquire.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+        else
+            holder.imv_enquire.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+
+        if (Integer.parseInt(searchDetails.getOffer_count()) > 0)
+            holder.imv_offer.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+        else
+            holder.imv_offer.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
+
+        if (searchDetails.getCan_book_order().equals("1"))
+            holder.imv_book_order.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
+        else
+            holder.imv_book_order.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
 
         holder.cv_mainlayout.setOnClickListener(v ->
                 context.startActivity(new Intent(context, ViewSearchBizDetailsActivity.class)
@@ -193,12 +207,17 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
         return resultArrayList.size();
     }
 
+    public void refreshList(List<SearchDetailsModel.ResultBean.BusinessesBean> businessList) {
+        resultArrayList = businessList;
+        notifyDataSetChanged();
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
         private TagContainerLayout container_tags;
         private TextView tv_business_name, tv_address, tv_offers, tv_store_pickup, tv_home_delivery;
-        private ImageView imv_store_pickup, imv_home_delivery;
+        private ImageView imv_store_pickup, imv_home_delivery, imv_enquire, imv_offer, imv_book_order;
         private LinearLayout ll_add, ll_enquire, ll_offer, ll_book_order, ll_store_pickup, ll_home_delivery;
 
         public MyViewHolder(View view) {
@@ -211,6 +230,9 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
             tv_home_delivery = view.findViewById(R.id.tv_home_delivery);
             imv_store_pickup = view.findViewById(R.id.imv_store_pickup);
             imv_home_delivery = view.findViewById(R.id.imv_home_delivery);
+            imv_enquire = view.findViewById(R.id.imv_enquire);
+            imv_offer = view.findViewById(R.id.imv_offer);
+            imv_book_order = view.findViewById(R.id.imv_book_order);
             tv_offers = view.findViewById(R.id.tv_offers);
             ll_add = view.findViewById(R.id.ll_add);
             ll_enquire = view.findViewById(R.id.ll_enquire);

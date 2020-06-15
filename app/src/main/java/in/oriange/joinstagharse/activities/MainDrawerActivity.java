@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,7 @@ public class MainDrawerActivity extends AppCompatActivity {
     private UserSessionManager session;
     private String userId;
     private LocalBroadcastManager localBroadcastManager;
+    private boolean doubleBackToExitPressedOnce;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -304,4 +306,24 @@ public class MainDrawerActivity extends AppCompatActivity {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            finishAffinity();
+            return;
+        }
+
+        doubleBackToExitPressedOnce = true;
+        Utilities.showMessage("Please click back again to exit", context, 2);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
+
 }

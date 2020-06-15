@@ -20,6 +20,7 @@ import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.BookOrderBusinessOwnerOrdersActivity;
 import in.oriange.joinstagharse.activities.BusinessProductsActivity;
+import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.OffersForParticularRecordActivity;
 import in.oriange.joinstagharse.activities.ViewMyBizDetailsActivity;
 import in.oriange.joinstagharse.models.GetBusinessModel;
@@ -104,6 +105,9 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
 
         holder.ll_book_order.setOnClickListener(v -> context.startActivity(new Intent(context, BusinessProductsActivity.class)
                 .putExtra("businessId", searchDetails.getId())));
+
+        holder.ll_enquire.setOnClickListener(v -> context.startActivity(new Intent(context, EnquiriesActivity.class)
+                .putExtra("businessId", searchDetails.getId())));
     }
 
     @Override
@@ -115,8 +119,8 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
 
         private CardView cv_mainlayout;
         private TagContainerLayout container_tags;
-        private TextView tv_business_name, tv_address, tv_delivery_type, tv_store_pickup, tv_home_delivery;
-        private LinearLayout ll_offer, ll_orders, ll_book_order, ll_store_pickup, ll_home_delivery;
+        private TextView tv_business_name, tv_address;
+        private LinearLayout ll_offer, ll_orders, ll_book_order, ll_enquire;
         private ImageView imv_store_pickup, imv_home_delivery;
 
         public MyViewHolder(View view) {
@@ -125,16 +129,12 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
             container_tags = view.findViewById(R.id.container_tags);
             tv_business_name = view.findViewById(R.id.tv_business_name);
             tv_address = view.findViewById(R.id.tv_address);
-            tv_delivery_type = view.findViewById(R.id.tv_delivery_type);
-            tv_store_pickup = view.findViewById(R.id.tv_store_pickup);
-            tv_home_delivery = view.findViewById(R.id.tv_home_delivery);
             imv_store_pickup = view.findViewById(R.id.imv_store_pickup);
             imv_home_delivery = view.findViewById(R.id.imv_home_delivery);
             ll_offer = view.findViewById(R.id.ll_offer);
             ll_orders = view.findViewById(R.id.ll_orders);
             ll_book_order = view.findViewById(R.id.ll_book_order);
-            ll_store_pickup = view.findViewById(R.id.ll_store_pickup);
-            ll_home_delivery = view.findViewById(R.id.ll_home_delivery);
+            ll_enquire = view.findViewById(R.id.ll_enquire);
         }
     }
 

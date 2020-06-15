@@ -112,11 +112,32 @@
 
     </style>
 
+    <style name="chat_timings">
+
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">#a6abad</item>
+
+    </style>
+
+    <style name="chat_text_message_style">
+
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingBottom">5dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@android:color/black</item>
+
+    </style>
 
     //////////////////////////////////////////////////////////////////////////////////////////
 
 
-    <style name="MyTheme" parent="Base.MyTheme"></style>
+    <style name="MyTheme" parent="Base.MyTheme" />
 
     <style name="Base.MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -130,6 +151,15 @@
 
     <color name="bg_light">#FAFAFA</color>
 
-    <style name="MyTheme.Detail" parent="MyTheme"></style>
+    <style name="MyTheme.Detail" parent="MyTheme" />
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    <style name="Base.CropperActivityTheme" parent="Theme.MaterialComponents.Light.Bridge">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+        <item name="colorAccent">@color/black</item>
+    </style>
 
 </resources>

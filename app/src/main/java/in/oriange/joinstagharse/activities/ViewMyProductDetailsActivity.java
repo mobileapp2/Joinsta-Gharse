@@ -41,12 +41,14 @@ import in.oriange.joinstagharse.models.BannerListModel;
 import in.oriange.joinstagharse.models.BookOrderProductsListModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
+import in.oriange.joinstagharse.utilities.DownloadFile;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
+import static in.oriange.joinstagharse.utilities.Utilities.linkifyTextView;
 
 public class ViewMyProductDetailsActivity extends AppCompatActivity {
 
@@ -76,6 +78,10 @@ public class ViewMyProductDetailsActivity extends AppCompatActivity {
     LinearLayout llDescription;
     @BindView(R.id.ll_prices)
     LinearLayout llPrices;
+    @BindView(R.id.tv_brochure)
+    TextView tvBrochure;
+    @BindView(R.id.ll_brochure)
+    LinearLayout llBrochure;
 
     private Context context;
     private UserSessionManager session;
@@ -95,7 +101,6 @@ public class ViewMyProductDetailsActivity extends AppCompatActivity {
         setEventHandler();
         setUpToolbar();
     }
-
 
     private void init() {
         context = ViewMyProductDetailsActivity.this;
@@ -145,6 +150,7 @@ public class ViewMyProductDetailsActivity extends AppCompatActivity {
         tvProductname.setText(productDetails.getName());
         tvProductprice.setText("₹" + getCommaSeparatedNumber(Integer.parseInt(productDetails.getSelling_price())) + " / " + productDetails.getUnit_of_measure());
         tvProductinfo.setText(productDetails.getDescription());
+        linkifyTextView(tvProductinfo);
 
         if (tvProductinfo.getText().toString().trim().equals(""))
             llDescription.setVisibility(View.GONE);
@@ -182,10 +188,16 @@ public class ViewMyProductDetailsActivity extends AppCompatActivity {
             tvNoPriceAvailable.setVisibility(View.GONE);
         }
 
+        if (productDetails.getProduct_brouchure().size() != 0) {
+            tvBrochure.setText(productDetails.getProduct_brouchure().get(0));
+        } else {
+            llBrochure.setVisibility(View.GONE);
+        }
+
     }
 
     private void setEventHandler() {
-
+        tvBrochure.setOnClickListener(v -> new DownloadFile(context, "Products", IMAGE_LINK + "product/" + productDetails.getProduct_brouchure().get(0)));
     }
 
     private void setUpToolbar() {

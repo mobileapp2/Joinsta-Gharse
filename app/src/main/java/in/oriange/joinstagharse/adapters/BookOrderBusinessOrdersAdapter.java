@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
+import in.oriange.joinstagharse.activities.ChatActivity;
 import in.oriange.joinstagharse.activities.ViewBookOrderBusinessOwnerOrderActivity;
 import in.oriange.joinstagharse.models.BookOrderBusinessOwnerModel;
 
@@ -31,6 +31,7 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
 
     private Context context;
     private List<BookOrderBusinessOwnerModel.ResultBean> orderList;
+    public int itemClickedPosition;
 
     public BookOrderBusinessOrdersAdapter(Context context, List<BookOrderBusinessOwnerModel.ResultBean> orderList) {
         this.context = context;
@@ -49,21 +50,18 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
     public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
         int position = holder.getAdapterPosition();
         BookOrderBusinessOwnerModel.ResultBean orderDetails = orderList.get(position);
-
-
         holder.tv_order_id.setText("Order ID # " + orderDetails.getOrder_id());
 
         switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
             case "1": {
-                holder.tv_supplier.setText(orderDetails.getCustomer_name());
+                holder.tv_supplier.setText("Orderer - " + orderDetails.getCustomer_name());
             }
             break;
             case "2": {
-                holder.tv_supplier.setText(orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name());
+                holder.tv_supplier.setText("Orderer - " + orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name());
             }
             break;
         }
-
 
         switch (orderDetails.getOrder_type()) {         //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
             case "1": {
@@ -76,7 +74,8 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
                     else
                         price = price + (Integer.parseInt(productDetailsBean.getAmount())
                                 * Integer.parseInt(productDetailsBean.getQuantity()));
-                holder.tv_price.setText(Html.fromHtml("Total Amount - <font color=\"#000000\"> <b>₹ " + getCommaSeparatedNumber(price) + "</b></font>"));
+//                holder.tv_price.setText(Html.fromHtml("Total Amount - <font color=\"#000000\"> <b>₹ " + getCommaSeparatedNumber(price) + "</b></font>"));
+                holder.tv_price.setText("₹ " + getCommaSeparatedNumber(price));
             }
             break;
             case "2": {
@@ -91,6 +90,8 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
             break;
         }
 
+        holder.tv_oder_by.setText(orderDetails.getOrderTypePurchaseType());
+        holder.tv_delivery_type_status.setText(orderDetails.getDeliveryAndStatus());
         holder.tv_mobile.setText(orderDetails.getCustomer_country_code() + orderDetails.getCustomer_mobile());
 
         if (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus().equals("1")) {
@@ -103,7 +104,7 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
         }
 
         switch (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()) {
-            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
             case "1":
                 holder.tv_order_status.setText("In Cart");
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_blue));
@@ -117,7 +118,7 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 break;
             case "4":
-                holder.tv_order_status.setText("In Progress");
+                holder.tv_order_status.setText("Ready to Deliver");
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_orange));
                 break;
             case "5":
@@ -125,13 +126,20 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 break;
             case "6":
-                holder.tv_order_status.setText("Billing");
+                holder.tv_order_status.setText("Billed");
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 break;
             case "7":
                 holder.tv_order_status.setText("Cancelled");
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
                 break;
+        }
+
+        if (orderDetails.getVendor_unread_msg_count().equals("0")) {
+            holder.tv_unread_count.setVisibility(View.GONE);
+        } else {
+            holder.tv_unread_count.setVisibility(View.VISIBLE);
+            holder.tv_unread_count.setText(orderDetails.getVendor_unread_msg_count());
         }
 
         holder.ib_call.setOnClickListener(v -> {
@@ -155,10 +163,16 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
             }
         });
 
+        holder.ib_chat.setOnClickListener(v -> context.startActivity(new Intent(context, ChatActivity.class)
+                .putExtra("orderId", orderDetails.getId())
+                .putExtra("name", orderDetails.getCustomer_name())
+                .putExtra("sendTo", orderDetails.getCustomer_id())));
 
-        holder.cv_mainlayout.setOnClickListener(v ->
-                context.startActivity(new Intent(context, ViewBookOrderBusinessOwnerOrderActivity.class)
-                        .putExtra("orderDetails", orderDetails)));
+        holder.cv_mainlayout.setOnClickListener(v -> {
+            itemClickedPosition = position;
+            context.startActivity(new Intent(context, ViewBookOrderBusinessOwnerOrderActivity.class)
+                    .putExtra("orderDetails", orderDetails));
+        });
     }
 
     @Override
@@ -169,8 +183,9 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_order_id, tv_supplier, tv_oder_by, tv_price, tv_mobile, tv_delivery_type, tv_order_status;
-        private ImageButton ib_call;
+        private TextView tv_order_id, tv_supplier, tv_oder_by, tv_delivery_type_status, tv_price, tv_mobile, tv_delivery_type,
+                tv_order_status, tv_unread_count;
+        private ImageButton ib_call, ib_chat;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -178,11 +193,14 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
             tv_order_id = itemView.findViewById(R.id.tv_order_id);
             tv_supplier = itemView.findViewById(R.id.tv_supplier);
             tv_oder_by = itemView.findViewById(R.id.tv_oder_by);
+            tv_delivery_type_status = itemView.findViewById(R.id.tv_delivery_type_status);
             tv_price = itemView.findViewById(R.id.tv_price);
             tv_mobile = itemView.findViewById(R.id.tv_mobile);
             tv_delivery_type = itemView.findViewById(R.id.tv_delivery_type);
             tv_order_status = itemView.findViewById(R.id.tv_order_status);
+            tv_unread_count = itemView.findViewById(R.id.tv_unread_count);
             ib_call = itemView.findViewById(R.id.ib_call);
+            ib_chat = itemView.findViewById(R.id.ib_chat);
         }
     }
 
@@ -191,5 +209,9 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
         return position;
     }
 
+    public void refreshList(List<BookOrderBusinessOwnerModel.ResultBean> orderList) {
+        this.orderList = orderList;
+        notifyDataSetChanged();
+    }
 
 }

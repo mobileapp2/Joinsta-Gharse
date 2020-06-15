@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,17 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
+import in.oriange.joinstagharse.activities.ChatActivity;
 import in.oriange.joinstagharse.activities.ViewBookOrderMyOrderActivity;
 import in.oriange.joinstagharse.models.BookOrderGetMyOrdersModel;
+import in.oriange.joinstagharse.utilities.ApplicationConstants;
+import in.oriange.joinstagharse.utilities.UserSessionManager;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
@@ -31,10 +36,21 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
 
     private Context context;
     private List<BookOrderGetMyOrdersModel.ResultBean> orderList;
+    private String userId;
+    public int itemClickedPosition;
 
     public BookOrderMyOrdersAdapter(Context context, List<BookOrderGetMyOrdersModel.ResultBean> orderList) {
         this.context = context;
         this.orderList = orderList;
+
+        try {
+            JSONArray user_info = new JSONArray(new UserSessionManager(context).getUserDetails().get(ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+
+            userId = json.getString("userid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @NonNull
@@ -51,7 +67,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
         BookOrderGetMyOrdersModel.ResultBean orderDetails = orderList.get(position);
 
         holder.tv_order_id.setText("Order ID # " + orderDetails.getOrder_id());
-        holder.tv_supplier.setText(orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
+        holder.tv_supplier.setText("Vendor - " + orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
 
         switch (orderDetails.getOrder_type()) {         //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
             case "1": {
@@ -64,7 +80,8 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
                     else
                         price = price + (Integer.parseInt(productDetailsBean.getAmount())
                                 * Integer.parseInt(productDetailsBean.getQuantity()));
-                holder.tv_price.setText(Html.fromHtml("Total Amount - <font color=\"#000000\"> <b>₹ " + getCommaSeparatedNumber(price) + "</b></font>"));
+//                holder.tv_price.setText(Html.fromHtml("Total Amount - <font color=\"#000000\"> <b>₹ " + getCommaSeparatedNumber(price) + "</b></font>"));
+                holder.tv_price.setText("₹ " + getCommaSeparatedNumber(price));
             }
             break;
             case "2": {
@@ -79,10 +96,13 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
             break;
         }
 
+        holder.tv_oder_by.setText(orderDetails.getOrderTypePurchaseType());
+        holder.tv_delivery_type_status.setText(orderDetails.getDeliveryAndStatus(userId, orderDetails.getUpdated_by()));
         holder.tv_mobile.setText(orderDetails.getOwner_country_code() + orderDetails.getOwner_mobile());
 
         if (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus().equals("1")) {
             holder.tv_delivery_type.setVisibility(View.GONE);
+            holder.ib_chat.setVisibility(View.GONE);
         } else {
             if (orderDetails.getDelivery_option().equals("store_pickup"))
                 holder.tv_delivery_type.setText("Store Pickup");
@@ -91,7 +111,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
         }
 
         switch (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()) {
-            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
             case "1":
                 holder.tv_order_status.setText("In Cart");
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_blue));
@@ -105,7 +125,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 break;
             case "4":
-                holder.tv_order_status.setText("In Progress");
+                holder.tv_order_status.setText("Ready to Deliver");
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_orange));
                 break;
             case "5":
@@ -113,13 +133,23 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 break;
             case "6":
-                holder.tv_order_status.setText("Billing");
+                holder.tv_order_status.setText("Billed");
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 break;
             case "7":
-                holder.tv_order_status.setText("Cancelled");
+                if (!orderDetails.getUpdated_by().equals(userId))
+                    holder.tv_order_status.setText("Rejected");
+                else
+                    holder.tv_order_status.setText("Cancelled");
                 holder.tv_order_status.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
                 break;
+        }
+
+        if (orderDetails.getCustomer_unread_msg_count().equals("0")) {
+            holder.tv_unread_count.setVisibility(View.GONE);
+        } else {
+            holder.tv_unread_count.setVisibility(View.VISIBLE);
+            holder.tv_unread_count.setText(orderDetails.getCustomer_unread_msg_count());
         }
 
         holder.ib_call.setOnClickListener(v -> {
@@ -143,6 +173,11 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
             }
         });
 
+        holder.ib_chat.setOnClickListener(v -> context.startActivity(new Intent(context, ChatActivity.class)
+                .putExtra("orderId", orderDetails.getId())
+                .putExtra("name", orderDetails.getOwner_business_name())
+                .putExtra("sendTo", orderDetails.getOwner_id())));
+
         holder.cv_mainlayout.setOnClickListener(v -> {
 //            if (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus().equals("1"))
 //                context.startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
@@ -155,6 +190,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
 //                        .putExtra("orderDetails", orderDetails)
 //                        .putExtra("orderImageArray", new JsonArray().toString()));
 //            else
+            itemClickedPosition = position;
             context.startActivity(new Intent(context, ViewBookOrderMyOrderActivity.class)
                     .putExtra("orderDetails", orderDetails));
         });
@@ -165,11 +201,12 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
         return orderList.size();
     }
 
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_order_id, tv_supplier, tv_oder_by, tv_price, tv_mobile, tv_delivery_type, tv_order_status;
-        private ImageButton ib_call;
+        private TextView tv_order_id, tv_supplier, tv_oder_by, tv_delivery_type_status, tv_price, tv_mobile, tv_delivery_type, tv_order_status, tv_unread_count;
+        private ImageButton ib_call, ib_chat;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -177,11 +214,14 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
             tv_order_id = itemView.findViewById(R.id.tv_order_id);
             tv_supplier = itemView.findViewById(R.id.tv_supplier);
             tv_oder_by = itemView.findViewById(R.id.tv_oder_by);
+            tv_delivery_type_status = itemView.findViewById(R.id.tv_delivery_type_status);
             tv_price = itemView.findViewById(R.id.tv_price);
             tv_mobile = itemView.findViewById(R.id.tv_mobile);
             tv_delivery_type = itemView.findViewById(R.id.tv_delivery_type);
             tv_order_status = itemView.findViewById(R.id.tv_order_status);
+            tv_unread_count = itemView.findViewById(R.id.tv_unread_count);
             ib_call = itemView.findViewById(R.id.ib_call);
+            ib_chat = itemView.findViewById(R.id.ib_chat);
         }
     }
 
@@ -189,4 +229,10 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
     public int getItemViewType(int position) {
         return position;
     }
+
+    public void refreshList(List<BookOrderGetMyOrdersModel.ResultBean> orderList) {
+        this.orderList = orderList;
+        notifyDataSetChanged();
+    }
+
 }

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,6 +68,7 @@ import in.oriange.joinstagharse.models.RatingAndReviewModel;
 import in.oriange.joinstagharse.models.SearchDetailsModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
+import in.oriange.joinstagharse.utilities.DownloadFileAndMessageShare;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
@@ -83,7 +85,8 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
     private CoordinatorLayout cl_root;
     private ImageView imv_image;
     private ProgressBar progressBar;
-    private FloatingActionButton btn_share, btn_cart;
+    private CheckBox cb_like;
+    private FloatingActionButton btn_share;
     private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_total_rating;
     private RatingBar rb_post_rating;
@@ -94,7 +97,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
     private SupportMapFragment mapFragment;
 
     private SearchDetailsModel.ResultBean.BusinessesBean searchDetails;
-    private String userId, typeFrom, name, mobile, countryCode;
+    private String userId, typeFrom, isFav, name, mobile, countryCode;
 
     private JSONArray emailJsonArray;
     private LocalBroadcastManager localBroadcastManager;
@@ -132,6 +135,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
         ll_whatsapp = findViewById(R.id.ll_whatsapp);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
+        cb_like = findViewById(R.id.cb_like);
         imv_image = findViewById(R.id.imv_image);
         progressBar = findViewById(R.id.progressBar);
         cv_tabs = findViewById(R.id.cv_tabs);
@@ -152,7 +156,6 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
         rb_post_rating = findViewById(R.id.rb_post_rating);
 
         btn_share = findViewById(R.id.btn_share);
-        btn_cart = findViewById(R.id.btn_cart);
         container_tags = findViewById(R.id.container_tags);
         rv_mobilenos = findViewById(R.id.rv_mobilenos);
         rv_mobilenos.setLayoutManager(new LinearLayoutManager(context));
@@ -265,6 +268,9 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
         if (!searchDetails.getRating_by_user().equals("0"))
             cv_post_review.setVisibility(View.GONE);
 
+        if (searchDetails.getIsFavourite().equals("1"))
+            cb_like.setChecked(true);
+
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("ViewSearchBizDetailsActivity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
@@ -291,306 +297,284 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
     }
 
     private void setEventHandler() {
-        ll_direction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
-                    Utilities.showMessage("Location not added", context, 2);
+        cb_like.setOnClickListener(v -> {
+            isFav = searchDetails.getIsFavourite();
+
+            if (cb_like.isChecked())
+                isFav = "1";
+            else
+                isFav = "0";
+
+            JsonObject mainObj = new JsonObject();
+
+            mainObj.addProperty("type", "createfav");
+            mainObj.addProperty("info_id", searchDetails.getId());
+            mainObj.addProperty("info_type", "1");
+            mainObj.addProperty("user_id", userId);
+            mainObj.addProperty("record_status_id", isFav);
+
+            if (Utilities.isNetworkAvailable(context)) {
+                new SetFavourite().execute(mainObj.toString());
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+
+        });
+
+        ll_direction.setOnClickListener(v -> {
+            if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
+                Utilities.showMessage("Location not added", context, 2);
+                return;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
+            startActivity(intent);
+        });
+
+        ll_mobile.setOnClickListener(v -> {
+            if (searchDetails.getMobiles().get(0) != null)
+                if (searchDetails.getMobiles().get(0).size() > 0) {
+                    if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        provideCallPremission(context);
+                    } else {
+                        showMobileListDialog(searchDetails.getMobiles().get(0));
+                    }
+                } else
+                    Utilities.showMessage("Mobile number not added", context, 2);
+
+            else
+                Utilities.showMessage("Mobile number not added", context, 2);
+
+        });
+
+        ll_whatsapp.setOnClickListener(v -> {
+            if (searchDetails.getMobiles().get(0) != null)
+                if (searchDetails.getMobiles().get(0).size() > 0) {
+                    if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        provideCallPremission(context);
+                    } else {
+                        showWhatsAppListDialog(searchDetails.getMobiles().get(0));
+                    }
+                } else
+                    Utilities.showMessage("Mobile number not added", context, 2);
+
+            else
+                Utilities.showMessage("Mobile number not added", context, 2);
+        });
+
+        ll_landline.setOnClickListener(v -> {
+            if (searchDetails.getLandline().get(0) != null)
+                if (searchDetails.getLandline().get(0).size() > 0) {
+                    if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        provideCallPremission(context);
+                    } else {
+                        showLandlineListDialog(searchDetails.getLandline().get(0));
+                    }
+                } else
+                    Utilities.showMessage("Landline number not added", context, 2);
+            else
+                Utilities.showMessage("Landline number not added", context, 2);
+
+        });
+
+        ll_email.setOnClickListener(v -> {
+            if (!searchDetails.getEmail().trim().isEmpty()) {
+                sendEmail();
+            } else {
+                Utilities.showMessage("Email not added", context, 2);
+            }
+        });
+
+        tv_email.setOnClickListener(v -> {
+            if (!searchDetails.getEmail().trim().isEmpty()) {
+                sendEmail();
+            } else {
+                Utilities.showMessage("Email not added", context, 2);
+            }
+        });
+
+        tv_website.setOnClickListener(v -> {
+            String url = searchDetails.getWebsite();
+
+            if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                url = "http://" + url;
+            }
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            startActivity(i);
+        });
+
+        mapFragment.getView().setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
+            startActivity(intent);
+        });
+
+        cv_enquire.setOnClickListener(v -> {
+            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            View promptView = layoutInflater.inflate(R.layout.dialog_layout_enquiry, null);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            alertDialogBuilder.setTitle("Enquiry");
+            alertDialogBuilder.setView(promptView);
+
+            final MaterialEditText edt_name = promptView.findViewById(R.id.edt_name);
+            final RadioGroup rg_communicationmode = promptView.findViewById(R.id.rg_communicationmode);
+            final RadioButton rb_mobile = promptView.findViewById(R.id.rb_mobile);
+            final RadioButton rb_email = promptView.findViewById(R.id.rb_email);
+            final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
+            final MaterialEditText edt_email = promptView.findViewById(R.id.edt_email);
+            final MaterialEditText edt_subject = promptView.findViewById(R.id.edt_subject);
+            final EditText edt_details = promptView.findViewById(R.id.edt_details);
+            final Button btn_save = promptView.findViewById(R.id.btn_save);
+
+            edt_name.setText(name);
+
+            final AlertDialog alertD = alertDialogBuilder.create();
+
+            rb_mobile.setOnClickListener(v1 -> {
+                edt_mobile.setVisibility(View.VISIBLE);
+                edt_email.setVisibility(View.GONE);
+
+                edt_email.setText("");
+
+                edt_mobile.setText("+" + countryCode + mobile);
+            });
+
+            rb_email.setOnClickListener(v12 -> {
+
+                edt_mobile.setVisibility(View.GONE);
+                edt_mobile.setText("");
+
+                if (emailJsonArray == null) {
+                    Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
+                    rg_communicationmode.clearCheck();
                     return;
                 }
 
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
-                startActivity(intent);
-            }
-        });
+                if (emailJsonArray.length() == 0) {
+                    Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
+                    rg_communicationmode.clearCheck();
+                    return;
 
-        ll_mobile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (searchDetails.getMobiles().get(0) != null)
-                    if (searchDetails.getMobiles().get(0).size() > 0) {
-                        if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                            provideCallPremission(context);
-                        } else {
-                            showMobileListDialog(searchDetails.getMobiles().get(0));
-                        }
-                    } else
-                        Utilities.showMessage("Mobile number not added", context, 2);
-
-                else
-                    Utilities.showMessage("Mobile number not added", context, 2);
-
-            }
-        });
-
-        ll_whatsapp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (searchDetails.getMobiles().get(0) != null)
-                    if (searchDetails.getMobiles().get(0).size() > 0) {
-                        if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                            provideCallPremission(context);
-                        } else {
-                            showWhatsAppListDialog(searchDetails.getMobiles().get(0));
-                        }
-                    } else
-                        Utilities.showMessage("Mobile number not added", context, 2);
-
-                else
-                    Utilities.showMessage("Mobile number not added", context, 2);
-            }
-        });
-
-        ll_landline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (searchDetails.getLandline().get(0) != null)
-                    if (searchDetails.getLandline().get(0).size() > 0) {
-                        if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                            provideCallPremission(context);
-                        } else {
-                            showLandlineListDialog(searchDetails.getLandline().get(0));
-                        }
-                    } else
-                        Utilities.showMessage("Landline number not added", context, 2);
-                else
-                    Utilities.showMessage("Landline number not added", context, 2);
-
-            }
-        });
-
-        ll_email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (!searchDetails.getEmail().trim().isEmpty()) {
-                    sendEmail();
-                } else {
-                    Utilities.showMessage("Email not added", context, 2);
                 }
-            }
-        });
 
-        tv_email.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!searchDetails.getEmail().trim().isEmpty()) {
-                    sendEmail();
-                } else {
-                    Utilities.showMessage("Email not added", context, 2);
-                }
-            }
-        });
-
-        tv_website.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = searchDetails.getWebsite();
-
-                if (!url.startsWith("https://") || !url.startsWith("http://")) {
-                    url = "http://" + url;
-                }
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);
-            }
-        });
-
-        mapFragment.getView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
-                startActivity(intent);
-            }
-        });
-
-        cv_enquire.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater layoutInflater = LayoutInflater.from(context);
-                View promptView = layoutInflater.inflate(R.layout.dialog_layout_enquiry, null);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                alertDialogBuilder.setTitle("Enquiry");
-                alertDialogBuilder.setView(promptView);
-
-                final MaterialEditText edt_name = promptView.findViewById(R.id.edt_name);
-                final RadioGroup rg_communicationmode = promptView.findViewById(R.id.rg_communicationmode);
-                final RadioButton rb_mobile = promptView.findViewById(R.id.rb_mobile);
-                final RadioButton rb_email = promptView.findViewById(R.id.rb_email);
-                final MaterialEditText edt_mobile = promptView.findViewById(R.id.edt_mobile);
-                final MaterialEditText edt_email = promptView.findViewById(R.id.edt_email);
-                final MaterialEditText edt_subject = promptView.findViewById(R.id.edt_subject);
-                final EditText edt_details = promptView.findViewById(R.id.edt_details);
-                final Button btn_save = promptView.findViewById(R.id.btn_save);
-
-                edt_name.setText(name);
-
-                final AlertDialog alertD = alertDialogBuilder.create();
-
-                rb_mobile.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        edt_mobile.setVisibility(View.VISIBLE);
-                        edt_email.setVisibility(View.GONE);
-
-                        edt_email.setText("");
-
-                        edt_mobile.setText("+" + countryCode + mobile);
-                    }
-                });
-
-                rb_email.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        edt_mobile.setVisibility(View.GONE);
-                        edt_mobile.setText("");
-
-                        if (emailJsonArray == null) {
-                            Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
-                            rg_communicationmode.clearCheck();
-                            return;
-                        }
-
-                        if (emailJsonArray.length() == 0) {
-                            Utilities.showAlertDialogNormal(context, "Please add a primary email and verify it from Basic Information");
-                            rg_communicationmode.clearCheck();
-                            return;
-
-                        }
-
-                        try {
-                            for (int i = 0; i < emailJsonArray.length(); i++) {
-                                JSONObject emailObj = emailJsonArray.getJSONObject(0);
-                                if (emailObj.getString("is_primary").equals("1")) {
-                                    if (emailObj.getString("email_verification").equals("1")) {
-                                        if (emailObj.getString("email").equals("")) {
-                                            Utilities.showAlertDialogNormal(context, "Please update your primary email from Basic Information");
-                                            rg_communicationmode.clearCheck();
-                                            return;
-                                        }
-
-                                        edt_email.setText(emailObj.getString("email"));
-                                    } else {
-                                        Utilities.showAlertDialogNormal(context, "Please verify your primary email from Basic Information");
-                                        rg_communicationmode.clearCheck();
-                                        return;
-                                    }
-                                } else {
-                                    Utilities.showAlertDialogNormal(context, "Please set a primary email from Basic Information");
+                try {
+                    for (int i = 0; i < emailJsonArray.length(); i++) {
+                        JSONObject emailObj = emailJsonArray.getJSONObject(0);
+                        if (emailObj.getString("is_primary").equals("1")) {
+                            if (emailObj.getString("email_verification").equals("1")) {
+                                if (emailObj.getString("email").equals("")) {
+                                    Utilities.showAlertDialogNormal(context, "Please update your primary email from Basic Information");
                                     rg_communicationmode.clearCheck();
                                     return;
                                 }
+
+                                edt_email.setText(emailObj.getString("email"));
+                            } else {
+                                Utilities.showAlertDialogNormal(context, "Please verify your primary email from Basic Information");
+                                rg_communicationmode.clearCheck();
+                                return;
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Utilities.showAlertDialogNormal(context, "We have made some changes related to user email, please kindly logout and login again to refresh your session");
+                        } else {
+                            Utilities.showAlertDialogNormal(context, "Please set a primary email from Basic Information");
                             rg_communicationmode.clearCheck();
                             return;
-
-                        }
-
-                        edt_email.setVisibility(View.VISIBLE);
-
-                    }
-                });
-
-                btn_save.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (edt_name.getText().toString().trim().isEmpty()) {
-                            edt_name.setError("Please enter name");
-                            edt_name.requestFocus();
-                            return;
-                        }
-
-                        if (rb_mobile.isChecked()) {
-                            if (edt_mobile.getText().toString().trim().isEmpty()) {
-                                edt_mobile.setError("Please enter valid mobile");
-                                edt_mobile.requestFocus();
-                                return;
-                            }
-                            edt_email.setText("");
-                        } else if (rb_email.isChecked()) {
-                            if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
-                                edt_email.setError("Please enter valid email");
-                                edt_email.requestFocus();
-                                return;
-                            }
-                            edt_mobile.setText("");
-                        } else {
-                            Utilities.showMessage("Please select communication mode", context, 2);
-                            return;
-                        }
-
-                        if (edt_subject.getText().toString().trim().isEmpty()) {
-                            edt_subject.setError("Please enter subject");
-                            edt_subject.requestFocus();
-                            return;
-                        }
-
-                        if (edt_details.getText().toString().trim().isEmpty()) {
-                            edt_details.setError("Please enter details");
-                            edt_details.requestFocus();
-                            return;
-                        }
-
-                        if (Utilities.isNetworkAvailable(context)) {
-                            alertD.dismiss();
-                            new SendEnquiryDetails().execute(
-                                    userId,
-                                    edt_name.getText().toString().trim(),
-                                    edt_mobile.getText().toString().trim(),
-                                    edt_email.getText().toString().trim(),
-                                    edt_subject.getText().toString().trim(),
-                                    edt_details.getText().toString().trim(),
-                                    "1",
-                                    searchDetails.getId()
-
-                            );
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }
                     }
-                });
-
-                alertD.show();
-            }
-        });
-
-        btn_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shareDetails();
-            }
-        });
-
-        tv_total_rating.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Utilities.isNetworkAvailable(context))
-                    new GetRatingsAndReviews().execute("1", searchDetails.getId());
-                else
-                    Utilities.showMessage("Please check your internet connection", context, 2);
-            }
-        });
-
-        rb_post_rating.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                if (rating == 0)
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Utilities.showAlertDialogNormal(context, "We have made some changes related to user email, please kindly logout and login again to refresh your session");
+                    rg_communicationmode.clearCheck();
                     return;
 
-                startActivity(new Intent(context, AddRatingAndReviewActivity.class)
-                        .putExtra("recordId", searchDetails.getId())
-                        .putExtra("profileName", tv_name.getText().toString().trim())
-                        .putExtra("categoryTypeId", "1")
-                        .putExtra("rating", (int) rb_post_rating.getRating()));
-            }
+                }
+
+                edt_email.setVisibility(View.VISIBLE);
+
+            });
+
+            btn_save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (edt_name.getText().toString().trim().isEmpty()) {
+                        edt_name.setError("Please enter name");
+                        edt_name.requestFocus();
+                        return;
+                    }
+
+                    if (rb_mobile.isChecked()) {
+                        if (edt_mobile.getText().toString().trim().isEmpty()) {
+                            edt_mobile.setError("Please enter valid mobile");
+                            edt_mobile.requestFocus();
+                            return;
+                        }
+                        edt_email.setText("");
+                    } else if (rb_email.isChecked()) {
+                        if (!Utilities.isEmailValid(edt_email.getText().toString().trim())) {
+                            edt_email.setError("Please enter valid email");
+                            edt_email.requestFocus();
+                            return;
+                        }
+                        edt_mobile.setText("");
+                    } else {
+                        Utilities.showMessage("Please select communication mode", context, 2);
+                        return;
+                    }
+
+                    if (edt_subject.getText().toString().trim().isEmpty()) {
+                        edt_subject.setError("Please enter subject");
+                        edt_subject.requestFocus();
+                        return;
+                    }
+
+                    if (edt_details.getText().toString().trim().isEmpty()) {
+                        edt_details.setError("Please enter details");
+                        edt_details.requestFocus();
+                        return;
+                    }
+
+                    if (Utilities.isNetworkAvailable(context)) {
+                        alertD.dismiss();
+                        new SendEnquiryDetails().execute(
+                                userId,
+                                edt_name.getText().toString().trim(),
+                                edt_mobile.getText().toString().trim(),
+                                edt_email.getText().toString().trim(),
+                                edt_subject.getText().toString().trim(),
+                                edt_details.getText().toString().trim(),
+                                "1",
+                                searchDetails.getId()
+
+                        );
+                    } else {
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    }
+                }
+            });
+
+            alertD.show();
+        });
+
+        btn_share.setOnClickListener(v -> shareDetails());
+
+        tv_total_rating.setOnClickListener(v -> {
+            if (Utilities.isNetworkAvailable(context))
+                new GetRatingsAndReviews().execute("1", searchDetails.getId());
+            else
+                Utilities.showMessage("Please check your internet connection", context, 2);
+        });
+
+        rb_post_rating.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+            if (rating == 0)
+                return;
+
+            startActivity(new Intent(context, AddRatingAndReviewActivity.class)
+                    .putExtra("recordId", searchDetails.getId())
+                    .putExtra("profileName", tv_name.getText().toString().trim())
+                    .putExtra("categoryTypeId", "1")
+                    .putExtra("rating", (int) rb_post_rating.getRating()));
         });
     }
 
@@ -863,6 +847,52 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
         }
     }
 
+    private class SetFavourite extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.FAVOURITEAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+
+                        if (typeFrom.equals("1")) {               //  1 = from search
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SearchFragment"));
+                        } else if (typeFrom.equals("3")) {        // 3 = from home
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BizProfEmpDetailsListActivity"));
+                        }
+
+                    } else {
+                        cb_like.setChecked(false);
+                    }
+                }
+            } catch (Exception e) {
+                cb_like.setChecked(false);
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void sendEmail() {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
                 "mailto", searchDetails.getEmail(), null));
@@ -870,10 +900,25 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
     }
 
     private void shareDetails() {
+        if (!searchDetails.getImage_url().equals("")) {
+            new DownloadFileAndMessageShare(context, "Business", IMAGE_LINK + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url(), businessDetails());
+        } else {
+            String message = businessDetails();
+
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
+            context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+        }
+
+
+    }
+
+    private String businessDetails() {
         StringBuilder sb = new StringBuilder();
 
         if (!searchDetails.getBusiness_name().equals("")) {
-            sb.append("Business Name - " + searchDetails.getBusiness_name() + "\n");
+            sb.append("Business Name - " + searchDetails.getBusiness_code() + " - -" + searchDetails.getBusiness_name() + "\n");
         }
 
         if (!searchDetails.getTypeSubTypeName().equals("")) {
@@ -920,12 +965,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             sb.append("Website - " + searchDetails.getWebsite() + "\n");
         }
 
-        String details = sb.toString() + "\n" + "Joinsta Gharse\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
-
-        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(Intent.EXTRA_TEXT, details);
-        context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+        return sb.toString() + "\n" + "Joinsta Gharse\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
 
     }
 

@@ -133,7 +133,7 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     private GetBusinessModel.ResultBean businessDetails;
     private ArrayList<MasterModel> imageList;
     private AddressModel.ResultBean addressDetails;
-    private LocalBroadcastManager localBroadcastManager, localBroadcastManager1;
+    private LocalBroadcastManager localBroadcastManager, localBroadcastManager1, localBroadcastManager2;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
 
     private Uri photoURI;
@@ -220,6 +220,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         businessOwnerName = getIntent().getStringExtra("businessOwnerName");
         isHomeDeliveryAvailable = getIntent().getStringExtra("isHomeDeliveryAvailable");
         isPickUpAvailable = getIntent().getStringExtra("isPickUpAvailable");
+//        isHomeDeliveryAvailable = "1";
+//        isPickUpAvailable = "1";
         orderType = getIntent().getStringExtra("orderType");  //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
         orderText = getIntent().getStringExtra("orderText");
         orderImageArray = getIntent().getStringExtra("orderImageArray");
@@ -253,6 +255,10 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         localBroadcastManager1 = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter1 = new IntentFilter("BookOrderSelectDeliveryTypeActivityAddressRefresh");
         localBroadcastManager1.registerReceiver(broadcastReceiver1, intentFilter1);
+
+        localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter2 = new IntentFilter("BookOrderSelectDeliveryTypeActivityBusinessRefresh");
+        localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
     }
 
     private void setEventHandler() {
@@ -397,6 +403,7 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
         localBroadcastManager1.unregisterReceiver(broadcastReceiver1);
+        localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
     }
 
     private class GetBusiness extends AsyncTask<String, Void, String> {
@@ -438,16 +445,18 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                         businessList = pojoDetails.getResult();
                         if (businessList.size() > 0) {
                             llBusiness.setVisibility(View.VISIBLE);
+
+                            rbBusiness.setChecked(true);
+                            llBiz.setBackgroundColor(context.getResources().getColor(R.color.lightred));
+                            llInd.setBackgroundColor(context.getResources().getColor(R.color.white));
+                            llIndividualDetails.setVisibility(View.GONE);
+
                             rvBusiness.setAdapter(new BusinessAdapter());
                         } else {
-                            Utilities.showMessage("There are no businesses added by you", context, 2);
-                            rbBusiness.setChecked(false);
-                            rbIndividual.setChecked(true);
+                            showAddBusinessDialog();
                         }
                     } else {
-                        Utilities.showMessage("There are no businesses added by you", context, 2);
-                        rbBusiness.setChecked(false);
-                        rbIndividual.setChecked(true);
+                        showAddBusinessDialog();
                     }
                 }
             } catch (Exception e) {
@@ -474,12 +483,17 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
             if (searchDetails.isChecked()) {
                 holder.cv_mainlayout.setBackgroundColor(context.getResources().getColor(R.color.lightred));
                 holder.tv_heading.setTextColor(context.getResources().getColor(R.color.black));
+                holder.tv_subheading.setTextColor(context.getResources().getColor(R.color.black));
+                holder.imv_checked.setVisibility(View.VISIBLE);
             } else {
                 holder.cv_mainlayout.setBackgroundColor(context.getResources().getColor(R.color.white));
                 holder.tv_heading.setTextColor(context.getResources().getColor(R.color.darkGray));
+                holder.tv_subheading.setTextColor(context.getResources().getColor(R.color.darkGray));
+                holder.imv_checked.setVisibility(View.GONE);
             }
 
             holder.tv_heading.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
+            holder.tv_subheading.setText(searchDetails.getTypeSubTypeName());
 
             holder.cv_mainlayout.setOnClickListener((View.OnClickListener) v -> {
                 for (int i = 0; i < businessList.size(); i++) {
@@ -493,7 +507,6 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
 
             if (position == businessList.size() - 1)
                 holder.view_divider.setVisibility(View.GONE);
-
         }
 
         @Override
@@ -504,18 +517,25 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private LinearLayout cv_mainlayout;
+            private ImageView imv_checked;
             private TextView tv_heading, tv_subheading;
             private View view_divider;
 
             public MyViewHolder(View view) {
                 super(view);
                 cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+                imv_checked = view.findViewById(R.id.imv_checked);
                 tv_heading = view.findViewById(R.id.tv_heading);
                 tv_subheading = view.findViewById(R.id.tv_subheading);
                 view_divider = view.findViewById(R.id.view_divider);
-                tv_subheading.setVisibility(View.GONE);
             }
         }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
     }
 
     private class GetAddress extends AsyncTask<String, Void, String> {
@@ -555,7 +575,13 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                     if (type.equalsIgnoreCase("success")) {
                         addressList = pojoDetails.getResult();
                         if (addressList.size() > 0) {
+
+                            rbHomeDelivery.setChecked(true);
                             llHomeDelivery.setVisibility(View.VISIBLE);
+                            llHome.setBackgroundColor(context.getResources().getColor(R.color.lightred));
+                            llStore.setBackgroundColor(context.getResources().getColor(R.color.white));
+
+                            llStorePickup.setVisibility(View.GONE);
                             rvAddress.setAdapter(new AddressAdapter());
                         } else {
                             showAddAddressDialog();
@@ -568,19 +594,6 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void showAddAddressDialog() {
-        llHome.setBackgroundColor(context.getResources().getColor(R.color.white));
-        rbHomeDelivery.setChecked(false);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builder.setTitle("Add Address");
-        builder.setMessage("Please add address before you proceed for home delivery option");
-        builder.setPositiveButton("Add", (dialog, which) -> {
-            startActivity(new Intent(context, AddAddressActivity.class));
-        });
-        builder.create().show();
     }
 
     private class AddressAdapter extends RecyclerView.Adapter<AddressAdapter.MyViewHolder> {
@@ -602,10 +615,12 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 holder.cv_mainlayout.setBackgroundColor(context.getResources().getColor(R.color.lightred));
                 holder.tv_heading.setTextColor(context.getResources().getColor(R.color.black));
                 holder.tv_subheading.setTextColor(context.getResources().getColor(R.color.black));
+                holder.imv_checked.setVisibility(View.VISIBLE);
             } else {
                 holder.cv_mainlayout.setBackgroundColor(context.getResources().getColor(R.color.white));
                 holder.tv_heading.setTextColor(context.getResources().getColor(R.color.darkGray));
                 holder.tv_subheading.setTextColor(context.getResources().getColor(R.color.darkGray));
+                holder.imv_checked.setVisibility(View.GONE);
             }
 
             holder.tv_heading.setText(searchDetails.getFull_name());
@@ -634,17 +649,51 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private LinearLayout cv_mainlayout;
+            private ImageView imv_checked;
             private TextView tv_heading, tv_subheading;
             private View view_divider;
 
             public MyViewHolder(View view) {
                 super(view);
                 cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+                imv_checked = view.findViewById(R.id.imv_checked);
                 tv_heading = view.findViewById(R.id.tv_heading);
                 tv_subheading = view.findViewById(R.id.tv_subheading);
                 view_divider = view.findViewById(R.id.view_divider);
             }
         }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+    }
+
+    public void showAddAddressDialog() {
+        llHome.setBackgroundColor(context.getResources().getColor(R.color.white));
+        rbHomeDelivery.setChecked(false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setTitle("Add Address");
+        builder.setMessage("Please add address before you proceed for home delivery option");
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            startActivity(new Intent(context, AddAddressActivity.class));
+        });
+        builder.create().show();
+    }
+
+    public void showAddBusinessDialog() {
+        llBiz.setBackgroundColor(context.getResources().getColor(R.color.white));
+        rbBusiness.setChecked(false);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setTitle("Add Business");
+        builder.setMessage("Please add business before you proceed further");
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            startActivity(new Intent(context, AddBusinessActivity.class));
+        });
+        builder.create().show();
     }
 
     private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
@@ -753,11 +802,11 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();
-                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(this);
+                CropImage.activity(imageUri).setActivityMenuIconColor(getResources().getColor(R.color.black)).setGuidelines(CropImageView.Guidelines.ON).start(this);
             }
 
             if (requestCode == CAMERA_REQUEST) {
-                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(this);
+                CropImage.activity(photoURI).setActivityMenuIconColor(getResources().getColor(R.color.black)).setGuidelines(CropImageView.Guidelines.ON).start(this);
             }
 
         }
@@ -868,6 +917,16 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             if (Utilities.isNetworkAvailable(context))
                 new GetAddress().execute();
+            else
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (Utilities.isNetworkAvailable(context))
+                new GetBusiness().execute();
             else
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }

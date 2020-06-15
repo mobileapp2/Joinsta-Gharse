@@ -10,10 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.models.BookOrderBusinessOwnerModel;
+import in.oriange.joinstagharse.utilities.ApplicationConstants;
+import in.oriange.joinstagharse.utilities.UserSessionManager;
 
 import static in.oriange.joinstagharse.utilities.Utilities.changeDateFormat;
 
@@ -21,11 +26,24 @@ public class BookOrderStatusAdapter extends RecyclerView.Adapter<BookOrderStatus
 
     private Context context;
     private List<BookOrderBusinessOwnerModel.ResultBean.StatusDetailsBean> statusList;
+    private String userId, updateByUserId, type;   //  1 = From Received Orders   2 = Sent Orders
 
-    public BookOrderStatusAdapter(Context context, List<BookOrderBusinessOwnerModel.ResultBean.StatusDetailsBean> statusList) {
+    public BookOrderStatusAdapter(Context context, List<BookOrderBusinessOwnerModel.ResultBean.StatusDetailsBean> statusList, String type, String updateByUserId) {
         this.context = context;
         this.statusList = statusList;
+        this.type = type;
+        this.updateByUserId = updateByUserId;
+
+        try {
+            JSONArray user_info = new JSONArray(new UserSessionManager(context).getUserDetails().get(ApplicationConstants.KEY_LOGIN_INFO));
+            JSONObject json = user_info.getJSONObject(0);
+
+            userId = json.getString("userid");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
 
     @NonNull
     @Override
@@ -44,9 +62,9 @@ public class BookOrderStatusAdapter extends RecyclerView.Adapter<BookOrderStatus
         holder.tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "hh:mm a", statusDetails.getDate()));
 
         switch (statusDetails.getStatus()) {
-            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
             case "1":
-                holder.tv_status.setText("Added in Cart");
+                holder.tv_status.setText("In Cart");
                 holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "2":
@@ -58,7 +76,7 @@ public class BookOrderStatusAdapter extends RecyclerView.Adapter<BookOrderStatus
                 holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "4":
-                holder.tv_status.setText("In Progress");
+                holder.tv_status.setText("Ready to Deliver");
                 holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "5":
@@ -66,11 +84,17 @@ public class BookOrderStatusAdapter extends RecyclerView.Adapter<BookOrderStatus
                 holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "6":
-                holder.tv_status.setText("Billing");
+                holder.tv_status.setText("Billed");
                 holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_green_check));
                 break;
             case "7":
-                holder.tv_status.setText("Cancelled");
+                if (type.equals("2"))
+                    if (!updateByUserId.equals(userId))
+                        holder.tv_status.setText("Rejected");
+                    else
+                        holder.tv_status.setText("Cancelled");
+                else
+                    holder.tv_status.setText("Cancelled");
                 holder.imv_status.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_red_cross));
                 break;
         }

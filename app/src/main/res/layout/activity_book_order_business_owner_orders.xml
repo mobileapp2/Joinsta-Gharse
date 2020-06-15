@@ -96,7 +96,7 @@
                 android:layout_gravity="center"
                 android:background="@color/white"
                 android:src="@drawable/icon_filter"
-                android:tint="@color/mediumGray" />
+                android:tint="@color/darkGray" />
 
             <TextView
                 android:id="@+id/tv_filter_count"

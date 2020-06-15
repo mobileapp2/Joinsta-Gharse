@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -53,10 +54,10 @@ import in.oriange.joinstagharse.utilities.Utilities;
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
+import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
 import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
 
 public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
-
 
     @BindView(R.id.toolbar_title)
     AppCompatEditText toolbarTitle;
@@ -106,11 +107,23 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
     CardView cvStatus;
     @BindView(R.id.btn_reject)
     Button btnReject;
+    @BindView(R.id.tv_price)
+    TextView tvPrice;
+    @BindView(R.id.tv_delivery_type_status)
+    TextView tvDeliveryTypeStatus;
+    @BindView(R.id.tv_view_on_map)
+    TextView tvViewOnMap;
+    @BindView(R.id.ib_chat)
+    ImageButton ibChat;
+    @BindView(R.id.tv_unread_count)
+    TextView tvUnreadCount;
+    @BindView(R.id.fl_cart)
+    FrameLayout flCart;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private String userId;
+    private String userId, latitude, longitude;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
     private LocalBroadcastManager localBroadcastManager;
     private boolean isOrderImagesExpanded = true;
@@ -137,6 +150,13 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         rvImages.setLayoutManager(new GridLayoutManager(context, 3));
         rvProducts.setLayoutManager(new LinearLayoutManager(context));
         rvStatus.setLayoutManager(new LinearLayoutManager(context));
+
+
+        orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("ViewBookOrderMyOrderActivity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void getSessionDetails() {
@@ -152,8 +172,6 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
-
         tvOrderId.setText("Order ID # " + orderDetails.getOrder_id());
 
         switch (orderDetails.getOrder_type()) {
@@ -165,6 +183,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
 
                 List<BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean> productsList = new ArrayList<>();
 
+                int price = 0;
                 for (BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean productDetails : orderDetails.getProduct_details()) {
                     productsList.add(new BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean(
                             productDetails.getId(),
@@ -179,9 +198,16 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                             productDetails.getUnit_of_measure(),
                             productDetails.getProduct_images()
                     ));
+                    if (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus().equals("1"))
+                        price = price + (Integer.parseInt(productDetails.getCurrent_amount())
+                                * Integer.parseInt(productDetails.getQuantity()));
+                    else
+                        price = price + (Integer.parseInt(productDetails.getAmount())
+                                * Integer.parseInt(productDetails.getQuantity()));
                 }
 
                 rvProducts.setAdapter(new BookOrderProductsAdapter(context, productsList));
+                tvPrice.setText("₹ " + getCommaSeparatedNumber(price));
             }
             break;
             case "2": {
@@ -189,6 +215,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.VISIBLE);
                 cvProducts.setVisibility(View.GONE);
+                tvPrice.setVisibility(View.GONE);
             }
             break;
             case "3": {
@@ -196,7 +223,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 cvText.setVisibility(View.VISIBLE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.GONE);
-
+                tvPrice.setVisibility(View.GONE);
                 tvText.setText(orderDetails.getOrder_text());
             }
             break;
@@ -205,18 +232,20 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
             case "1": {
                 tvPurchaseOrderType.setText("This order is for individual");
-                tvCustomerName.setText("Name - " + orderDetails.getCustomer_name());
+                tvCustomerName.setText("Orderer - " + orderDetails.getCustomer_name());
             }
             break;
             case "2": {
                 tvPurchaseOrderType.setText("This order is for business");
-                tvCustomerName.setText(orderDetails.getBusiness_code() + " - " + orderDetails.getBusiness_name());
+                tvCustomerName.setText("Orderer - " + orderDetails.getBusiness_code() + " - " + orderDetails.getBusiness_name());
             }
             break;
         }
         tvCustomerMobile.setText(orderDetails.getCustomer_country_code() + orderDetails.getCustomer_mobile());
 
-        tvSupplierName.setText("Supplier – " + orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
+        tvOrderBy.setText(orderDetails.getOrderTypePurchaseType());
+        tvDeliveryTypeStatus.setText(orderDetails.getDeliveryAndStatus(userId, orderDetails.getUpdated_by()));
+        tvSupplierName.setText("Vendor - " + orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
         tvSupplierMobile.setText(orderDetails.getOwner_country_code() + orderDetails.getOwner_mobile());
 
         if (orderDetails.getDelivery_option().equals("store_pickup")) {
@@ -226,6 +255,10 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 tvAddress.setText("Pick up address - " + orderDetails.getOwner_address());
             else
                 tvAddress.setVisibility(View.GONE);
+
+            latitude = orderDetails.getOwner_business_latitude();
+            longitude = orderDetails.getOwner_business_longitude();
+
         } else if (orderDetails.getDelivery_option().equals("home_delivery")) {
             tvDeliveryType.setText("Home Delivery");
 
@@ -233,6 +266,20 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 tvAddress.setText("Delivery address - " + orderDetails.getUser_address_line_one());
             else
                 tvAddress.setVisibility(View.GONE);
+
+            latitude = orderDetails.getUser_address_latitude();
+            longitude = orderDetails.getUser_address_longitude();
+        }
+
+        if (latitude.equals("") || longitude.equals("") || latitude.equals("0") || longitude.equals("0"))
+            tvViewOnMap.setVisibility(View.GONE);
+
+
+        if (orderDetails.getCustomer_unread_msg_count().equals("0")) {
+            tvUnreadCount.setVisibility(View.GONE);
+        } else {
+            tvUnreadCount.setVisibility(View.VISIBLE);
+            tvUnreadCount.setText(orderDetails.getCustomer_unread_msg_count());
         }
 
         ArrayList<String> orderImagesList = new ArrayList<>();
@@ -260,12 +307,12 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
             ));
         }
 
-        rvStatus.setAdapter(new BookOrderStatusAdapter(context, statusList));
+        rvStatus.setAdapter(new BookOrderStatusAdapter(context, statusList, "2", orderDetails.getUpdated_by()));
 
         switch (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()) {
-            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
             case "1":
-//                tvOrderStatus.setText("Order Added in Cart");
+//                tvOrderStatus.setText("Order In Cart");
 //                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_blue));
                 btnAction.setText("Place Order");
                 break;
@@ -281,7 +328,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 btnReject.setVisibility(View.GONE);
                 break;
             case "4":
-//                tvOrderStatus.setText("Order in Progress");
+//                tvOrderStatus.setText("Ready to Deliver");
 //                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_orange));
                 btnAction.setVisibility(View.GONE);
                 btnReject.setVisibility(View.GONE);
@@ -293,7 +340,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 btnReject.setVisibility(View.GONE);
                 break;
             case "6":
-//                tvOrderStatus.setText("Order Billing");
+//                tvOrderStatus.setText("Billed");
 //                tvOrderStatus.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
                 btnAction.setVisibility(View.GONE);
                 btnReject.setVisibility(View.GONE);
@@ -311,13 +358,20 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
             tvPurchaseOrderType.setVisibility(View.GONE);
             tvAddress.setVisibility(View.GONE);
         }
-
-        localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("ViewBookOrderMyOrderActivity");
-        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventHandler() {
+        ibChat.setOnClickListener(v -> context.startActivity(new Intent(context, ChatActivity.class)
+                .putExtra("orderId", orderDetails.getId())
+                .putExtra("name", orderDetails.getOwner_business_name())
+                .putExtra("sendTo", orderDetails.getOwner_id())));
+
+        tvViewOnMap.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + latitude + "," + longitude));
+            startActivity(intent);
+        });
+
         btnAction.setOnClickListener(v -> {
             startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
                     .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
@@ -443,13 +497,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
-                        btn_ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertD.dismiss();
-                                finish();
-                            }
-                        });
+                        btn_ok.setOnClickListener(v -> alertD.dismiss());
 
                         alertD.show();
                     } else {
@@ -473,7 +521,8 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            finish();
+            orderDetails = (BookOrderGetMyOrdersModel.ResultBean) intent.getSerializableExtra("orderDetails");
+            setDefault();
         }
     };
 

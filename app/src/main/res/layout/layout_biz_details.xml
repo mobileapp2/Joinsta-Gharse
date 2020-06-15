@@ -43,8 +43,7 @@
                         android:longClickable="false"
                         android:text="Business Details"
                         android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/tv_total_rating"
@@ -58,7 +57,7 @@
                         android:paddingBottom="2dp"
                         android:text="4.6\u2605"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -70,7 +69,7 @@
                     android:focusable="false"
                     android:longClickable="false"
                     android:text="Nature of Business"
-                    android:textColor="@color/black"
+                    android:textColor="@color/darkGray"
                     android:textSize="16sp" />
 
                 <TextView
@@ -81,7 +80,7 @@
                     android:focusable="false"
                     android:longClickable="false"
                     android:text="Designation"
-                    android:textColor="@color/black"
+                    android:textColor="@color/darkGray"
                     android:textSize="16sp" />
 
             </LinearLayout>

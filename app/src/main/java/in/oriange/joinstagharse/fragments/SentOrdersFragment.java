@@ -1,6 +1,5 @@
 package in.oriange.joinstagharse.fragments;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +39,7 @@ import java.util.List;
 
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.adapters.BookOrderMyOrdersAdapter;
+import in.oriange.joinstagharse.models.BookOrderBusinessOwnerModel;
 import in.oriange.joinstagharse.models.BookOrderGetMyOrdersModel;
 import in.oriange.joinstagharse.models.MasterModel;
 import in.oriange.joinstagharse.utilities.APICall;
@@ -53,7 +53,6 @@ public class SentOrdersFragment extends Fragment {
 
     private Context context;
     private UserSessionManager session;
-    private ProgressDialog pd;
 
     private EditText edt_search;
     private ImageButton imb_filter;
@@ -64,7 +63,8 @@ public class SentOrdersFragment extends Fragment {
     private LinearLayout ll_nopreview;
 
     private List<MasterModel> orderStatusList;
-    private List<BookOrderGetMyOrdersModel.ResultBean> orderList, mFilteredOrderList;
+    private List<BookOrderGetMyOrdersModel.ResultBean> orderList;
+    private BookOrderMyOrdersAdapter bookOrderMyOrdersAdapter;
     private String userId;
     private LocalBroadcastManager localBroadcastManager;
 
@@ -81,7 +81,6 @@ public class SentOrdersFragment extends Fragment {
 
     private void init(View rootView) {
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
 
         edt_search = rootView.findViewById(R.id.edt_search);
         imb_filter = rootView.findViewById(R.id.imb_filter);
@@ -95,17 +94,18 @@ public class SentOrdersFragment extends Fragment {
 
         orderStatusList = new ArrayList<>();
         orderList = new ArrayList<>();
-        mFilteredOrderList = new ArrayList<>();
 
-        // status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+        bookOrderMyOrdersAdapter = new BookOrderMyOrdersAdapter(context, orderList);
+        rv_orders.setAdapter(bookOrderMyOrdersAdapter);
+        // status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
 
-        orderStatusList.add(new MasterModel("Added in Cart", "1", false));
+        orderStatusList.add(new MasterModel("In Cart", "1", false));
         orderStatusList.add(new MasterModel("Placed", "2", false));
         orderStatusList.add(new MasterModel("Accepted", "3", false));
-        orderStatusList.add(new MasterModel("In Progress", "4", false));
+        orderStatusList.add(new MasterModel("Ready to Deliver", "4", false));
         orderStatusList.add(new MasterModel("Delivered", "5", false));
-        orderStatusList.add(new MasterModel("Applicable for Billing", "6", false));
-        orderStatusList.add(new MasterModel("Cancelled", "7", false));
+        orderStatusList.add(new MasterModel("Billed", "6", false));
+        orderStatusList.add(new MasterModel("Cancelled/Rejected", "7", false));
     }
 
     private void getSessionDetails() {
@@ -153,32 +153,7 @@ public class SentOrdersFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence query, int start, int before, int count) {
-
-                if (query.toString().isEmpty()) {
-                    rv_orders.setAdapter(new BookOrderMyOrdersAdapter(context, mFilteredOrderList));
-                    return;
-                }
-
-                if (mFilteredOrderList.size() == 0) {
-                    rv_orders.setVisibility(View.GONE);
-                    return;
-                }
-
-                if (!query.toString().equals("")) {
-                    ArrayList<BookOrderGetMyOrdersModel.ResultBean> ordersSearchedList = new ArrayList<>();
-                    for (BookOrderGetMyOrdersModel.ResultBean orderDetails : mFilteredOrderList) {
-
-                        String orderToBeSearched = orderDetails.getOwner_business_code().toLowerCase() +
-                                orderDetails.getOwner_business_name().toLowerCase();
-
-                        if (orderToBeSearched.contains(query.toString().toLowerCase())) {
-                            ordersSearchedList.add(orderDetails);
-                        }
-                    }
-                    rv_orders.setAdapter(new BookOrderMyOrdersAdapter(context, ordersSearchedList));
-                } else {
-                    rv_orders.setAdapter(new BookOrderMyOrdersAdapter(context, mFilteredOrderList));
-                }
+                setUpRecyclerView(orderList, query.toString(), orderStatusList);
             }
 
             @Override
@@ -202,38 +177,30 @@ public class SentOrdersFragment extends Fragment {
         rv_groups.setAdapter(new OrderStatusAdapter());
 
         builder.setPositiveButton("Apply", (dialog, which) -> {
-            List<BookOrderGetMyOrdersModel.ResultBean> filteredOrderList = new ArrayList<>();
             int selectedTypeCount = 0;
 
             for (MasterModel orderStatus : orderStatusList)
                 if (orderStatus.isChecked()) {
                     selectedTypeCount = selectedTypeCount + 1;
-                    for (BookOrderGetMyOrdersModel.ResultBean orderDetails : orderList)
-                        if (orderStatus.getId().equals(orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()))
-                            filteredOrderList.add(orderDetails);
                 }
 
             if (selectedTypeCount == 0) {
-                mFilteredOrderList = orderList;
                 tv_filter_count.setVisibility(View.GONE);
-                rv_orders.setAdapter(new BookOrderMyOrdersAdapter(context, orderList));
             } else {
-                mFilteredOrderList = filteredOrderList;
                 tv_filter_count.setVisibility(View.VISIBLE);
                 tv_filter_count.setText(String.valueOf(selectedTypeCount));
-                rv_orders.setAdapter(new BookOrderMyOrdersAdapter(context, mFilteredOrderList));
             }
+
+            setUpRecyclerView(orderList, edt_search.getText().toString().trim(), orderStatusList);
         });
 
         builder.setNegativeButton("Clear Filter", (dialog, which) -> {
-            edt_search.setText("");
             for (int i = 0; i < orderStatusList.size(); i++) {
                 orderStatusList.get(i).setChecked(false);
             }
 
             tv_filter_count.setVisibility(View.GONE);
-            rv_orders.setAdapter(new BookOrderMyOrdersAdapter(context, orderList));
-
+            setUpRecyclerView(orderList, edt_search.getText().toString().trim(), orderStatusList);
         });
 
         builder.create().show();
@@ -315,14 +282,7 @@ public class SentOrdersFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
             rv_orders.setVisibility(View.VISIBLE);
             swipeRefreshLayout.setRefreshing(false);
-            String type = "", message = "";
-
-            tv_filter_count.setVisibility(View.GONE);
-            for (int i = 0; i < orderStatusList.size(); i++) {
-                orderStatusList.get(i).setChecked(false);
-            }
-            edt_search.setText("");
-
+            String type = "";
             try {
                 if (!result.equals("")) {
                     BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
@@ -332,8 +292,7 @@ public class SentOrdersFragment extends Fragment {
                         orderList = pojoDetails.getResult();
 
                         if (orderList.size() != 0) {
-                            mFilteredOrderList = orderList;
-                            rv_orders.setAdapter(new BookOrderMyOrdersAdapter(context, orderList));
+                            setUpRecyclerView(orderList, edt_search.getText().toString().trim(), orderStatusList);
                         } else {
                             ll_nopreview.setVisibility(View.VISIBLE);
                             rv_orders.setVisibility(View.GONE);
@@ -348,6 +307,64 @@ public class SentOrdersFragment extends Fragment {
                 ll_nopreview.setVisibility(View.VISIBLE);
                 rv_orders.setVisibility(View.GONE);
             }
+        }
+    }
+
+    private void setUpRecyclerView(List<BookOrderGetMyOrdersModel.ResultBean> orderList, String searchTerm,
+                                   List<MasterModel> orderStatusList) {
+        if (orderList.size() == 0)
+            return;
+
+        List<BookOrderGetMyOrdersModel.ResultBean> filteredOrderList = new ArrayList<>(orderList);
+
+        boolean isOrderFilterApplied = false;
+
+        for (MasterModel orderStatus : orderStatusList)
+            if (orderStatus.isChecked()) {
+                isOrderFilterApplied = true;
+                break;
+            }
+
+        if (isOrderFilterApplied) {
+            List<BookOrderGetMyOrdersModel.ResultBean> orderOfSelectedOrderStatusList = new ArrayList<>();
+            for (MasterModel orderStatus : orderStatusList) {
+                if (orderStatus.isChecked()) {
+                    for (BookOrderGetMyOrdersModel.ResultBean orderDetails : filteredOrderList)
+                        if (orderStatus.getId().equals(orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()))
+                            orderOfSelectedOrderStatusList.add(orderDetails);
+                }
+            }
+            filteredOrderList.clear();
+            filteredOrderList.addAll(orderOfSelectedOrderStatusList);
+        }
+
+        if (!searchTerm.equals("")) {
+            ArrayList<BookOrderGetMyOrdersModel.ResultBean> ordersSearchedList = new ArrayList<>();
+            for (BookOrderGetMyOrdersModel.ResultBean orderDetails : filteredOrderList) {
+
+                String orderToBeSearched = orderDetails.getOrder_id().toLowerCase() +
+                        orderDetails.getOwner_business_code().toLowerCase() +
+                        orderDetails.getOwner_business_name().toLowerCase() +
+                        orderDetails.getCustomer_name().toLowerCase();
+
+                if (orderToBeSearched.contains(searchTerm.toLowerCase())) {
+                    ordersSearchedList.add(orderDetails);
+                }
+            }
+
+            filteredOrderList.clear();
+            filteredOrderList.addAll(ordersSearchedList);
+        }
+
+        if (filteredOrderList.size() > 0) {
+            BookOrderGetMyOrdersModel.ResultBean orderDetails = filteredOrderList.get(bookOrderMyOrdersAdapter.itemClickedPosition);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderMyOrderActivity").putExtra("orderDetails", orderDetails));
+            bookOrderMyOrdersAdapter.refreshList(filteredOrderList);
+            ll_nopreview.setVisibility(View.GONE);
+            rv_orders.setVisibility(View.VISIBLE);
+        } else {
+            rv_orders.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(View.VISIBLE);
         }
     }
 

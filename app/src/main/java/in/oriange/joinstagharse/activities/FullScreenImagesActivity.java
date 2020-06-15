@@ -35,8 +35,6 @@ import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.utilities.Utilities;
 
-import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
-
 public class FullScreenImagesActivity extends AppCompatActivity {
 
     private Context context;
@@ -66,9 +64,9 @@ public class FullScreenImagesActivity extends AppCompatActivity {
 
     private void init() {
         context = FullScreenImagesActivity.this;
-        changeStatusBar(context, getWindow());
         imageUrlList = new ArrayList<>();
 
+        getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Images");
         if (!downloadedDocsfolder.exists())
             downloadedDocsfolder.mkdirs();

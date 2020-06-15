@@ -288,11 +288,11 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == GALLERY_REQUEST) {
                 Uri imageUri = data.getData();
-                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(BookOrderOrderTypeImageActivity.this);
+                CropImage.activity(imageUri).setActivityMenuIconColor(getResources().getColor(R.color.black)).setGuidelines(CropImageView.Guidelines.ON).start(BookOrderOrderTypeImageActivity.this);
             }
 
             if (requestCode == CAMERA_REQUEST) {
-                CropImage.activity(photoURI).setGuidelines(CropImageView.Guidelines.ON).start(BookOrderOrderTypeImageActivity.this);
+                CropImage.activity(photoURI).setActivityMenuIconColor(getResources().getColor(R.color.black)).setGuidelines(CropImageView.Guidelines.ON).start(BookOrderOrderTypeImageActivity.this);
             }
 
         }

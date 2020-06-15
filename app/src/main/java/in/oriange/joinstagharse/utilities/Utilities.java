@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.URLSpan;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -33,6 +34,7 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import org.jsoup.Jsoup;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -48,6 +50,8 @@ import java.util.regex.Pattern;
 
 import es.dmoral.toasty.Toasty;
 import in.oriange.joinstagharse.R;
+
+import static in.oriange.joinstagharse.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
 
 public class Utilities {
 
@@ -482,7 +486,9 @@ public class Utilities {
         imv_arrow.startAnimation(rotate);
     }
 
-    public static void stripUnderlines(TextView textView) {
+    public static void linkifyTextView(TextView textView) {
+
+        Linkify.addLinks(textView, Linkify.ALL);
         Spannable s = new SpannableString(textView.getText());
         URLSpan[] spans = s.getSpans(0, s.length(), URLSpan.class);
         for (URLSpan span : spans) {
@@ -518,6 +524,68 @@ public class Utilities {
 
     public static String getCommaSeparatedNumber(int num) {
         return NumberFormat.getNumberInstance(Locale.US).format(num);
+    }
+
+    public static void openFile(Context context, String extension, File file) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse("file://" + file);
+        if (extension.toString().contains(".doc") || extension.toString().contains(".docx")) {
+            // Word document
+            intent.setDataAndType(uri, "application/msword");
+        } else if (extension.toString().contains(".pdf")) {
+            // PDF file
+            intent.setDataAndType(uri, "application/pdf");
+        } else if (extension.toString().contains(".ppt") || extension.toString().contains(".pptx")) {
+            // Powerpoint file
+            intent.setDataAndType(uri, "application/vnd.ms-powerpoint");
+        } else if (extension.toString().contains(".xls") || extension.toString().contains(".xlsx")) {
+            // Excel file
+            intent.setDataAndType(uri, "application/vnd.ms-excel");
+        } else if (extension.toString().contains(".zip") || extension.toString().contains(".rar")) {
+            // WAV audio file
+            intent.setDataAndType(uri, "application/x-wav");
+        } else if (extension.toString().contains(".rtf")) {
+            // RTF file
+            intent.setDataAndType(uri, "application/rtf");
+        } else if (extension.toString().contains(".wav") || extension.toString().contains(".mp3")) {
+            // WAV audio file
+            intent.setDataAndType(uri, "audio/x-wav");
+        } else if (extension.toString().contains(".gif")) {
+            // GIF file
+            intent.setDataAndType(uri, "image/gif");
+        } else if (extension.toString().contains(".jpg") || extension.toString().contains(".jpeg") || extension.toString().contains(".png")) {
+            // JPG file
+            intent.setDataAndType(uri, "image/jpeg");
+        } else if (extension.toString().contains(".txt")) {
+            // Text file
+            intent.setDataAndType(uri, "text/plain");
+        } else if (extension.toString().contains(".3gp") || extension.toString().contains(".mpg") || extension.toString().contains(".mpeg") || extension.toString().contains(".mpe") || extension.toString().contains(".mp4") || extension.toString().contains(".avi")) {
+            // Video files
+            intent.setDataAndType(uri, "video/*");
+        } else {
+            intent.setDataAndType(uri, "*/*");
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+
+    }
+
+    public static void inviteMessage(Context context, String name, String referralCode) {
+        String shareMessage;
+        shareMessage = "Greetings from Joinsta Gharse\n\n" +
+                "Shop safe or serve better with your digital shopee.\n\n" +
+                "Connect with existing/new customers, other vendors, service providers, and professionals.\n\n" +
+                name + " shared a link to download mobile business app.\n" +
+                JOINSTA_PLAYSTORELINK + "\n\n" +
+                "\\“Free Signup for users and business listing.\\”\n\n" +
+                "Enter Referral Code " + referralCode + " to avail discount on specialized services.\n\n" +
+                "Team Joinsta-Gharse\n\n" +
+                "Contact -9175326801 Whatsapp App – 7020009889 Email – support@joinstagharse.com\n\n";
+
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
+        context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
     }
 
 }

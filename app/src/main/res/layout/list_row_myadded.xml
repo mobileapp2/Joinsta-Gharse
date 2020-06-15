@@ -159,7 +159,7 @@
             <LinearLayout
                 android:id="@+id/ll_offer"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
                 android:orientation="vertical">
@@ -176,7 +176,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:gravity="center"
-                    android:text="Added Offers"
+                    android:text="Offers"
                     android:textColor="@color/darkGray"
                     android:textSize="12sp" />
 
@@ -190,7 +190,7 @@
             <LinearLayout
                 android:id="@+id/ll_orders"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
                 android:orientation="vertical">
@@ -206,7 +206,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:gravity="center"
-                    android:text="Received Orders"
+                    android:text="Orders"
                     android:textColor="@color/darkGray"
                     android:textSize="12sp" />
 
@@ -236,7 +236,37 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:gravity="center"
-                    android:text="Added Products"
+                    android:text="Products"
+                    android:textColor="@color/darkGray"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:id="@+id/ll_enquire"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="22dp"
+                    android:src="@drawable/icon_enquiry"
+                    android:tint="@color/darkGray" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:text="Enquire"
                     android:textColor="@color/darkGray"
                     android:textSize="12sp" />
 

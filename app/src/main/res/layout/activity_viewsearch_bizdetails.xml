@@ -89,6 +89,18 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:titleTextColor="@color/black" />
 
+            <CheckBox
+                android:id="@+id/cb_like"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/like_icon_red"
+                android:button="@null"
+                android:checked="false"
+                android:stateListAnimator="@animator/scale" />
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

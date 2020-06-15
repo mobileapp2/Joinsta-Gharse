@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/lightGray"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_incoming_layout_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bg_custom_incoming_message"
+        android:backgroundTint="@color/white"
+        android:orientation="vertical"
+        android:paddingLeft="17dp"
+        android:paddingTop="7dp"
+        android:paddingRight="7dp"
+        android:paddingBottom="2dp">
+
+        <ImageView
+            android:id="@+id/imv_incoming_image"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_dummy" />
+
+        <LinearLayout
+            android:id="@+id/ll_incoming_doc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/divider"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_chat_attachment" />
+
+            <TextView
+                android:id="@+id/tv_incoming_doc_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:maxLines="1"
+                android:text="Document Name"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_incoming_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/lorem"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_incoming_date_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="09:20 PM"
+            android:textColor="@color/darkGray"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_outgoing_layout_bubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/bg_custom_outcoming_message"
+        android:backgroundTint="@color/LightCyan"
+        android:orientation="vertical"
+        android:paddingLeft="7dp"
+        android:paddingTop="7dp"
+        android:paddingRight="17dp"
+        android:paddingBottom="2dp">
+
+        <ImageView
+            android:id="@+id/imv_outgoing_image"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_dummy" />
+
+        <LinearLayout
+            android:id="@+id/ll_outgoing_doc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/divider"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:src="@drawable/icon_chat_attachment" />
+
+            <TextView
+                android:id="@+id/tv_outgoing_doc_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:maxLines="1"
+                android:text="Document Name"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_outgoing_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/lorem"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_outgoing_date_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="09:20 PM"
+            android:textColor="@color/darkGray"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>

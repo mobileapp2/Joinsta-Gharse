@@ -22,18 +22,58 @@
             app:contentInsetStartWithNavigation="0dp"
             app:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/toolbar_title"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="false"
-                android:focusable="false"
-                android:text="More"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                app:backgroundTint="@color/black" />
+                android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_weight="1"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:text="More"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/black" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_toLeftOf="@id/fl_cart">
+
+                    <ImageButton
+                        android:id="@+id/ib_notifications"
+                        android:layout_width="26dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_notification"
+                        android:tint="@color/darkGray" />
+
+                    <TextView
+                        android:id="@+id/tv_notifications_count"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_gravity="right|top"
+                        android:layout_marginLeft="15dp"
+                        android:background="@drawable/bg_circularview_red"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="7sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+            </LinearLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -157,6 +197,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/lightGray"
                 app:cardElevation="0dp">
 
@@ -259,6 +300,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="10dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/lightGray"
                 app:cardElevation="0dp">
 

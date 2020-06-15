@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -47,6 +48,7 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
+import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
 
 public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
@@ -86,6 +88,10 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
     TextView tvPurchaseOrderType;
     @BindView(R.id.tv_customer_name)
     TextView tvCustomerName;
+    @BindView(R.id.tv_price)
+    TextView tvPrice;
+    @BindView(R.id.ll_price)
+    LinearLayout llPrice;
 
     private Context context;
     private UserSessionManager session;
@@ -147,50 +153,40 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
         orderImageArray = getIntent().getStringExtra("orderImageArray");
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
 
-        tvBusinessOwnerName.setText("Your order is with - " + businessOwnerCode + " - " + businessOwnerName);
+        tvBusinessOwnerName.setText("Vendor - " + businessOwnerCode + " - " + businessOwnerName);
 
         if (orderDetails == null) {
             orderDetails = new BookOrderGetMyOrdersModel.ResultBean();
         }
 
         if (deliveryStatus.equals("store_pickup")) {
-            tvDeliveryType.setText("Store Pickup");
+            tvDeliveryType.setText("Delivery option - Store Pickup");
             if (!businessOwnerAddress.equals("")) {
-                tvStorePickupText.setVisibility(View.VISIBLE);
-                tvAddress.setText("Address - " + businessOwnerAddress);
+//                tvStorePickupText.setVisibility(View.VISIBLE);
+                tvAddress.setText("Pickup Address - " + businessOwnerAddress);
                 tvAddress.setTextColor(context.getResources().getColor(R.color.black));
             } else {
                 tvAddress.setText("Store address not available");
                 tvAddress.setTextColor(context.getResources().getColor(R.color.red));
             }
         } else if (deliveryStatus.equals("home_delivery")) {
-            tvHomeDeliveryText.setVisibility(View.VISIBLE);
-            tvDeliveryType.setText("Home Delivery");
+//            tvHomeDeliveryText.setVisibility(View.VISIBLE);
+            tvDeliveryType.setText("Delivery option - Home Delivery");
             tvAddress.setText("Address - " + customerAddress);
         }
 
-        switch (purchaseOrderType) {      //purchase_order_type = 'individual' - 1, 'business' -2
-            case "1": {
-                tvPurchaseOrderType.setText("This order is for individual");
-                tvCustomerName.setText("Name - " + customerName);
-            }
-            break;
-            case "2": {
-                tvPurchaseOrderType.setText("This order is for business");
-                tvCustomerName.setText("Name - " + customerName);
-            }
-            break;
-        }
+        StringBuilder stringBuilder = new StringBuilder();
 
         switch (orderType) {
             case "1":
-                tvOrderBy.setText("Order by - Product");
+                stringBuilder.append("Order by - Product");
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.VISIBLE);
 
                 List<BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean> productsList = new ArrayList<>();
 
+                int price = 0;
                 for (BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean productDetails : orderDetails.getProduct_details()) {
                     productsList.add(new BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean(
                             productDetails.getId(),
@@ -205,26 +201,46 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                             productDetails.getUnit_of_measure(),
                             productDetails.getProduct_images()
                     ));
+                    price = price + (Integer.parseInt(productDetails.getCurrent_amount())
+                            * Integer.parseInt(productDetails.getQuantity()));
                 }
+                tvPrice.setText("₹ " + getCommaSeparatedNumber(price));
                 rvProducts.setAdapter(new BookOrderProductsAdapter(context, productsList));
 
                 break;
             case "2":
-                tvOrderBy.setText("Order by - Image");
+                stringBuilder.append("Order by - Image");
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.VISIBLE);
                 cvProducts.setVisibility(View.GONE);
+                llPrice.setVisibility(View.GONE);
 
                 break;
             case "3":
-                tvOrderBy.setText("Order by - Text");
+                stringBuilder.append("Order by - Text");
                 cvText.setVisibility(View.VISIBLE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.GONE);
+                llPrice.setVisibility(View.GONE);
 
                 tvOrderText.setText(orderText);
                 break;
         }
+
+        switch (purchaseOrderType) {      //purchase_order_type = 'individual' - 1, 'business' -2
+            case "1": {
+                stringBuilder.append(" | Order for Individual");
+                tvCustomerName.setText("Orderer - " + customerName);
+            }
+            break;
+            case "2": {
+                stringBuilder.append(" | Order for Business");
+                tvCustomerName.setText("Orderer - " + customerName);
+            }
+            break;
+        }
+
+        tvOrderBy.setText(stringBuilder.toString());
 
         orderImageJsonArray = (JsonArray) new JsonParser().parse(orderImageArray);
         ArrayList<String> orderImagesList = new ArrayList<>();
@@ -374,7 +390,6 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderSelectDeliveryTypeActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeTextActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImageActivity"));
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderMyOrderActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivity"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -447,7 +462,6 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderSelectDeliveryTypeActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeTextActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImageActivity"));
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderMyOrderActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivity"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);

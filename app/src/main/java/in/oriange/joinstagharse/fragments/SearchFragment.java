@@ -1,6 +1,5 @@
 package in.oriange.joinstagharse.fragments;
 
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +11,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -36,6 +36,7 @@ import java.util.List;
 
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.BookOrderCartProductsActivity;
+import in.oriange.joinstagharse.activities.SelectCityActivity;
 import in.oriange.joinstagharse.adapters.SearchBusinessAdapter;
 import in.oriange.joinstagharse.models.SearchDetailsModel;
 import in.oriange.joinstagharse.utilities.APICall;
@@ -46,6 +47,7 @@ import in.oriange.joinstagharse.utilities.Utilities;
 public class SearchFragment extends Fragment {
 
     private Context context;
+    private TextView tv_location;
     private UserSessionManager session;
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView rv_searchlist;
@@ -53,15 +55,14 @@ public class SearchFragment extends Fragment {
     private ImageButton ib_cart;
     private EditText edt_search;
     private TextView tv_cart_count;
+    private CheckBox cb_favourite;
     private SpinKitView progressBar;
     private List<SearchDetailsModel.ResultBean.BusinessesBean> businessList;
-
     private String userId;
-    private String categoryTypeId;
-    private ProgressDialog pd;
-
+    private SearchBusinessAdapter searchBusinessAdapter;
     private LocalBroadcastManager localBroadcastManager;
     private LocalBroadcastManager localBroadcastManager2;
+    private boolean isFavouriteSelected;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -76,22 +77,30 @@ public class SearchFragment extends Fragment {
 
     private void init(View rootView) {
         session = new UserSessionManager(context);
-        pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-
         ib_cart = rootView.findViewById(R.id.ib_cart);
         tv_cart_count = rootView.findViewById(R.id.tv_cart_count);
         progressBar = rootView.findViewById(R.id.progressBar);
         edt_search = rootView.findViewById(R.id.edt_search);
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
+        tv_location = rootView.findViewById(R.id.tv_location);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
+        cb_favourite = rootView.findViewById(R.id.cb_favourite);
         rv_searchlist = rootView.findViewById(R.id.rv_searchlist);
         rv_searchlist.setLayoutManager(new LinearLayoutManager(context));
 
         businessList = new ArrayList<>();
+
+        searchBusinessAdapter = new SearchBusinessAdapter(context, businessList, "1");
+        rv_searchlist.setAdapter(searchBusinessAdapter);
     }
 
     private void setDefault() {
-        categoryTypeId = "1";
+        try {
+            UserSessionManager session = new UserSessionManager(context);
+            tv_location.setText(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
@@ -120,9 +129,17 @@ public class SearchFragment extends Fragment {
     }
 
     private void setEventHandler() {
+
+        tv_location.setOnClickListener(v -> {
+            startActivity(new Intent(context, SelectCityActivity.class)
+                    .putExtra("requestCode", 1));
+        });
+
         swipeRefreshLayout.setOnRefreshListener(() -> {
             edt_search.setText("");
             if (Utilities.isNetworkAvailable(context)) {
+                edt_search.setText("");
+                cb_favourite.setChecked(false);
                 new GetSearchList().execute(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO));
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
@@ -143,7 +160,7 @@ public class SearchFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchDetails(categoryTypeId, s.toString());
+                setDataToRecyclerView(isFavouriteSelected, edt_search.getText().toString().trim(), businessList);
             }
 
             @Override
@@ -151,35 +168,11 @@ public class SearchFragment extends Fragment {
 
             }
         });
-    }
 
-    private void searchDetails(String categoryTypeId, String query) {
-        if (businessList.size() == 0) {
-            return;
-        }
-
-        if (!query.equals("")) {
-            ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> businessSearchedList = new ArrayList<>();
-            for (SearchDetailsModel.ResultBean.BusinessesBean businessDetails : businessList) {
-
-                StringBuilder tag = new StringBuilder();
-                if (businessDetails.getTag().get(0) != null)
-                    for (SearchDetailsModel.ResultBean.BusinessesBean.TagBean tags : businessDetails.getTag().get(0)) {
-                        if (tags != null)
-                            tag.append(tags.getTag_name());
-                    }
-
-                String businessToBeSearched = businessDetails.getBusiness_code().toLowerCase() +
-                        businessDetails.getBusiness_name().toLowerCase() +
-                        businessDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
-                if (businessToBeSearched.contains(query.toLowerCase())) {
-                    businessSearchedList.add(businessDetails);
-                }
-            }
-            rv_searchlist.setAdapter(new SearchBusinessAdapter(context, businessSearchedList, "1"));
-        } else {
-            rv_searchlist.setAdapter(new SearchBusinessAdapter(context, businessList, "1"));
-        }
+        cb_favourite.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isFavouriteSelected = isChecked;
+            setDataToRecyclerView(isFavouriteSelected, edt_search.getText().toString().trim(), businessList);
+        });
     }
 
     private class GetSearchList extends AsyncTask<String, Void, String> {
@@ -208,7 +201,6 @@ public class SearchFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-//            edt_search.setText("");
             progressBar.setVisibility(View.GONE);
             String type = "", message = "";
             try {
@@ -219,7 +211,7 @@ public class SearchFragment extends Fragment {
 
                     if (type.equalsIgnoreCase("success")) {
                         businessList = pojoDetails.getResult().getBusinesses();
-                        setDataToRecyclerView(categoryTypeId);
+                        setDataToRecyclerView(isFavouriteSelected, edt_search.getText().toString().trim(), businessList);
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_searchlist.setVisibility(View.GONE);
@@ -233,10 +225,51 @@ public class SearchFragment extends Fragment {
         }
     }
 
-    private void setDataToRecyclerView(String categoryTypeId) {
-//        edt_search.setText("");
-        if (businessList.size() > 0) {
-            rv_searchlist.setAdapter(new SearchBusinessAdapter(context, businessList, "1"));
+    private void setDataToRecyclerView(boolean isFavouriteSelected, String searchTerm, List<SearchDetailsModel.ResultBean.BusinessesBean> businessList) {
+        if (businessList.size() == 0)
+            return;
+
+        List<SearchDetailsModel.ResultBean.BusinessesBean> filteredBusinessList = new ArrayList<>(businessList);
+
+        if (isFavouriteSelected) {
+            List<SearchDetailsModel.ResultBean.BusinessesBean> favBusinessList = new ArrayList<>();
+
+            for (int i = 0; i < filteredBusinessList.size(); i++) {
+                if (filteredBusinessList.get(i).getIsFavourite().equals("1"))
+                    favBusinessList.add(filteredBusinessList.get(i));
+            }
+
+            filteredBusinessList.clear();
+            filteredBusinessList.addAll(favBusinessList);
+        }
+
+        if (!searchTerm.equals("")) {
+            ArrayList<SearchDetailsModel.ResultBean.BusinessesBean> searchBusinessList = new ArrayList<>();
+            if (filteredBusinessList.size() == 0)
+                filteredBusinessList.addAll(businessList);
+            for (SearchDetailsModel.ResultBean.BusinessesBean businessDetails : filteredBusinessList) {
+
+                StringBuilder tag = new StringBuilder();
+                if (businessDetails.getTag().get(0) != null)
+                    for (SearchDetailsModel.ResultBean.BusinessesBean.TagBean tags : businessDetails.getTag().get(0)) {
+                        if (tags != null)
+                            tag.append(tags.getTag_name());
+                    }
+
+                String businessToBeSearched = businessDetails.getBusiness_code().toLowerCase() +
+                        businessDetails.getBusiness_name().toLowerCase() +
+                        businessDetails.getCity().toLowerCase() + tag.toString().toLowerCase();
+                if (businessToBeSearched.contains(searchTerm.toLowerCase())) {
+                    searchBusinessList.add(businessDetails);
+                }
+            }
+
+            filteredBusinessList.clear();
+            filteredBusinessList.addAll(searchBusinessList);
+        }
+
+        if (filteredBusinessList.size() > 0) {
+            searchBusinessAdapter.refreshList(filteredBusinessList);
             ll_nopreview.setVisibility(View.GONE);
             rv_searchlist.setVisibility(View.VISIBLE);
         } else {

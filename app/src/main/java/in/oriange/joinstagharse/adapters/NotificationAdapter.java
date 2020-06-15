@@ -9,7 +9,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +54,7 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeDateFormat;
+import static in.oriange.joinstagharse.utilities.Utilities.linkifyTextView;
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
 
@@ -254,7 +254,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         tv_title.setText(notificationDetails.getTitle().trim());
         tv_message.setText(notificationDetails.getDescription().trim());
-        Linkify.addLinks(tv_message, Linkify.ALL);
+        linkifyTextView(tv_message);
 
         tv_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd-MM-yyyy HH:mm", notificationDetails.getCreated_at()));
 

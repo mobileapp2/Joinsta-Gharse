@@ -75,6 +75,18 @@ public class MyAddressAdapter extends RecyclerView.Adapter<MyAddressAdapter.MyVi
             AlertDialog alertD = builder.create();
             alertD.show();
         });
+
+        holder.btn_share.setOnClickListener(v -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(addressDetails.getFull_name() + " - " + addressDetails.getAddress_line1() + ", " + addressDetails.getCity() + ", " + addressDetails.getPincode() + "\n");
+
+            String details = sb.toString() + "\n" + "Joinsta Gharse\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, details);
+            context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+        });
     }
 
     @Override
@@ -85,7 +97,7 @@ public class MyAddressAdapter extends RecyclerView.Adapter<MyAddressAdapter.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tv_address_name, tv_address;
-        private Button btn_edit, btn_delete;
+        private Button btn_edit, btn_delete, btn_share;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -93,6 +105,7 @@ public class MyAddressAdapter extends RecyclerView.Adapter<MyAddressAdapter.MyVi
             tv_address = itemView.findViewById(R.id.tv_address);
             btn_edit = itemView.findViewById(R.id.btn_edit);
             btn_delete = itemView.findViewById(R.id.btn_delete);
+            btn_share = itemView.findViewById(R.id.btn_share);
         }
     }
 

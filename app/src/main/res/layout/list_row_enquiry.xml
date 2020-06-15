@@ -68,7 +68,7 @@
                 android:id="@+id/tv_createdby"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.95"
+                android:layout_weight="1"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
@@ -78,9 +78,8 @@
 
             <ImageButton
                 android:id="@+id/ib_call"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="25dp"
-                android:layout_weight="0.05"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/icon_call" />
 

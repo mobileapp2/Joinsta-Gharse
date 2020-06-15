@@ -30,7 +30,7 @@
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="false"
                     android:focusable="false"
-                    android:text="Share your experiance"
+                    android:text="Share your experience"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     app:backgroundTint="@color/white" />
@@ -46,6 +46,7 @@
                     android:textColor="@color/black"
                     android:textSize="14sp"
                     android:textStyle="bold"
+                    android:visibility="gone"
                     app:backgroundTint="@color/white" />
 
             </LinearLayout>
@@ -55,7 +56,7 @@
                 style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Post"/>
+                android:text="Post" />
 
         </androidx.appcompat.widget.Toolbar>
 

@@ -597,6 +597,7 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
 
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SentOrdersFragment"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivityRefreshOrderList"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

@@ -2,8 +2,10 @@ package in.oriange.joinstagharse.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -49,10 +52,10 @@ import in.oriange.joinstagharse.utilities.Utilities;
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
+import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
 import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
 
 public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
-
 
     @BindView(R.id.toolbar_title)
     AppCompatEditText toolbarTitle;
@@ -96,13 +99,26 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
     CardView cvStatus;
     @BindView(R.id.btn_reject)
     Button btnReject;
+    @BindView(R.id.tv_price)
+    TextView tvPrice;
+    @BindView(R.id.ib_chat)
+    ImageButton ibChat;
+    @BindView(R.id.tv_unread_count)
+    TextView tvUnreadCount;
+    @BindView(R.id.fl_cart)
+    FrameLayout flCart;
+    @BindView(R.id.tv_delivery_type_status)
+    TextView tvDeliveryTypeStatus;
+    @BindView(R.id.tv_view_on_map)
+    TextView tvViewOnMap;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private String userId;
+    private String userId, latitude, longitude;
     private BookOrderBusinessOwnerModel.ResultBean orderDetails;
     private boolean isOrderImagesExpanded = true;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +141,12 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
         rvImages.setLayoutManager(new GridLayoutManager(context, 3));
         rvProducts.setLayoutManager(new LinearLayoutManager(context));
         rvStatus.setLayoutManager(new LinearLayoutManager(context));
+
+        orderDetails = (BookOrderBusinessOwnerModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("ViewBookOrderBusinessOwnerOrderActivity");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void getSessionDetails() {
@@ -140,8 +162,6 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        orderDetails = (BookOrderBusinessOwnerModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
-
         tvOrderId.setText("Order ID # " + orderDetails.getOrder_id());
 
         switch (orderDetails.getOrder_type()) {
@@ -153,6 +173,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
 
                 List<BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean> productsList = new ArrayList<>();
 
+                int price = 0;
                 for (BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean productDetails : orderDetails.getProduct_details()) {
                     productsList.add(new BookOrderBusinessOwnerModel.ResultBean.ProductDetailsBean(
                             productDetails.getId(),
@@ -167,9 +188,16 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                             productDetails.getUnit_of_measure(),
                             productDetails.getProduct_images()
                     ));
+                    if (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus().equals("1"))
+                        price = price + (Integer.parseInt(productDetails.getCurrent_amount())
+                                * Integer.parseInt(productDetails.getQuantity()));
+                    else
+                        price = price + (Integer.parseInt(productDetails.getAmount())
+                                * Integer.parseInt(productDetails.getQuantity()));
                 }
 
                 rvProducts.setAdapter(new BookOrderProductsAdapter(context, productsList));
+                tvPrice.setText("₹ " + getCommaSeparatedNumber(price));
             }
             break;
             case "2": {
@@ -177,6 +205,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                 cvText.setVisibility(View.GONE);
                 cvImages.setVisibility(View.VISIBLE);
                 cvProducts.setVisibility(View.GONE);
+                tvPrice.setVisibility(View.GONE);
             }
             break;
             case "3": {
@@ -184,17 +213,17 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                 cvText.setVisibility(View.VISIBLE);
                 cvImages.setVisibility(View.GONE);
                 cvProducts.setVisibility(View.GONE);
+                tvPrice.setVisibility(View.GONE);
 
                 tvText.setText(orderDetails.getOrder_text());
             }
             break;
         }
 
-
         switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
             case "1": {
                 tvPurchaseOrderType.setText("This order is for individual");
-                tvCustomerName.setText("Name - " + orderDetails.getCustomer_name());
+                tvCustomerName.setText("Orderer - " + orderDetails.getCustomer_name());
             }
             break;
             case "2": {
@@ -203,6 +232,9 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
             }
             break;
         }
+
+        tvOrderBy.setText(orderDetails.getOrderTypePurchaseType());
+        tvDeliveryTypeStatus.setText(orderDetails.getDeliveryAndStatus());
         tvCustomerMobile.setText(orderDetails.getCustomer_country_code() + orderDetails.getCustomer_mobile());
 
         if (orderDetails.getDelivery_option().equals("store_pickup")) {
@@ -215,6 +247,19 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                 tvAddress.setText("Delivery address - " + orderDetails.getUser_address_line_one());
             else
                 tvAddress.setVisibility(View.GONE);
+
+            latitude = orderDetails.getUser_address_latitude();
+            longitude = orderDetails.getUser_address_longitude();
+
+            if (latitude.equals("") || longitude.equals("") || latitude.equals("0") || longitude.equals("0"))
+                tvViewOnMap.setVisibility(View.GONE);
+        }
+
+        if (orderDetails.getVendor_unread_msg_count().equals("0")) {
+            tvUnreadCount.setVisibility(View.GONE);
+        } else {
+            tvUnreadCount.setVisibility(View.VISIBLE);
+            tvUnreadCount.setText(orderDetails.getVendor_unread_msg_count());
         }
 
         ArrayList<String> orderImagesList = new ArrayList<>();
@@ -233,10 +278,10 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
             tvMoreOrderImages.setVisibility(View.GONE);
         }
 
-        rvStatus.setAdapter(new BookOrderStatusAdapter(context, orderDetails.getStatus_details()));
+        rvStatus.setAdapter(new BookOrderStatusAdapter(context, orderDetails.getStatus_details(), "1", orderDetails.getUpdated_by()));
 
         switch (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()) {
-            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+            //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
             case "1":
                 btnAction.setVisibility(View.GONE);
                 btnReject.setVisibility(View.GONE);
@@ -245,13 +290,13 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                 btnAction.setText("Accept");
                 break;
             case "3":
-                btnAction.setText("In Progress");
+                btnAction.setText("Ready to Deliver");
                 break;
             case "4":
                 btnAction.setText("Delivered");
                 break;
             case "5":
-                btnAction.setText("Billing");
+                btnAction.setText("Billed");
                 btnReject.setVisibility(View.GONE);
                 break;
             case "6":
@@ -266,11 +311,22 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
+        ibChat.setOnClickListener(v -> context.startActivity(new Intent(context, ChatActivity.class)
+                .putExtra("orderId", orderDetails.getId())
+                .putExtra("name", orderDetails.getCustomer_name())
+                .putExtra("sendTo", orderDetails.getCustomer_id())));
+
+        tvViewOnMap.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + latitude + "," + longitude));
+            startActivity(intent);
+        });
+
         btnAction.setOnClickListener(v -> {
             String status = "";
 
             switch (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus()) {
-                //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'IN PROGRESS'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
+                //  status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
 //                case "1":
 //                case "6":
 //                case "7":
@@ -401,13 +457,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                         alertDialogBuilder.setCancelable(false);
                         final AlertDialog alertD = alertDialogBuilder.create();
 
-                        btn_ok.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                alertD.dismiss();
-                                finish();
-                            }
-                        });
+                        btn_ok.setOnClickListener(v -> alertD.dismiss());
 
                         alertD.show();
                     } else {
@@ -426,5 +476,19 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            orderDetails = (BookOrderBusinessOwnerModel.ResultBean) intent.getSerializableExtra("orderDetails");
+            setDefault();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
 }

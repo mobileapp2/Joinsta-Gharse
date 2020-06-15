@@ -1,3 +1,5 @@
 rootProject.name='eOrder'
 include ':app'
 include ':RecyclerBanner'
+include ':cropper'
+include ':filepicker'
