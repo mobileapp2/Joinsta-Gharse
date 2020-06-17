@@ -573,14 +573,14 @@ public class Utilities {
     public static void inviteMessage(Context context, String name, String referralCode) {
         String shareMessage;
         shareMessage = "Greetings from Joinsta Gharse\n\n" +
-                "Shop safe or serve better with your digital shopee.\n\n" +
+                "Shop safe or serve better with your digital shop.\n\n" +
                 "Connect with existing/new customers, other vendors, service providers, and professionals.\n\n" +
                 name + " shared a link to download mobile business app.\n" +
                 JOINSTA_PLAYSTORELINK + "\n\n" +
-                "\\“Free Signup for users and business listing.\\”\n\n" +
+                "Free Sign up for users and business listing.\n\n" +
                 "Enter Referral Code " + referralCode + " to avail discount on specialized services.\n\n" +
-                "Team Joinsta-Gharse\n\n" +
-                "Contact -9175326801 Whatsapp App – 7020009889 Email – support@joinstagharse.com\n\n";
+                "Team Joinsta Gharse\n\n" +
+                "Contact - 9175326801" + "\n" + "Whatsapp - 7020009889" + "\n";
 
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");

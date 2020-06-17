@@ -35,10 +35,10 @@
                 android:id="@+id/tv_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_focusfilled_yellow"
+                android:layout_gravity="center"
+                android:background="@drawable/button_focusfilled_price"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:layout_gravity="center"
                 android:text="Rs. 10,000"
                 android:textColor="@color/white"
                 android:textSize="14sp"
@@ -46,48 +46,75 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv_supplier_orderer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="2dp"
+            android:text="Supplier – L00001 – Mobile Shopee"
+            android:textColor="@color/darkGray"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_received_for"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="2dp"
+            android:text="Supplier – L00001 – Mobile Shopee"
+            android:textColor="@color/darkGray"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tv_oder_by"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Ordered By – Product/Image/text"
+            android:textColor="@color/darkGray"
+            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="1dp"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_supplier"
+                android:id="@+id/tv_delivery_type_status"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:text="Supplier – L00001 – Mobile Shopee"
+                android:text="Ordered By – Product/Image/text"
                 android:textColor="@color/darkGray"
                 android:textSize="14sp" />
 
+
             <ImageButton
                 android:id="@+id/ib_call"
-                android:layout_width="wrap_content"
-                android:layout_height="22dp"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_gravity="bottom"
                 android:layout_marginRight="5dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:scaleType="fitCenter"
-                android:src="@drawable/icon_call" />
-
+                android:src="@drawable/icon_call_red" />
 
             <FrameLayout
                 android:id="@+id/fl_cart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="bottom">
 
                 <ImageButton
                     android:id="@+id/ib_chat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="22dp"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
                     android:layout_gravity="center"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitXY"
-                    android:src="@drawable/icon_chat"
-                    android:tint="@color/darkGray" />
+                    android:src="@drawable/icon_chat_red" />
 
                 <TextView
                     android:id="@+id/tv_unread_count"
@@ -95,7 +122,7 @@
                     android:layout_height="14dp"
                     android:layout_gravity="right|top"
                     android:layout_marginLeft="15dp"
-                    android:background="@drawable/bg_circularview_red"
+                    android:background="@drawable/bg_circularview_green"
                     android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="7sp"
@@ -104,24 +131,8 @@
 
             </FrameLayout>
 
+
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/tv_oder_by"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:text="Ordered By – Product/Image/text"
-            android:textColor="@color/darkGray"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_delivery_type_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Ordered By – Product/Image/text"
-            android:textColor="@color/darkGray"
-            android:textSize="14sp" />
 
         <LinearLayout
             android:layout_width="match_parent"

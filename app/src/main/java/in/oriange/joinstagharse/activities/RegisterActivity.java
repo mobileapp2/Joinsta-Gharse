@@ -179,7 +179,8 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                    new VerifyMobile().execute(edt_mobile.getText().toString().trim(),
+                            tv_countrycode_mobile.getText().toString().trim());
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -188,7 +189,7 @@ public class RegisterActivity extends AppCompatActivity {
                 if (Utilities.isNetworkAvailable(context)) {
                     String number = tv_countrycode_mobile.getText().toString().trim().replace("+", "") +
                             edt_mobile.getText().toString().trim();
-                    new NumVerifyApi().execute(number);
+                    new NumVerifyApi().execute(number, tv_countrycode_mobile.getText().toString().trim().replace("+", ""));
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -388,6 +389,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private class NumVerifyApi extends AsyncTask<String, Void, String> {
 
+        String counrtyCode = "";
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -399,6 +402,7 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
+            counrtyCode = params[1];
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("access_key", NUMVERIFY_ACCESS_TOKEN));
             param.add(new ParamsPojo("number", params[0]));
@@ -419,7 +423,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     if (isMobileNumValid) {
                         if (Utilities.isNetworkAvailable(context)) {
-                            new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                            new VerifyMobile().execute(edt_mobile.getText().toString().trim(), counrtyCode);
                         } else {
                             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                         }
@@ -438,7 +442,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (Utilities.isNetworkAvailable(context)) {
-                    new VerifyMobile().execute(edt_mobile.getText().toString().trim());
+                    new VerifyMobile().execute(edt_mobile.getText().toString().trim(), counrtyCode);
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -462,6 +466,7 @@ public class RegisterActivity extends AppCompatActivity {
             String res = "[]";
             List<ParamsPojo> param = new ArrayList<ParamsPojo>();
             param.add(new ParamsPojo("mobile", params[0]));
+            param.add(new ParamsPojo("country_code", params[1]));
             res = APICall.FORMDATAAPICall(ApplicationConstants.LOGINAPI, param);
             return res.trim();
         }

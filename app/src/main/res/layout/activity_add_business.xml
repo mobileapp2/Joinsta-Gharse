@@ -192,7 +192,7 @@
 
                             <TextView
                                 style="@style/TitleTextView"
-                                android:text="Tags" />
+                                android:text="Tags (Your Products/Services)" />
 
                             <AutoCompleteTextView
                                 android:id="@+id/edt_tag"

@@ -184,10 +184,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:background="@drawable/button_focusfilled_yellow"
+                            android:background="@drawable/button_focusfilled_price"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:text="Rs. 10,000"
                             android:textColor="@color/white"
                             android:textSize="14sp"
                             android:textStyle="bold" />

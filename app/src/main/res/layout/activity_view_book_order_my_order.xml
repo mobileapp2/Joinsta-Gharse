@@ -91,7 +91,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:background="@drawable/button_focusfilled_yellow"
+                            android:background="@drawable/button_focusfilled_price"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:text="Rs. 10,000"
@@ -128,6 +128,32 @@
                         android:text="Name – Based upon individual or Business"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_supplier_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="1dp"
+                        android:text="Supplier – L00001 – Mobile Shopee"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_supplier_mobile"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:text="Phone – Call Button"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -177,22 +203,87 @@
                         android:textSize="16sp"
                         android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/tv_address"
+                    <LinearLayout
+                        android:id="@+id/ll_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Address"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
+                        android:layout_marginBottom="3dp"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/tv_view_on_map"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:id="@+id/tv_address"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:clickable="false"
+                            android:focusable="false"
+                            android:gravity="center_vertical"
+                            android:longClickable="false"
+                            android:paddingTop="2dp"
+                            android:text="Address"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:text="Get Direction"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="12sp" />
+                        android:gravity="end"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/ib_address"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="bottom"
+                            android:layout_marginRight="5dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/icon_location_red" />
+
+
+                        <ImageButton
+                            android:id="@+id/ib_supplier_mobile_call"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="5dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/icon_call_red" />
+
+                        <FrameLayout
+                            android:id="@+id/fl_cart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+                            <ImageButton
+                                android:id="@+id/ib_chat"
+                                android:layout_width="25dp"
+                                android:layout_height="25dp"
+                                android:layout_gravity="center"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/icon_chat_red" />
+
+                            <TextView
+                                android:id="@+id/tv_unread_count"
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:layout_gravity="right|top"
+                                android:layout_marginLeft="15dp"
+                                android:background="@drawable/bg_circularview_green"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:textSize="7sp"
+                                android:textStyle="bold"
+                                android:visibility="gone" />
+
+                        </FrameLayout>
+
+                    </LinearLayout>
+
 
                 </LinearLayout>
 
@@ -203,6 +294,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:visibility="gone"
                 app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="5dp"
                 app:cardElevation="2dp"
@@ -213,71 +305,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="5dp">
-
-                    <TextView
-                        android:id="@+id/tv_supplier_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="1dp"
-                        android:text="Supplier – L00001 – Mobile Shopee"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/tv_supplier_mobile"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:text="Phone – Call Button"
-                            android:textColor="@color/black"
-                            android:textSize="16sp" />
-
-                        <ImageButton
-                            android:id="@+id/ib_supplier_mobile_call"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="5dp"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:src="@drawable/icon_call" />
-
-                        <FrameLayout
-                            android:id="@+id/fl_cart"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center">
-
-                            <ImageButton
-                                android:id="@+id/ib_chat"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:background="?attr/selectableItemBackgroundBorderless"
-                                android:scaleType="fitXY"
-                                android:src="@drawable/icon_chat"
-                                android:tint="@color/darkGray" />
-
-                            <TextView
-                                android:id="@+id/tv_unread_count"
-                                android:layout_width="14dp"
-                                android:layout_height="14dp"
-                                android:layout_gravity="right|top"
-                                android:layout_marginLeft="15dp"
-                                android:background="@drawable/bg_circularview_red"
-                                android:gravity="center"
-                                android:textColor="@color/white"
-                                android:textSize="7sp"
-                                android:textStyle="bold"
-                                android:visibility="gone" />
-
-                        </FrameLayout>
-
-                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -468,7 +495,6 @@
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
-
 
         </LinearLayout>
 

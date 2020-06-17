@@ -111,8 +111,26 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
 
     @SuppressLint("RestrictedApi")
     private void showContextMenu(View view, ContactsModel contactsModel) {
+        String mobile = "";
+        String countryCode = "";
+
+        try {
+            if (contactsModel.getPhoneNo().length() > 10) {
+                mobile = contactsModel.getPhoneNo().substring(contactsModel.getPhoneNo().length() - 10);
+                countryCode = contactsModel.getPhoneNo().substring(0, contactsModel.getPhoneNo().length() - mobile.length());
+            } else {
+                mobile = contactsModel.getPhoneNo();
+                countryCode = "+91";
+            }
+        } catch (Exception e) {
+            mobile = "";
+            countryCode = "+91";
+        }
+
         PopupMenu popup = new PopupMenu(context, view);
         popup.inflate(R.menu.menu_vendor_cudtomer);
+        String finalCountryCode = countryCode;
+        String finalMobile = mobile;
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_vendor:
@@ -120,14 +138,20 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
                             .putExtra("businessCode", "")
                             .putExtra("businessName", "")
                             .putExtra("name", contactsModel.getName())
-                            .putExtra("mobile", contactsModel.getPhoneNo()));
+                            .putExtra("countryCode", finalCountryCode)
+                            .putExtra("mobile", finalMobile)
+                            .putExtra("email", "")
+                            .putExtra("city", ""));
                     break;
                 case R.id.menu_customer:
                     context.startActivity(new Intent(context, AddCustomerActivity.class)
                             .putExtra("businessCode", "")
                             .putExtra("businessName", "")
                             .putExtra("name", contactsModel.getName())
-                            .putExtra("mobile", contactsModel.getPhoneNo()));
+                            .putExtra("countryCode", finalCountryCode)
+                            .putExtra("mobile", finalMobile)
+                            .putExtra("email", "")
+                            .putExtra("city", ""));
                     break;
             }
             return false;

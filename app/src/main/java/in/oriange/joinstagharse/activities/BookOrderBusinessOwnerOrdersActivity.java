@@ -40,7 +40,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.adapters.BookOrderBusinessOrdersAdapter;
+import in.oriange.joinstagharse.adapters.BookOrderReceivedOrdersAdapter;
 import in.oriange.joinstagharse.models.BookOrderBusinessOwnerModel;
 import in.oriange.joinstagharse.models.MasterModel;
 import in.oriange.joinstagharse.utilities.APICall;
@@ -77,7 +77,7 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
 
     private List<MasterModel> orderStatusList;
     private List<BookOrderBusinessOwnerModel.ResultBean> orderList;
-    private BookOrderBusinessOrdersAdapter bookOrderBusinessOrdersAdapter;
+    private BookOrderReceivedOrdersAdapter bookOrderReceivedOrdersAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +102,8 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
         orderStatusList = new ArrayList<>();
         orderList = new ArrayList<>();
 
-        bookOrderBusinessOrdersAdapter = new BookOrderBusinessOrdersAdapter(context, orderList);
-        rvOrders.setAdapter(bookOrderBusinessOrdersAdapter);
+        bookOrderReceivedOrdersAdapter = new BookOrderReceivedOrdersAdapter(context, orderList, "2");
+        rvOrders.setAdapter(bookOrderReceivedOrdersAdapter);
         // status = 'IN CART' - 1,'PLACED'-2,'ACCEPTED'-3,'Ready to Deliver'-4,'DELIVERED'-5,'BILLED'-6,'CANCEL'-7
 
 //        orderStatusList.add(new MasterModel("In Cart", "1", false));
@@ -367,9 +367,9 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
         }
 
         if (filteredOrderList.size() > 0) {
-            BookOrderBusinessOwnerModel.ResultBean orderDetails = filteredOrderList.get(bookOrderBusinessOrdersAdapter.itemClickedPosition);
+            BookOrderBusinessOwnerModel.ResultBean orderDetails = filteredOrderList.get(bookOrderReceivedOrdersAdapter.itemClickedPosition);
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderBusinessOwnerOrderActivity").putExtra("orderDetails", orderDetails));
-            bookOrderBusinessOrdersAdapter.refreshList(filteredOrderList);
+            bookOrderReceivedOrdersAdapter.refreshList(filteredOrderList);
             llNopreview.setVisibility(View.GONE);
             rvOrders.setVisibility(View.VISIBLE);
         } else {
@@ -401,5 +401,6 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ReceivedOrdersFragment"));
     }
 }

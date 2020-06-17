@@ -26,7 +26,7 @@
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/img_dummy" />
+            android:src="@drawable/img_dummy"/>
 
         <LinearLayout
             android:id="@+id/ll_incoming_doc"
@@ -127,19 +127,36 @@
             android:id="@+id/tv_outgoing_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
+            android:gravity="start"
             android:text="@string/lorem"
             android:textColor="@color/black"
             android:textSize="14sp" />
 
-        <TextView
-            android:id="@+id/tv_outgoing_date_time"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:text="09:20 PM"
-            android:textColor="@color/darkGray"
-            android:textSize="12sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_outgoing_date_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="09:20 PM"
+                android:textColor="@color/darkGray"
+                android:textSize="12sp" />
+
+            <ImageView
+                android:id="@+id/imv_is_read"
+                android:layout_width="14dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/icon_two_check"
+                android:tint="@color/colorPrimary" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

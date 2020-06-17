@@ -27,15 +27,17 @@ import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
 import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
 
-public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrderBusinessOrdersAdapter.MyViewHolder> {
+public class BookOrderReceivedOrdersAdapter extends RecyclerView.Adapter<BookOrderReceivedOrdersAdapter.MyViewHolder> {
 
     private Context context;
     private List<BookOrderBusinessOwnerModel.ResultBean> orderList;
+    private String callType;      // 1 = All Received Orders 2 = Business-wise Received Orders
     public int itemClickedPosition;
 
-    public BookOrderBusinessOrdersAdapter(Context context, List<BookOrderBusinessOwnerModel.ResultBean> orderList) {
+    public BookOrderReceivedOrdersAdapter(Context context, List<BookOrderBusinessOwnerModel.ResultBean> orderList, String callType) {
         this.context = context;
         this.orderList = orderList;
+        this.callType = callType;
     }
 
     @NonNull
@@ -51,14 +53,17 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
         int position = holder.getAdapterPosition();
         BookOrderBusinessOwnerModel.ResultBean orderDetails = orderList.get(position);
         holder.tv_order_id.setText("Order ID # " + orderDetails.getOrder_id());
-
+        holder.tv_received_for.setText("Received For - " + orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
+        String orderer = "";
         switch (orderDetails.getPurchase_order_type()) {      //purchase_order_type = 'individual' - 1, 'business' -2
             case "1": {
-                holder.tv_supplier.setText("Orderer - " + orderDetails.getCustomer_name());
+                orderer = orderDetails.getCustomer_name();
+                holder.tv_supplier_orderer.setText("Orderer - " + orderDetails.getCustomer_name());
             }
             break;
             case "2": {
-                holder.tv_supplier.setText("Orderer - " + orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name());
+                orderer = orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name();
+                holder.tv_supplier_orderer.setText("Orderer - " + orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name());
             }
             break;
         }
@@ -163,15 +168,19 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
             }
         });
 
-        holder.ib_chat.setOnClickListener(v -> context.startActivity(new Intent(context, ChatActivity.class)
-                .putExtra("orderId", orderDetails.getId())
-                .putExtra("name", orderDetails.getCustomer_name())
-                .putExtra("sendTo", orderDetails.getCustomer_id())));
+        String finalOrderer = orderer;
+        holder.ib_chat.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, ChatActivity.class)
+                    .putExtra("orderId", orderDetails.getId())
+                    .putExtra("name", finalOrderer)
+                    .putExtra("sendTo", orderDetails.getCustomer_id()));
+        });
 
         holder.cv_mainlayout.setOnClickListener(v -> {
             itemClickedPosition = position;
             context.startActivity(new Intent(context, ViewBookOrderBusinessOwnerOrderActivity.class)
-                    .putExtra("orderDetails", orderDetails));
+                    .putExtra("orderDetails", orderDetails)
+                    .putExtra("callType", callType));
         });
     }
 
@@ -183,7 +192,7 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_order_id, tv_supplier, tv_oder_by, tv_delivery_type_status, tv_price, tv_mobile, tv_delivery_type,
+        private TextView tv_order_id, tv_supplier_orderer, tv_received_for, tv_oder_by, tv_delivery_type_status, tv_price, tv_mobile, tv_delivery_type,
                 tv_order_status, tv_unread_count;
         private ImageButton ib_call, ib_chat;
 
@@ -191,7 +200,8 @@ public class BookOrderBusinessOrdersAdapter extends RecyclerView.Adapter<BookOrd
             super(itemView);
             cv_mainlayout = itemView.findViewById(R.id.cv_mainlayout);
             tv_order_id = itemView.findViewById(R.id.tv_order_id);
-            tv_supplier = itemView.findViewById(R.id.tv_supplier);
+            tv_supplier_orderer = itemView.findViewById(R.id.tv_supplier_orderer);
+            tv_received_for = itemView.findViewById(R.id.tv_received_for);
             tv_oder_by = itemView.findViewById(R.id.tv_oder_by);
             tv_delivery_type_status = itemView.findViewById(R.id.tv_delivery_type_status);
             tv_price = itemView.findViewById(R.id.tv_price);

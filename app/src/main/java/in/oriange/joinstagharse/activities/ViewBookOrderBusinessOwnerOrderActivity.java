@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -109,13 +110,17 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
     FrameLayout flCart;
     @BindView(R.id.tv_delivery_type_status)
     TextView tvDeliveryTypeStatus;
-    @BindView(R.id.tv_view_on_map)
-    TextView tvViewOnMap;
+    @BindView(R.id.ib_address)
+    ImageButton ibAddress;
+    @BindView(R.id.ll_address)
+    LinearLayout llAddress;
+    @BindView(R.id.tv_received_for)
+    TextView tvReceivedFor;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private String userId, latitude, longitude;
+    private String userId, latitude, longitude, callType;   // callType 1 = All Received Orders 2 = Business-wise Received Orders
     private BookOrderBusinessOwnerModel.ResultBean orderDetails;
     private boolean isOrderImagesExpanded = true;
     private LocalBroadcastManager localBroadcastManager;
@@ -147,6 +152,8 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("ViewBookOrderBusinessOwnerOrderActivity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+
+        callType = getIntent().getStringExtra("callType");
     }
 
     private void getSessionDetails() {
@@ -163,6 +170,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
 
     private void setDefault() {
         tvOrderId.setText("Order ID # " + orderDetails.getOrder_id());
+        tvReceivedFor.setText("Received For - " + orderDetails.getOwner_business_code() + " - " + orderDetails.getOwner_business_name());
 
         switch (orderDetails.getOrder_type()) {
             case "1": {
@@ -228,7 +236,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
             break;
             case "2": {
                 tvPurchaseOrderType.setText("This order is for business");
-                tvCustomerName.setText(orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name());
+                tvCustomerName.setText("Orderer - " + orderDetails.getCustomer_business_code() + " - " + orderDetails.getCustomer_business_name());
             }
             break;
         }
@@ -239,7 +247,15 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
 
         if (orderDetails.getDelivery_option().equals("store_pickup")) {
             tvDeliveryType.setText("Store Pickup");
-            tvAddress.setVisibility(View.GONE);
+
+            if (!orderDetails.getOwner_address().equals(""))
+                tvAddress.setText("Pick up address - " + orderDetails.getOwner_address());
+            else
+                llAddress.setVisibility(View.GONE);
+
+            latitude = orderDetails.getOwner_business_latitude();
+            longitude = orderDetails.getOwner_business_longitude();
+
         } else if (orderDetails.getDelivery_option().equals("home_delivery")) {
             tvDeliveryType.setText("Home Delivery");
 
@@ -251,9 +267,10 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
             latitude = orderDetails.getUser_address_latitude();
             longitude = orderDetails.getUser_address_longitude();
 
-            if (latitude.equals("") || longitude.equals("") || latitude.equals("0") || longitude.equals("0"))
-                tvViewOnMap.setVisibility(View.GONE);
         }
+
+        if (latitude.equals("") || longitude.equals("") || latitude.equals("0") || longitude.equals("0"))
+            ibAddress.setVisibility(View.GONE);
 
         if (orderDetails.getVendor_unread_msg_count().equals("0")) {
             tvUnreadCount.setVisibility(View.GONE);
@@ -316,7 +333,7 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                 .putExtra("name", orderDetails.getCustomer_name())
                 .putExtra("sendTo", orderDetails.getCustomer_id())));
 
-        tvViewOnMap.setOnClickListener(v -> {
+        ibAddress.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + latitude + "," + longitude));
             startActivity(intent);
@@ -440,8 +457,12 @@ public class ViewBookOrderBusinessOwnerOrderActivity extends AppCompatActivity {
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
 
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderBusinessOwnerOrdersActivity"));
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ReceivedOrdersFragment"));
+                        if (callType.equals("1")) {
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ReceivedOrdersFragment"));
+                        } else if (callType.equals("2")) {
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderBusinessOwnerOrdersActivity"));
+                        }
+
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

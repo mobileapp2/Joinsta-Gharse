@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -87,7 +88,9 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
     private ProgressBar progressBar;
     private CheckBox cb_like;
     private FloatingActionButton btn_share;
-    private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview;
+    private LinearLayout ll_direction, ll_mobile, ll_whatsapp, ll_landline, ll_email, ll_nopreview, ll_email_1,
+            ll_website, ll_address;
+    private ImageButton ib_email, ib_website, ib_address;
     private TextView tv_name, tv_nature, tv_designation, tv_email, tv_website, tv_address, tv_total_rating;
     private RatingBar rb_post_rating;
     private CardView cv_tabs, cv_contact_details, cv_address, cv_post_review, cv_add, cv_enquire, cv_offers;
@@ -135,6 +138,12 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
         ll_whatsapp = findViewById(R.id.ll_whatsapp);
         ll_landline = findViewById(R.id.ll_landline);
         ll_email = findViewById(R.id.ll_email);
+        ll_email_1 = findViewById(R.id.ll_email_1);
+        ll_website = findViewById(R.id.ll_website);
+        ll_address = findViewById(R.id.ll_address);
+        ib_email = findViewById(R.id.ib_email);
+        ib_website = findViewById(R.id.ib_website);
+        ib_address = findViewById(R.id.ib_address);
         cb_like = findViewById(R.id.cb_like);
         imv_image = findViewById(R.id.imv_image);
         progressBar = findViewById(R.id.progressBar);
@@ -231,7 +240,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
         else
             cv_tabs.setVisibility(View.GONE);
 
-        if ((searchDetails.getMobiles().get(0) == null || searchDetails.getMobiles().get(0).size() != 0)
+        if ((searchDetails.getMobiles().get(0) == null || searchDetails.getMobiles().get(0).size() == 0)
                 && searchDetails.getEmail().trim().isEmpty()
                 && searchDetails.getWebsite().trim().isEmpty()) {
             cv_contact_details.setVisibility(View.GONE);
@@ -247,13 +256,13 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             if (!searchDetails.getEmail().trim().isEmpty())
                 tv_email.setText(searchDetails.getEmail());
             else
-                tv_email.setVisibility(View.GONE);
+                ll_email_1.setVisibility(View.GONE);
 
 
             if (!searchDetails.getWebsite().trim().isEmpty())
                 tv_website.setText(searchDetails.getWebsite());
             else
-                tv_website.setVisibility(View.GONE);
+                ll_website.setVisibility(View.GONE);
         }
 
         if (searchDetails.getAddress().trim().isEmpty() && (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty())) {
@@ -262,7 +271,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             if (!searchDetails.getAddress().trim().isEmpty())
                 tv_address.setText(searchDetails.getAddress());
             else
-                tv_address.setVisibility(View.GONE);
+                ll_address.setVisibility(View.GONE);
         }
 
         if (!searchDetails.getRating_by_user().equals("0"))
@@ -332,6 +341,17 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             startActivity(intent);
         });
 
+        ib_address.setOnClickListener(v -> {
+            if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
+                Utilities.showMessage("Location not added", context, 2);
+                return;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
+            startActivity(intent);
+        });
+
         ll_mobile.setOnClickListener(v -> {
             if (searchDetails.getMobiles().get(0) != null)
                 if (searchDetails.getMobiles().get(0).size() > 0) {
@@ -386,7 +406,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             }
         });
 
-        tv_email.setOnClickListener(v -> {
+        ib_email.setOnClickListener(v -> {
             if (!searchDetails.getEmail().trim().isEmpty()) {
                 sendEmail();
             } else {
@@ -394,7 +414,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             }
         });
 
-        tv_website.setOnClickListener(v -> {
+        ib_website.setOnClickListener(v -> {
             String url = searchDetails.getWebsite();
 
             if (!url.startsWith("https://") || !url.startsWith("http://")) {
@@ -701,7 +721,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
 
             holder.tv_mobile.setText(searchDetails.getCountry_code() + searchDetails.getMobile_number());
 
-            holder.tv_mobile.setOnClickListener(v -> {
+            holder.ib_call.setOnClickListener(v -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
                 builder.setMessage("Are you sure you want to make a call?");
                 builder.setTitle("Alert");
@@ -732,10 +752,12 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private TextView tv_mobile;
+            private ImageButton ib_call;
 
             public MyViewHolder(View view) {
                 super(view);
                 tv_mobile = view.findViewById(R.id.tv_mobile);
+                ib_call = view.findViewById(R.id.ib_call);
             }
         }
 
@@ -904,21 +926,18 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             new DownloadFileAndMessageShare(context, "Business", IMAGE_LINK + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url(), businessDetails());
         } else {
             String message = businessDetails();
-
             Intent sharingIntent = new Intent(Intent.ACTION_SEND);
             sharingIntent.setType("text/plain");
             sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
             context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
         }
-
-
     }
 
     private String businessDetails() {
         StringBuilder sb = new StringBuilder();
 
         if (!searchDetails.getBusiness_name().equals("")) {
-            sb.append("Business Name - " + searchDetails.getBusiness_code() + " - -" + searchDetails.getBusiness_name() + "\n");
+            sb.append("Business Name - " + searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name() + "\n");
         }
 
         if (!searchDetails.getTypeSubTypeName().equals("")) {

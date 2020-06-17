@@ -47,7 +47,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     private String userId;
     private File chatFileFolder;
 
-
     public ChatAdapter(Context context, List<ChatModel.ResultBean> chatList) {
         this.context = context;
         this.chatList = chatList;
@@ -124,6 +123,11 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
                 holder.tv_outgoing_text.setText(chatDetails.getChat_text());
             else
                 holder.tv_outgoing_text.setVisibility(View.GONE);
+
+            if (chatDetails.getIs_read().equals("1"))
+                holder.imv_is_read.setVisibility(View.VISIBLE);
+            else
+                holder.imv_is_read.setVisibility(View.GONE);
 
             holder.tv_outgoing_date_time.setText(changeDateFormat("yyyy-MM-dd HH:mm:ss", "dd/MM/yy hh:mma", chatDetails.getCreated_at()));
 
@@ -216,7 +220,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private LinearLayout ll_incoming_layout_bubble, ll_outgoing_layout_bubble, ll_incoming_doc, ll_outgoing_doc;
-        private ImageView imv_incoming_image, imv_outgoing_image;
+        private ImageView imv_incoming_image, imv_outgoing_image, imv_is_read;
         private TextView tv_incoming_text, tv_outgoing_text, tv_incoming_doc_name, tv_outgoing_doc_name,
                 tv_incoming_date_time, tv_outgoing_date_time;
 
@@ -228,6 +232,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
             ll_outgoing_doc = itemView.findViewById(R.id.ll_outgoing_doc);
             imv_incoming_image = itemView.findViewById(R.id.imv_incoming_image);
             imv_outgoing_image = itemView.findViewById(R.id.imv_outgoing_image);
+            imv_is_read = itemView.findViewById(R.id.imv_is_read);
             tv_incoming_text = itemView.findViewById(R.id.tv_incoming_text);
             tv_outgoing_text = itemView.findViewById(R.id.tv_outgoing_text);
             tv_incoming_doc_name = itemView.findViewById(R.id.tv_incoming_doc_name);

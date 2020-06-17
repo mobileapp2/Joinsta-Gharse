@@ -167,11 +167,15 @@ public class CustomersFragment extends Fragment {
 
         cb_prime.setOnCheckedChangeListener((buttonView, isChecked) -> showOnlyPrimeCustomer(isChecked));
 
-        btn_add.setOnClickListener(v -> context.startActivity(new Intent(context, AddCustomerActivity.class)
-                .putExtra("businessCode", "")
-                .putExtra("businessName", "")
-                .putExtra("name", "")
-                .putExtra("mobile", "")));
+        btn_add.setOnClickListener(v ->
+                context.startActivity(new Intent(context, AddCustomerActivity.class)
+                        .putExtra("businessCode", "")
+                        .putExtra("businessName", "")
+                        .putExtra("name", "")
+                        .putExtra("countryCode", "+91")
+                        .putExtra("mobile", "")
+                        .putExtra("email", "")
+                        .putExtra("city", "")));
     }
 
     private void showOnlyPrimeCustomer(boolean isChecked) {
@@ -216,6 +220,8 @@ public class CustomersFragment extends Fragment {
             super.onPostExecute(result);
 //            edt_search.setText("");
             progressBar.setVisibility(View.GONE);
+            cb_prime.setChecked(false);
+            edt_search.setText("");
             String type = "", message = "";
             try {
                 if (!result.equals("")) {

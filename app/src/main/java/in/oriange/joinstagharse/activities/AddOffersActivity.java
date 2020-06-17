@@ -79,7 +79,7 @@ public class AddOffersActivity extends AppCompatActivity {
     private MaterialButton btn_save;
 
     private int mYear, mMonth, mDay, mYear1, mMonth1, mDay1;
-    private String userId, startDate, endDate, recordId, categoryTypeId, categoryId, categoryTypeName;
+    private String userId, startDate, endDate, recordId, categoryTypeId, categoryTypeName;
 
     private File photoFileFolder;
     private Uri photoURI;
@@ -147,7 +147,6 @@ public class AddOffersActivity extends AppCompatActivity {
     private void setDefault() {
         recordId = getIntent().getStringExtra("recordId");
         categoryTypeId = getIntent().getStringExtra("categoryTypeId");
-        categoryId = getIntent().getStringExtra("categoryId");
         categoryTypeName = getIntent().getStringExtra("categoryTypeName");
 
         Calendar calendar = Calendar.getInstance();
@@ -513,14 +512,6 @@ public class AddOffersActivity extends AppCompatActivity {
         if (edt_end_date.getText().toString().trim().isEmpty()) {
             Utilities.showMessage("Please select end date", context, 2);
             return;
-        }
-
-        if (!edt_url.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isWebsiteValid(edt_url.getText().toString().trim())) {
-                edt_url.setError("Please enter valid offer URL");
-                edt_url.requestFocus();
-                return;
-            }
         }
 
         JsonArray docsArray = new JsonArray();

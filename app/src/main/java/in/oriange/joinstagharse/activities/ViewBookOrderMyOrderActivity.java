@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -111,14 +112,16 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
     TextView tvPrice;
     @BindView(R.id.tv_delivery_type_status)
     TextView tvDeliveryTypeStatus;
-    @BindView(R.id.tv_view_on_map)
-    TextView tvViewOnMap;
     @BindView(R.id.ib_chat)
     ImageButton ibChat;
     @BindView(R.id.tv_unread_count)
     TextView tvUnreadCount;
     @BindView(R.id.fl_cart)
     FrameLayout flCart;
+    @BindView(R.id.ib_address)
+    ImageButton ibAddress;
+    @BindView(R.id.ll_address)
+    LinearLayout llAddress;
 
     private Context context;
     private UserSessionManager session;
@@ -254,7 +257,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
             if (!orderDetails.getOwner_address().equals(""))
                 tvAddress.setText("Pick up address - " + orderDetails.getOwner_address());
             else
-                tvAddress.setVisibility(View.GONE);
+                llAddress.setVisibility(View.GONE);
 
             latitude = orderDetails.getOwner_business_latitude();
             longitude = orderDetails.getOwner_business_longitude();
@@ -265,14 +268,14 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
             if (!orderDetails.getUser_address_line_one().equals(""))
                 tvAddress.setText("Delivery address - " + orderDetails.getUser_address_line_one());
             else
-                tvAddress.setVisibility(View.GONE);
+                llAddress.setVisibility(View.GONE);
 
             latitude = orderDetails.getUser_address_latitude();
             longitude = orderDetails.getUser_address_longitude();
         }
 
         if (latitude.equals("") || longitude.equals("") || latitude.equals("0") || longitude.equals("0"))
-            tvViewOnMap.setVisibility(View.GONE);
+            ibAddress.setVisibility(View.GONE);
 
 
         if (orderDetails.getCustomer_unread_msg_count().equals("0")) {
@@ -356,7 +359,8 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         if (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus().equals("1")) {
             tvDeliveryType.setVisibility(View.GONE);
             tvPurchaseOrderType.setVisibility(View.GONE);
-            tvAddress.setVisibility(View.GONE);
+            llAddress.setVisibility(View.GONE);
+            flCart.setVisibility(View.GONE);
         }
     }
 
@@ -366,7 +370,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 .putExtra("name", orderDetails.getOwner_business_name())
                 .putExtra("sendTo", orderDetails.getOwner_id())));
 
-        tvViewOnMap.setOnClickListener(v -> {
+        ibAddress.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + latitude + "," + longitude));
             startActivity(intent);

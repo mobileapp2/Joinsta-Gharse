@@ -167,11 +167,15 @@ public class VendorsFragment extends Fragment {
 
         cb_prime.setOnCheckedChangeListener((buttonView, isChecked) -> showOnlyPrimeVendors(isChecked));
 
-        btn_add.setOnClickListener(v -> context.startActivity(new Intent(context, AddVendorActivity.class)
-                .putExtra("businessCode", "")
-                .putExtra("businessName", "")
-                .putExtra("name", "")
-                .putExtra("mobile", "")));
+        btn_add.setOnClickListener(v ->
+                context.startActivity(new Intent(context, AddVendorActivity.class)
+                        .putExtra("businessCode", "")
+                        .putExtra("businessName", "")
+                        .putExtra("name", "")
+                        .putExtra("countryCode", "+91")
+                        .putExtra("mobile", "")
+                        .putExtra("email", "")
+                        .putExtra("city", "")));
     }
 
     private void showOnlyPrimeVendors(boolean isChecked) {
@@ -214,7 +218,8 @@ public class VendorsFragment extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-//            edt_search.setText("");
+            cb_prime.setChecked(false);
+            edt_search.setText("");
             progressBar.setVisibility(View.GONE);
             String type = "", message = "";
             try {

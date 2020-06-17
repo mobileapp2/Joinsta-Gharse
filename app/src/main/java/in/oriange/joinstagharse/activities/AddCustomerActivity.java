@@ -107,23 +107,24 @@ public class AddCustomerActivity extends AppCompatActivity {
     }
 
     private void setDefault() {
-        edtName.setText(getIntent().getStringExtra("name"));
-
+        String businessCode = getIntent().getStringExtra("businessCode");
+        String businessName = getIntent().getStringExtra("businessName");
+        String name = getIntent().getStringExtra("name");
+        String countryCode = getIntent().getStringExtra("countryCode");
         String mobile = getIntent().getStringExtra("mobile");
-        try {
-            if (mobile.length() > 10) {
-                mobile = mobile.substring(mobile.length() - 10);
-                edtMobile.setText(mobile);
-            } else {
-                edtMobile.setText(mobile);
-            }
-        } catch (Exception e) {
-            edtMobile.setText("");
-        }
+        String email = getIntent().getStringExtra("email");
+        String city = getIntent().getStringExtra("city");
 
+        if (countryCode.equals(""))
+            countryCode = "+91";
 
-        edtBusinessCode.setText(getIntent().getStringExtra("businessCode"));
-        edtBusinessName.setText(getIntent().getStringExtra("businessName"));
+        edtBusinessCode.setText(businessCode);
+        edtBusinessName.setText(businessName);
+        edtName.setText(name);
+        tvCountrycode.setText(countryCode);
+        edtMobile.setText(mobile);
+        edtEmail.setText(email);
+        edtCity.setText(city);
     }
 
     private void setEventListner() {

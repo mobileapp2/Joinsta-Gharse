@@ -1298,6 +1298,7 @@ public class EditBusinessActivity extends AppCompatActivity {
                                     .load(imageUrl)
                                     .into(imvPhoto1);
                             imvPhoto2.setVisibility(View.GONE);
+                            imvPhoto1.setVisibility(View.VISIBLE);
                         }
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);

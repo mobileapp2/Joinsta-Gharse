@@ -131,16 +131,23 @@ public class DownloadFileAndMessageShare {
         protected void onPostExecute(Boolean aBoolean) {
             pd.dismiss();
             super.onPostExecute(aBoolean);
-            ArrayList<Uri> downloadedImagesUriList = new ArrayList<>();
-            Uri uri = Uri.parse("file:///" + file);
-            downloadedImagesUriList.add(uri);
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+            if (file != null) {
+                ArrayList<Uri> downloadedImagesUriList = new ArrayList<>();
+                Uri uri = Uri.parse("file:///" + file);
+                downloadedImagesUriList.add(uri);
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
 
-            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-            sharingIntent.setType("text/html");
-            sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
-            sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
-            context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/html");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
+                sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
+                context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            } else {
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/html");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
+                context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+            }
         }
     }
 

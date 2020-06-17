@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -53,6 +55,14 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
     TextView tvEmail;
     @BindView(R.id.cv_contact_details)
     CardView cvContactDetails;
+    @BindView(R.id.ib_call)
+    ImageButton ibCall;
+    @BindView(R.id.ll_mobile)
+    LinearLayout llMobile;
+    @BindView(R.id.ib_email)
+    ImageButton ibEmail;
+    @BindView(R.id.ll_email)
+    LinearLayout llEmail;
 
     private Context context;
     private UserSessionManager session;
@@ -113,7 +123,7 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
         if (!customersDetails.getEmail().equals(""))
             tvEmail.setText(customersDetails.getEmail());
         else
-            tvEmail.setVisibility(View.GONE);
+            llEmail.setVisibility(View.GONE);
 
         tvMobile.setText(customersDetails.getCountry_code() + customersDetails.getMobile());
 
@@ -124,7 +134,7 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
     }
 
     private void setEventListner() {
-        tvMobile.setOnClickListener(v -> {
+        ibCall.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
             builder.setMessage("Are you sure you want to make a call?");
             builder.setTitle("Alert");
@@ -137,7 +147,7 @@ public class ViewCustomerDetailsActivity extends AppCompatActivity {
             alertD.show();
         });
 
-        tvEmail.setOnClickListener(v -> sendEmail());
+        ibEmail.setOnClickListener(v -> sendEmail());
     }
 
     private void sendEmail() {

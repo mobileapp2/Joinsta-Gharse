@@ -30,10 +30,13 @@ import java.util.Date;
 import java.util.Random;
 
 import in.oriange.joinstagharse.R;
+import in.oriange.joinstagharse.activities.ChatActivity;
 import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.NotificationActivity;
 import in.oriange.joinstagharse.activities.SplashScreenActivity;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
+
+import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 
 public class FirebaseMessageService extends FirebaseMessagingService {
 
@@ -83,7 +86,15 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     .putExtra("businessId", remoteMessage.getData().get("business_id"));
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         } else if (remoteMessage.getData().get("notification_type").equals("4")) {     // Chat Notifications
+//            if (ChatActivity.isChatActivityRunning)
             LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(new Intent("ChatActivity"));
+//            else {
+//                notificationIntent = new Intent(getApplicationContext(), ChatActivity.class)
+//                        .putExtra("orderId", remoteMessage.getData().get("order_id"))
+//                        .putExtra("name", remoteMessage.getData().get("title"))
+//                        .putExtra("sendTo", remoteMessage.getData().get("send_by"));
+//                notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            }
         } else {
             notificationIntent = new Intent(getApplicationContext(), SplashScreenActivity.class);
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -127,6 +138,36 @@ public class FirebaseMessageService extends FirebaseMessagingService {
                     remoteMessage.getData().get("mobile"),
                     remoteMessage.getData().get("email")
             );
+        } else if (remoteMessage.getData().get("notification_type").equals("4")) {
+//            if (!ChatActivity.isChatActivityRunning) {
+//                if (remoteMessage.getData().get("chat_doc_type").equals("0") || remoteMessage.getData().get("chat_doc_type").equals("2")) {
+//                    showNewNotification(
+//                            getApplicationContext(),
+//                            notificationIntent,
+//                            remoteMessage.getData().get("title"),
+//                            remoteMessage.getData().get("chat_text"),
+//                            remoteMessage.getData().get("image"),
+//                            remoteMessage.getData().get("icon"),
+//                            remoteMessage.getData().get("type"),
+//                            remoteMessage.getData().get("userId"),
+//                            remoteMessage.getData().get("taskId"),
+//                            remoteMessage.getData().get("notification_type"),
+//                            remoteMessage.getData().get("group_id"),
+//                            remoteMessage.getData().get("msg_id"),
+//                            remoteMessage.getData().get("group_name"));
+//                } else if (remoteMessage.getData().get("chat_doc_type").equals("1")) {
+//                    generatepicture(
+//                            getApplicationContext(),
+//                            notificationIntent,
+//                            remoteMessage.getData().get("title"),
+//                            remoteMessage.getData().get("chat_text"),
+//                            IMAGE_LINK + "chat/" + remoteMessage.getData().get("image"),
+//                            remoteMessage.getData().get("notification_type"),
+//                            remoteMessage.getData().get("group_id"),
+//                            remoteMessage.getData().get("msg_id"),
+//                            remoteMessage.getData().get("group_name"));
+//                }
+//            }
         }
     }
 
@@ -352,5 +393,4 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 
         notificationManager.notify(m, notification);
     }
-
 }

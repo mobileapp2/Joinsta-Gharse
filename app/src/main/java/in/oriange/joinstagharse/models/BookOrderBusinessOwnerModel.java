@@ -74,6 +74,9 @@ public class BookOrderBusinessOwnerModel implements Serializable {
         private String order_type;
         private String order_text;
         private String owner_business_id;
+        private String owner_address;
+        private String owner_business_latitude;
+        private String owner_business_longitude;
         private String purchase_order_type;
         private String business_id;
         private String is_deleted;
@@ -100,6 +103,8 @@ public class BookOrderBusinessOwnerModel implements Serializable {
         private String vendor_unread_msg_count;
         private String user_address_latitude;
         private String user_address_longitude;
+        private String owner_business_code;
+        private String owner_business_name;
         private List<String> order_images;
         private List<ProductDetailsBean> product_details;
         private List<StatusDetailsBean> status_details;
@@ -144,6 +149,30 @@ public class BookOrderBusinessOwnerModel implements Serializable {
 
         public void setOwner_business_id(String owner_business_id) {
             this.owner_business_id = owner_business_id;
+        }
+
+        public String getOwner_address() {
+            return owner_address;
+        }
+
+        public void setOwner_address(String owner_address) {
+            this.owner_address = owner_address;
+        }
+
+        public String getOwner_business_latitude() {
+            return owner_business_latitude;
+        }
+
+        public void setOwner_business_latitude(String owner_business_latitude) {
+            this.owner_business_latitude = owner_business_latitude;
+        }
+
+        public String getOwner_business_longitude() {
+            return owner_business_longitude;
+        }
+
+        public void setOwner_business_longitude(String owner_business_longitude) {
+            this.owner_business_longitude = owner_business_longitude;
         }
 
         public String getPurchase_order_type() {
@@ -219,7 +248,7 @@ public class BookOrderBusinessOwnerModel implements Serializable {
         }
 
         public String getCustomer_country_code() {
-            return "+"+customer_country_code;
+            return "+" + customer_country_code;
         }
 
         public void setCustomer_country_code(String customer_country_code) {
@@ -354,6 +383,22 @@ public class BookOrderBusinessOwnerModel implements Serializable {
             this.user_address_longitude = user_address_longitude;
         }
 
+        public String getOwner_business_code() {
+            return owner_business_code;
+        }
+
+        public void setOwner_business_code(String owner_business_code) {
+            this.owner_business_code = owner_business_code;
+        }
+
+        public String getOwner_business_name() {
+            return owner_business_name;
+        }
+
+        public void setOwner_business_name(String owner_business_name) {
+            this.owner_business_name = owner_business_name;
+        }
+
         public List<String> getOrder_images() {
             return order_images;
         }
@@ -459,7 +504,7 @@ public class BookOrderBusinessOwnerModel implements Serializable {
                     stringBuilder.append(" | Status - Billed");
                     break;
                 case "7":
-                        stringBuilder.append(" | Status - Cancelled");
+                    stringBuilder.append(" | Status - Cancelled");
                     break;
             }
             return stringBuilder.toString();

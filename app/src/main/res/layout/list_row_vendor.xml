@@ -58,6 +58,7 @@
                 android:id="@+id/tv_city"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:duplicateParentState="true"
                 android:gravity="start"
@@ -75,6 +76,7 @@
                     android:id="@+id/tv_mobile"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_marginRight="5dp"
                     android:layout_weight="1"
                     android:duplicateParentState="true"
@@ -85,8 +87,8 @@
 
                 <ImageButton
                     android:id="@+id/ib_call"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="23dp"
+                    android:layout_height="23dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:scaleType="fitCenter"
                     android:src="@drawable/icon_phone_red" />

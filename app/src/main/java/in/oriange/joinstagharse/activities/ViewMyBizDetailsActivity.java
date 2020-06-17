@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -53,6 +54,7 @@ import in.oriange.joinstagharse.models.GetBusinessModel;
 import in.oriange.joinstagharse.models.RatingAndReviewModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
+import in.oriange.joinstagharse.utilities.DownloadFileAndMessageShare;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
@@ -103,6 +105,18 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
     TextView tvAddress;
     @BindView(R.id.cv_address)
     CardView cvAddress;
+    @BindView(R.id.ib_email)
+    ImageButton ibEmail;
+    @BindView(R.id.ll_email_1)
+    LinearLayout llEmail1;
+    @BindView(R.id.ib_website)
+    ImageButton ibWebsite;
+    @BindView(R.id.ll_website)
+    LinearLayout llWebsite;
+    @BindView(R.id.ll_address)
+    LinearLayout llAddress;
+    @BindView(R.id.ib_address)
+    ImageButton ibAddress;
 
     private Context context;
     private UserSessionManager session;
@@ -203,7 +217,7 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
         else
             cvTabs.setVisibility(View.GONE);
 
-        if ((searchDetails.getMobiles().get(0) == null || searchDetails.getMobiles().get(0).size() != 0)
+        if ((searchDetails.getMobiles().get(0) == null || searchDetails.getMobiles().get(0).size() == 0)
                 && searchDetails.getEmail().trim().isEmpty()
                 && searchDetails.getWebsite().trim().isEmpty()) {
             cvContactDetails.setVisibility(View.GONE);
@@ -219,21 +233,23 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
             if (!searchDetails.getEmail().trim().isEmpty())
                 tvEmail.setText(searchDetails.getEmail());
             else
-                tvEmail.setVisibility(View.GONE);
-
+                llEmail1.setVisibility(View.GONE);
 
             if (!searchDetails.getWebsite().trim().isEmpty())
                 tvWebsite.setText(searchDetails.getWebsite());
             else
-                tvWebsite.setVisibility(View.GONE);
+                llWebsite.setVisibility(View.GONE);
         }
 
-        if (searchDetails.getAddress().trim().isEmpty() && (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()))
+        if (searchDetails.getAddress().trim().isEmpty() && (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty())) {
             cvAddress.setVisibility(View.GONE);
-        else if (!searchDetails.getAddress().trim().isEmpty())
-            tvAddress.setText(searchDetails.getAddress());
-        else
-            tvAddress.setVisibility(View.GONE);
+        } else {
+            if (!searchDetails.getAddress().trim().isEmpty())
+                tvAddress.setText(searchDetails.getAddress());
+            else
+                llAddress.setVisibility(View.GONE);
+        }
+
     }
 
     private void getSessionDetails() {
@@ -253,7 +269,7 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
     private void setEventHandler() {
         imvShare.setOnClickListener(v -> shareDetails());
 
-        tvEmail.setOnClickListener(v -> {
+        ibEmail.setOnClickListener(v -> {
             if (!searchDetails.getEmail().trim().isEmpty()) {
                 sendEmail();
             } else {
@@ -261,7 +277,7 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
             }
         });
 
-        tvWebsite.setOnClickListener(v -> {
+        ibWebsite.setOnClickListener(v -> {
             String url = searchDetails.getWebsite();
 
             if (!url.startsWith("https://") || !url.startsWith("http://")) {
@@ -271,6 +287,18 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
             i.setData(Uri.parse(url));
             startActivity(i);
         });
+
+        ibAddress.setOnClickListener(v -> {
+            if (searchDetails.getLatitude().trim().isEmpty() || searchDetails.getLongitude().trim().isEmpty()) {
+                Utilities.showMessage("Location not added", context, 2);
+                return;
+            }
+
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://maps.google.com/maps?saddr=&daddr=" + searchDetails.getLatitude() + "," + searchDetails.getLongitude()));
+            startActivity(intent);
+        });
+
 
         tvTotalRating.setOnClickListener(v -> {
             if (Utilities.isNetworkAvailable(context))
@@ -370,10 +398,22 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
     }
 
     private void shareDetails() {
+        if (!searchDetails.getImage_url().equals("")) {
+            new DownloadFileAndMessageShare(context, "Business", IMAGE_LINK + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url(), businessDetails());
+        } else {
+            String message = businessDetails();
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
+            context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+        }
+    }
+
+    private String businessDetails() {
         StringBuilder sb = new StringBuilder();
 
         if (!searchDetails.getBusiness_name().equals("")) {
-            sb.append("Business Name - " + searchDetails.getBusiness_name() + "\n");
+            sb.append("Business Name - " + searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name() + "\n");
         }
 
         if (!searchDetails.getTypeSubTypeName().equals("")) {
@@ -420,12 +460,7 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
             sb.append("Website - " + searchDetails.getWebsite() + "\n");
         }
 
-        String details = sb.toString() + "\n" + "Joinsta Gharse\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
-
-        Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(Intent.EXTRA_TEXT, details);
-        context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+        return sb.toString() + "\n" + "Joinsta Gharse\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
 
     }
 

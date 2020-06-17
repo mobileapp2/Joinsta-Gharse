@@ -366,7 +366,7 @@ public class EditProductActivity extends AppCompatActivity {
             String res = "[]";
             List<ParamsPojo> param = new ArrayList<>();
             param.add(new ParamsPojo("type", "getProductCategories"));
-            param.add(new ParamsPojo("business_id", productDetails.getId()));
+            param.add(new ParamsPojo("business_id", productDetails.getBusiness_id()));
             res = APICall.FORMDATAAPICall(ApplicationConstants.MASTERAPI, param);
             return res.trim();
         }
@@ -469,7 +469,7 @@ public class EditProductActivity extends AppCompatActivity {
 
     private void showUnitOfMeasuresListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Post Type");
+        builderSingle.setTitle("Select Measurement Unit");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);

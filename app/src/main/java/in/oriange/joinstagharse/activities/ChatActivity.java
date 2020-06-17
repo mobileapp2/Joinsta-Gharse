@@ -105,6 +105,7 @@ public class ChatActivity extends AppCompatActivity {
     private Uri photoURI;
     private final int DOCUMENT_REQUEST = 100, CAMERA_REQUEST = 200, GALLERY_REQUEST = 300;
     private LocalBroadcastManager localBroadcastManager;
+    public static boolean isChatActivityRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +118,8 @@ public class ChatActivity extends AppCompatActivity {
         setDefault();
         setEventHandler();
         setUpToolbar();
+
+        isChatActivityRunning = true;
     }
 
     private void init() {
@@ -236,7 +239,7 @@ public class ChatActivity extends AppCompatActivity {
             JsonObject mainObj = new JsonObject();
             mainObj.addProperty("type", "addChat");
             mainObj.addProperty("order_id", orderId);
-            mainObj.addProperty("chat_text", edtChat.getText().toString().trim());
+            mainObj.addProperty("chat_text", input.toString());
             mainObj.addProperty("chat_image", "");
             mainObj.addProperty("chat_doc_type", "0");
             mainObj.addProperty("sent_by", userId);
@@ -489,7 +492,7 @@ public class ChatActivity extends AppCompatActivity {
             super.onPreExecute();
             pd.setMessage("Please wait ...");
             pd.setCancelable(false);
-            pd.show();
+//            pd.show();
         }
 
         @Override
@@ -501,7 +504,7 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            pd.dismiss();
+//            pd.dismiss();
             super.onPostExecute(result);
             String type = "", message = "";
             try {
@@ -607,5 +610,6 @@ public class ChatActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        isChatActivityRunning = false;
     }
 }

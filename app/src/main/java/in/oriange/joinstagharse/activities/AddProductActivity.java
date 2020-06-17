@@ -106,7 +106,7 @@ public class AddProductActivity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private String userId, businessId, productCategoryId, unitOfMeasureId;
+    private String userId, businessId, productCategoryId = "", unitOfMeasureId;
     private ArrayList<MasterModel> imageList;
     private List<ProductsCategoryModel.ResultBean> productCategoriesList;
     private List<UnitOfMeasuresModel.ResultBean> unitOfMeasuresList;
@@ -420,7 +420,7 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void showUnitOfMeasuresListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Post Type");
+        builderSingle.setTitle("Select Measurement Unit");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);

@@ -576,14 +576,6 @@ public class EditOffersActivity extends AppCompatActivity {
             return;
         }
 
-        if (!edt_url.getText().toString().trim().isEmpty()) {
-            if (!Utilities.isWebsiteValid(edt_url.getText().toString().trim())) {
-                edt_url.setError("Please enter valid offer URL");
-                edt_url.requestFocus();
-                return;
-            }
-        }
-
         JsonArray docsArray = new JsonArray();
 
         if (!imageOneName.isEmpty()) {

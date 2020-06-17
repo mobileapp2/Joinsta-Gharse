@@ -112,7 +112,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@color/MediumVioletRed">
+                            android:background="@color/MediumVioletRedDim">
 
                             <ImageView
                                 android:layout_width="match_parent"
@@ -163,7 +163,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@color/green">
+                            android:background="@color/greenDim">
 
                             <ImageView
                                 android:layout_width="match_parent"
@@ -266,7 +266,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@color/DarkGoldenrod">
+                            android:background="@color/DarkGoldenrodDim">
 
                             <ImageView
                                 android:layout_width="match_parent"
@@ -369,7 +369,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@color/DodgerBlue">
+                            android:background="@color/DodgerBlueDim">
 
                             <ImageView
                                 android:layout_width="match_parent"
@@ -418,7 +418,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:background="@color/red">
+                            android:background="@color/redDim">
 
                             <ImageView
                                 android:layout_width="match_parent"

@@ -250,25 +250,48 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
 
     @SuppressLint("RestrictedApi")
     private void showContextMenu(View view, SearchDetailsModel.ResultBean.BusinessesBean searchDetails) {
+        String countryCode = "";
+        String mobile = "";
+        String email = "";
+        String city = "";
+
+        if (searchDetails.getMobiles().get(0) != null)
+            if (searchDetails.getMobiles().get(0).size() > 0) {
+                mobile = searchDetails.getMobiles().get(0).get(0).getMobile_number();
+                countryCode = searchDetails.getMobiles().get(0).get(0).getCountry_code();
+            }
+        email = searchDetails.getEmail();
+        city = searchDetails.getCity();
+
         PopupMenu popup = new PopupMenu(context, view);
         popup.inflate(R.menu.menu_vendor_cudtomer);
         popup.getMenu().getItem(0).setTitle("Vendor");
         popup.getMenu().getItem(1).setTitle("Customer");
+        String finalCountryCode = countryCode;
+        String finalMobile = mobile;
+        String finalEmail = email;
+        String finalCity = city;
         popup.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.menu_vendor:
                     context.startActivity(new Intent(context, AddVendorActivity.class)
                             .putExtra("businessCode", searchDetails.getBusiness_code())
                             .putExtra("businessName", searchDetails.getBusiness_name())
-                            .putExtra("name", "")
-                            .putExtra("mobile", ""));
+                            .putExtra("name", searchDetails.getBusiness_name())
+                            .putExtra("countryCode", finalCountryCode)
+                            .putExtra("mobile", finalMobile)
+                            .putExtra("email", finalEmail)
+                            .putExtra("city", finalCity));
                     break;
                 case R.id.menu_customer:
                     context.startActivity(new Intent(context, AddCustomerActivity.class)
                             .putExtra("businessCode", searchDetails.getBusiness_code())
                             .putExtra("businessName", searchDetails.getBusiness_name())
-                            .putExtra("name", "")
-                            .putExtra("mobile", ""));
+                            .putExtra("name", searchDetails.getBusiness_name())
+                            .putExtra("countryCode", finalCountryCode)
+                            .putExtra("mobile", finalMobile)
+                            .putExtra("email", finalEmail)
+                            .putExtra("city", finalCity));
                     break;
             }
             return false;
