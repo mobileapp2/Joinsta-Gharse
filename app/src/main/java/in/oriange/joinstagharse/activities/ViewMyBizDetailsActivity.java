@@ -565,8 +565,10 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
                     message = mainObj.getString("message");
                     if (type.equalsIgnoreCase("success")) {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyBusinessActivity"));
-                        Utilities.showMessage("Business details deleted successfully", context, 1);
+                        Utilities.showMessage(message, context, 1);
                         finish();
+                    } else {
+                        Utilities.showMessage(message, context, 2);
                     }
                 }
             } catch (Exception e) {

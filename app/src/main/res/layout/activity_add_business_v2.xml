@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:theme="@style/AppTheme.NoActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+            <com.kofigyan.stateprogressbar.StateProgressBar
+                android:id="@+id/your_state_progress_bar_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:spb_currentStateNumber="one"
+                app:spb_maxStateNumber="three"
+                app:spb_animateToCurrentProgressState="true"
+                app:spb_checkStateCompleted="true"/>
+
+            <com.anton46.stepsview.StepsView
+                android:id="@+id/stepsView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"/>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_save"
+                style="@style/MaterialButton"
+                android:layout_gravity="end"
+                android:layout_marginRight="10dp"
+                android:text="Save" />
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+</LinearLayout>

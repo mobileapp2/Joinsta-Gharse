@@ -54,19 +54,19 @@ public class BusinessProductsListAdapter extends RecyclerView.Adapter<BusinessPr
                     .into(holder.imv_productimage, new Callback() {
                         @Override
                         public void onSuccess() {
-                            holder.tv_nopreview.setVisibility(View.GONE);
+                            holder.imv_image_not_available.setVisibility(View.GONE);
                             holder.imv_productimage.setVisibility(View.VISIBLE);
                         }
 
                         @Override
                         public void onError() {
-                            holder.tv_nopreview.setVisibility(View.VISIBLE);
+                            holder.imv_image_not_available.setVisibility(View.VISIBLE);
                             holder.imv_productimage.setVisibility(View.GONE);
                         }
                     });
 
         } else {
-            holder.tv_nopreview.setVisibility(View.VISIBLE);
+            holder.imv_image_not_available.setVisibility(View.VISIBLE);
             holder.imv_productimage.setVisibility(View.GONE);
         }
 
@@ -105,8 +105,8 @@ public class BusinessProductsListAdapter extends RecyclerView.Adapter<BusinessPr
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private CardView cv_mainlayout;
-        private TextView tv_productname, tv_productinfo, tv_in_stock, tv_price, tv_no_price_available, tv_nopreview;
-        private ImageView imv_productimage;
+        private TextView tv_productname, tv_productinfo, tv_in_stock, tv_price, tv_no_price_available;
+        private ImageView imv_productimage, imv_image_not_available;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -117,8 +117,8 @@ public class BusinessProductsListAdapter extends RecyclerView.Adapter<BusinessPr
             tv_in_stock = itemView.findViewById(R.id.tv_in_stock);
             tv_price = itemView.findViewById(R.id.tv_price);
             tv_no_price_available = itemView.findViewById(R.id.tv_no_price_available);
+            imv_image_not_available = itemView.findViewById(R.id.imv_image_not_available);
             imv_productimage = itemView.findViewById(R.id.imv_productimage);
-            tv_nopreview = itemView.findViewById(R.id.tv_nopreview);
         }
     }
 

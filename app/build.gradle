@@ -85,6 +85,8 @@ dependencies {
     implementation 'com.bignerdranch.android:simple-item-decoration:1.0.0'
     implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
     implementation 'com.github.stfalcon:chatkit:0.3.3'
+    implementation 'com.kofigyan.stateprogressbar:stateprogressbar:1.0.0'
+    implementation 'com.anton46:stepsview:0.0.2'
     implementation('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true
     }

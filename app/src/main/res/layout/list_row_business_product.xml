@@ -32,14 +32,13 @@
                 android:scaleType="centerCrop"
                 android:visibility="gone" />
 
-            <TextView
-                android:id="@+id/tv_nopreview"
+            <ImageView
+                android:id="@+id/imv_image_not_available"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="No Preview Available"
-                android:textColor="@color/darkGray"
-                android:textSize="16sp"
+                android:padding="15dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_preview"
                 android:visibility="gone" />
 
         </FrameLayout>
@@ -114,8 +113,8 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:gravity="center"
-                    android:text="1,200/BOX"
                     android:maxLines="2"
+                    android:text="1,200/BOX"
                     android:textColor="@color/darkGray"
                     android:textSize="14sp" />
 

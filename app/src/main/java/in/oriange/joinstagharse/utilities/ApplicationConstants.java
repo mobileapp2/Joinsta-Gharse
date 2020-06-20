@@ -28,12 +28,12 @@ public class ApplicationConstants {
     public static final String TRANSSTATUSURL = "https://meravahan.in/paytm/transaction_status.php";
 
     //BETA API
-//    private static final String API_LINK = "https://gstkhata.com/EOrderBook/Api/";
-//    public static final String IMAGE_LINK = "https://gstkhata.com/EOrderBook/images/";
+    private static final String API_LINK = "https://gstkhata.com/EOrderBook/Api/";
+    public static final String IMAGE_LINK = "https://gstkhata.com/EOrderBook/images/";
 
     //LIVE API
-    private static final String API_LINK = "https://www.joinstagharse.com/Api_v1.1/";
-    public static final String IMAGE_LINK = "https://www.joinstagharse.com/images/";
+//    private static final String API_LINK = "https://www.joinstagharse.com/Api_v1.1/";
+//    public static final String IMAGE_LINK = "https://www.joinstagharse.com/images/";
 
     public static final String NUMVERIFYAPI = "http://apilayer.net/api/validate";
     public static final String LOGINAPI = API_LINK + "login.php";
@@ -54,6 +54,7 @@ public class ApplicationConstants {
     public static final String FILEUPLOADAPI = API_LINK + "upload.php";
     public static final String DEVICEREGAPI = API_LINK + "deviceregistration.php";
     public static final String FEEDBACKAPI = API_LINK + "userfeedback.php";
+    public static final String PRODUCTCATEGORYAPI = API_LINK + "product_category.php";
     public static final String NOTIFICATIONAPI = API_LINK + "notification.php";
     public static final String TAGSAPI = API_LINK + "tags.php";
     public static final String GROUPSAPI = API_LINK + "group.php";

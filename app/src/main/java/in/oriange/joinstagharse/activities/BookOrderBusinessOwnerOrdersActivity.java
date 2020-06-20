@@ -367,7 +367,13 @@ public class BookOrderBusinessOwnerOrdersActivity extends AppCompatActivity {
         }
 
         if (filteredOrderList.size() > 0) {
-            BookOrderBusinessOwnerModel.ResultBean orderDetails = filteredOrderList.get(bookOrderReceivedOrdersAdapter.itemClickedPosition);
+            BookOrderBusinessOwnerModel.ResultBean orderDetails = null;
+            for (BookOrderBusinessOwnerModel.ResultBean resultBean : orderList)
+                if (resultBean.getId().equals(bookOrderReceivedOrdersAdapter.selectedOrderId)) {
+                    orderDetails = resultBean;
+                    break;
+                }
+
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderBusinessOwnerOrderActivity").putExtra("orderDetails", orderDetails));
             bookOrderReceivedOrdersAdapter.refreshList(filteredOrderList);
             llNopreview.setVisibility(View.GONE);

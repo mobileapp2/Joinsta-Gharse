@@ -32,7 +32,7 @@ public class BookOrderReceivedOrdersAdapter extends RecyclerView.Adapter<BookOrd
     private Context context;
     private List<BookOrderBusinessOwnerModel.ResultBean> orderList;
     private String callType;      // 1 = All Received Orders 2 = Business-wise Received Orders
-    public int itemClickedPosition;
+    public String selectedOrderId;
 
     public BookOrderReceivedOrdersAdapter(Context context, List<BookOrderBusinessOwnerModel.ResultBean> orderList, String callType) {
         this.context = context;
@@ -177,7 +177,7 @@ public class BookOrderReceivedOrdersAdapter extends RecyclerView.Adapter<BookOrd
         });
 
         holder.cv_mainlayout.setOnClickListener(v -> {
-            itemClickedPosition = position;
+            selectedOrderId = orderDetails.getId();
             context.startActivity(new Intent(context, ViewBookOrderBusinessOwnerOrderActivity.class)
                     .putExtra("orderDetails", orderDetails)
                     .putExtra("callType", callType));

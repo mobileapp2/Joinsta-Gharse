@@ -38,7 +38,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
     private Context context;
     private List<BookOrderGetMyOrdersModel.ResultBean> orderList;
     private String userId;
-    public int itemClickedPosition;
+    public String selectedOrderId;
 
     public BookOrderMyOrdersAdapter(Context context, List<BookOrderGetMyOrdersModel.ResultBean> orderList) {
         this.context = context;
@@ -182,18 +182,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
                 .putExtra("sendTo", orderDetails.getOwner_id())));
 
         holder.cv_mainlayout.setOnClickListener(v -> {
-//            if (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus().equals("1"))
-//                context.startActivity(new Intent(context, BookOrderSelectDeliveryTypeActivity.class)
-//                        .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
-//                        .putExtra("businessOwnerAddress", orderDetails.getOwner_address())
-//                        .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
-//                        .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
-//                        .putExtra("orderType", "1")
-//                        .putExtra("orderText", "")
-//                        .putExtra("orderDetails", orderDetails)
-//                        .putExtra("orderImageArray", new JsonArray().toString()));
-//            else
-            itemClickedPosition = position;
+            selectedOrderId = orderDetails.getId();
             context.startActivity(new Intent(context, ViewBookOrderMyOrderActivity.class)
                     .putExtra("orderDetails", orderDetails));
         });

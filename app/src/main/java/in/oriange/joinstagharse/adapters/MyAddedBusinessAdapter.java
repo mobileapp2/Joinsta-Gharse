@@ -1,5 +1,6 @@
 package in.oriange.joinstagharse.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -9,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,10 +22,13 @@ import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinstagharse.R;
+import in.oriange.joinstagharse.activities.AddCustomerActivity;
+import in.oriange.joinstagharse.activities.AddVendorActivity;
 import in.oriange.joinstagharse.activities.BookOrderBusinessOwnerOrdersActivity;
 import in.oriange.joinstagharse.activities.BusinessProductsActivity;
 import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.OffersForParticularRecordActivity;
+import in.oriange.joinstagharse.activities.ProductCategoriesActivity;
 import in.oriange.joinstagharse.activities.ViewMyBizDetailsActivity;
 import in.oriange.joinstagharse.models.GetBusinessModel;
 
@@ -103,11 +110,48 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         holder.ll_orders.setOnClickListener(v -> context.startActivity(new Intent(context, BookOrderBusinessOwnerOrdersActivity.class)
                 .putExtra("businessId", searchDetails.getId())));
 
-        holder.ll_book_order.setOnClickListener(v -> context.startActivity(new Intent(context, BusinessProductsActivity.class)
-                .putExtra("businessId", searchDetails.getId())));
+//        holder.ll_book_order.setOnClickListener(v -> context.startActivity(new Intent(context, BusinessProductsActivity.class)
+//                .putExtra("businessId", searchDetails.getId())));
+
+        holder.ll_book_order.setOnClickListener(v -> showProductContextMenu(v, searchDetails));
 
         holder.ll_enquire.setOnClickListener(v -> context.startActivity(new Intent(context, EnquiriesActivity.class)
                 .putExtra("businessId", searchDetails.getId())));
+
+//        holder.ll_terms.setOnClickListener(v -> context.startActivity(new Intent(context, EnquiriesActivity.class)
+//                .putExtra("businessId", searchDetails.getId())));
+
+        holder.ll_settings.setOnClickListener(v -> showSettingsDialog());
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void showProductContextMenu(View view, GetBusinessModel.ResultBean searchDetails) {
+        PopupMenu popup = new PopupMenu(context, view);
+        popup.inflate(R.menu.menu_vendor_cudtomer);
+        popup.getMenu().getItem(0).setTitle("Products");
+        popup.getMenu().getItem(1).setTitle("Categories");
+        popup.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.menu_vendor:
+                    context.startActivity(new Intent(context, BusinessProductsActivity.class)
+                            .putExtra("businessId", searchDetails.getId()));
+                    break;
+                case R.id.menu_customer:
+                    context.startActivity(new Intent(context, ProductCategoriesActivity.class)
+                            .putExtra("businessCategoryId", searchDetails.getType_id())
+                            .putExtra("businessCategoryName", searchDetails.getType_description()));
+                    break;
+            }
+            return false;
+        });
+
+        MenuPopupHelper menuHelper = new MenuPopupHelper(context, (MenuBuilder) popup.getMenu(), view);
+        menuHelper.setForceShowIcon(true);
+        menuHelper.show();
+    }
+
+    private void showSettingsDialog() {
+
     }
 
     @Override
@@ -120,7 +164,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         private CardView cv_mainlayout;
         private TagContainerLayout container_tags;
         private TextView tv_business_name, tv_address;
-        private LinearLayout ll_offer, ll_orders, ll_book_order, ll_enquire;
+        private LinearLayout ll_offer, ll_orders, ll_book_order, ll_enquire, ll_terms, ll_settings;
         private ImageView imv_store_pickup, imv_home_delivery;
 
         public MyViewHolder(View view) {
@@ -135,6 +179,8 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
             ll_orders = view.findViewById(R.id.ll_orders);
             ll_book_order = view.findViewById(R.id.ll_book_order);
             ll_enquire = view.findViewById(R.id.ll_enquire);
+            ll_terms = view.findViewById(R.id.ll_terms);
+            ll_settings = view.findViewById(R.id.ll_settings);
         }
     }
 
