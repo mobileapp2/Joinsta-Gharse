@@ -157,7 +157,7 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/ll_book_order"
+                android:id="@+id/ll_products"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -255,40 +255,9 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:id="@+id/ll_enquire"
+                android:id="@+id/ll_categories"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_weight="1"
-                android:background="?android:attr/selectableItemBackground"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:src="@drawable/icon_enquiry"
-                    android:tint="@color/darkGray" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="2dp"
-                    android:gravity="center"
-                    android:text="Enquire"
-                    android:textColor="@color/darkGray"
-                    android:textSize="12sp" />
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider" />
-
-            <LinearLayout
-                android:id="@+id/ll_terms"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
                 android:layout_marginTop="2dp"
                 android:layout_weight="1"
                 android:background="?android:attr/selectableItemBackground"
@@ -305,7 +274,38 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:gravity="center"
-                    android:text="Terms"
+                    android:text="Categories"
+                    android:textColor="@color/darkGray"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/divider" />
+
+            <LinearLayout
+                android:id="@+id/ll_enquire"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="2dp"
+                android:layout_weight="1"
+                android:background="?android:attr/selectableItemBackground"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:src="@drawable/icon_enquiry"
+                    android:tint="@color/darkGray" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:text="Enquiries"
                     android:textColor="@color/darkGray"
                     android:textSize="12sp" />
 
@@ -333,7 +333,7 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Settings"

@@ -127,6 +127,23 @@
 
                 <TextView
                     style="@style/TitleTextView"
+                    android:text="Product Subcategory" />
+
+                <EditText
+                    android:id="@+id/edt_subcategory"
+                    style="@style/SelectableEditText"
+                    android:hint="Select Product Subcategory"
+                    android:inputType="text|textNoSuggestions|textNoSuggestions" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
                     android:text="Unit of Measure *" />
 
                 <EditText

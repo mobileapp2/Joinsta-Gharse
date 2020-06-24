@@ -56,7 +56,7 @@ public class BusinessProductsActivity extends AppCompatActivity {
     private Context context;
     private UserSessionManager session;
     private LocalBroadcastManager localBroadcastManager;
-    private String userId, businessId;
+    private String userId, businessId, businessCategoryId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +93,7 @@ public class BusinessProductsActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessId = getIntent().getStringExtra("businessId");
+        businessCategoryId = getIntent().getStringExtra("businessCategoryId");
 
         if (Utilities.isNetworkAvailable(context))
             new GetAllProducts().execute();
@@ -115,7 +116,8 @@ public class BusinessProductsActivity extends AppCompatActivity {
         });
 
         btnAdd.setOnClickListener(v -> startActivity(new Intent(context, AddProductActivity.class)
-                .putExtra("businessId", businessId)));
+                .putExtra("businessId", businessId)
+                .putExtra("businessCategoryId", businessCategoryId)));
     }
 
     private class GetAllProducts extends AsyncTask<String, Void, String> {

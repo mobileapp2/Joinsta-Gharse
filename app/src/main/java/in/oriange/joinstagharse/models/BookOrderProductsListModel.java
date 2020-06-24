@@ -5,12 +5,6 @@ import java.util.List;
 
 public class BookOrderProductsListModel implements Serializable {
 
-    /**
-     * type : success
-     * message : Product data returned successfully!
-     * result : [{"id":"19","name":"Product 001","description":"Test description","unit_of_measure":"BGS","max_retail_price":"120","selling_price":"120","product_code":"P001","category_id":"1","stock":"100","in_stock":"1","is_featured":"1","is_show_in_list":"0","is_inclusive_tax":"1","business_id":"6","created_by":"10","updated_by":"10","created_at":"2020-05-27 15:42:16","updated_at":"2020-05-27 15:42:16","unit_of_measure_id":"2","product_images":["test.png"],"product_brouchure":["new_test.png"],"product_category_name":"tt jj"},{"id":"14","name":"Product 001","description":"Test description","unit_of_measure":"BGS","max_retail_price":"120","selling_price":"120","product_code":"P001","category_id":"1","stock":"100","in_stock":"1","is_featured":"1","is_show_in_list":"1","is_inclusive_tax":"1","business_id":"6","created_by":"10","updated_by":"10","created_at":"2020-05-26 20:08:01","updated_at":"2020-05-26 20:08:01","unit_of_measure_id":"2","product_images":["test.png"],"product_brouchure":["new_test.png"],"product_category_name":"tt jj"},{"id":"2","name":"Product 02","description":"Test description","unit_of_measure":"BGS","max_retail_price":"120","selling_price":"120","product_code":"P002","category_id":"1","stock":"100","in_stock":"1","is_featured":"1","is_show_in_list":"1","is_inclusive_tax":"0","business_id":"6","created_by":"10","updated_by":"10","created_at":"2020-05-21 15:04:27","updated_at":"2020-05-21 15:04:27","unit_of_measure_id":"2","product_images":["test3-20200513123253.jpg"],"product_brouchure":["test.png"],"product_category_name":"tt jj"}]
-     */
-
     private String type;
     private String message;
     private List<ResultBean> result;
@@ -40,30 +34,6 @@ public class BookOrderProductsListModel implements Serializable {
     }
 
     public static class ResultBean implements Serializable {
-        /**
-         * id : 19
-         * name : Product 001
-         * description : Test description
-         * unit_of_measure : BGS
-         * max_retail_price : 120
-         * selling_price : 120
-         * product_code : P001
-         * category_id : 1
-         * stock : 100
-         * in_stock : 1
-         * is_featured : 1
-         * is_show_in_list : 0
-         * is_inclusive_tax : 1
-         * business_id : 6
-         * created_by : 10
-         * updated_by : 10
-         * created_at : 2020-05-27 15:42:16
-         * updated_at : 2020-05-27 15:42:16
-         * unit_of_measure_id : 2
-         * product_images : ["test.png"]
-         * product_brouchure : ["new_test.png"]
-         * product_category_name : tt jj
-         */
 
         private String id;
         private String name;
@@ -89,6 +59,8 @@ public class BookOrderProductsListModel implements Serializable {
         private int quantity = 1;
         private List<String> product_images;
         private List<String> product_brouchure;
+        private List<ProductCategories> product_categories;
+        private List<ProductSubCategories> product_sub_categories;
 
         public String getId() {
             return id;
@@ -296,6 +268,118 @@ public class BookOrderProductsListModel implements Serializable {
 
         public void setProduct_brouchure(List<String> product_brouchure) {
             this.product_brouchure = product_brouchure;
+        }
+
+        public List<ProductCategories> getProduct_categories() {
+            return product_categories;
+        }
+
+        public void setProduct_categories(List<ProductCategories> product_categories) {
+            this.product_categories = product_categories;
+        }
+
+        public List<ProductSubCategories> getProduct_sub_categories() {
+            return product_sub_categories;
+        }
+
+        public void setProduct_sub_categories(List<ProductSubCategories> product_sub_categories) {
+            this.product_sub_categories = product_sub_categories;
+        }
+
+        public static class ProductCategories implements Serializable {
+            /**
+             * {
+             * "id": "13",
+             * "product_id": "91",
+             * "product_category_id": "4",
+             * "product_category": "Beauty Products"
+             * }
+             */
+
+            private String id;
+            private String product_id;
+            private String product_category_id;
+            private String product_category;
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getProduct_id() {
+                return product_id;
+            }
+
+            public void setProduct_id(String product_id) {
+                this.product_id = product_id;
+            }
+
+            public String getProduct_category_id() {
+                return product_category_id;
+            }
+
+            public void setProduct_category_id(String product_category_id) {
+                this.product_category_id = product_category_id;
+            }
+
+            public String getProduct_category() {
+                return product_category;
+            }
+
+            public void setProduct_category(String product_category) {
+                this.product_category = product_category;
+            }
+        }
+
+        public static class ProductSubCategories implements Serializable {
+            /**
+             * {
+             * "id": "13",
+             * "product_id": "91",
+             * "product_category_id": "4",
+             * "product_category": "Beauty Products"
+             * }
+             */
+
+            private String id;
+            private String product_id;
+            private String product_category_id;
+            private String product_category;
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getProduct_id() {
+                return product_id;
+            }
+
+            public void setProduct_id(String product_id) {
+                this.product_id = product_id;
+            }
+
+            public String getProduct_category_id() {
+                return product_category_id;
+            }
+
+            public void setProduct_category_id(String product_category_id) {
+                this.product_category_id = product_category_id;
+            }
+
+            public String getProduct_category() {
+                return product_category;
+            }
+
+            public void setProduct_category(String product_category) {
+                this.product_category = product_category;
+            }
         }
     }
 }

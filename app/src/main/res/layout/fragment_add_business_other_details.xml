@@ -1,0 +1,55 @@
+<ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/sv_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardElevation="2dp"
+            app:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <CheckBox
+                    android:id="@+id/cb_is_enquiry_available"
+                    style="@style/CheckBox"
+                    android:text="Do you need enquiries?" />
+
+                <CheckBox
+                    android:id="@+id/cb_is_pick_up_available"
+                    style="@style/CheckBox"
+                    android:checked="true"
+                    android:text="Do you allow store pickup?" />
+
+                <CheckBox
+                    android:id="@+id/cb_is_home_delivery_available"
+                    style="@style/CheckBox"
+                    android:text="Do you do home delivery?" />
+
+                <CheckBox
+                    android:id="@+id/cb_show_in_search"
+                    style="@style/CheckBox"
+                    android:text="Show business in business listing?"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
+</ScrollView>

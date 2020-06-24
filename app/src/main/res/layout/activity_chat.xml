@@ -44,7 +44,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_chat"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="3dp" />
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/progressBar"
@@ -55,7 +56,6 @@
             android:indeterminate="true"
             android:visibility="gone"
             app:SpinKit_Color="@color/colorAccent" />
-
 
         <io.codetail.widget.RevealFrameLayout
             android:layout_width="match_parent"

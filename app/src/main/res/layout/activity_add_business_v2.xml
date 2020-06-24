@@ -12,41 +12,64 @@
         android:background="@color/white"
         android:theme="@style/AppTheme.NoActionBar">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark">
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:text="Add Business"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/white" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_save"
+                    style="@style/MaterialButton"
+                    android:layout_gravity="end"
+                    android:layout_marginRight="10dp"
+                    android:text="" />
+
+            </androidx.appcompat.widget.Toolbar>
 
             <com.kofigyan.stateprogressbar.StateProgressBar
-                android:id="@+id/your_state_progress_bar_id"
-                android:layout_width="wrap_content"
+                android:id="@+id/status_progress_bar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:spb_animateToCurrentProgressState="true"
+                app:spb_checkStateCompleted="true"
+                app:spb_currentStateDescriptionColor="@color/colorPrimary"
                 app:spb_currentStateNumber="one"
                 app:spb_maxStateNumber="three"
-                app:spb_animateToCurrentProgressState="true"
-                app:spb_checkStateCompleted="true"/>
+                app:spb_stateBackgroundColor="#BDBDBD"
+                app:spb_stateDescriptionColor="#808080"
+                app:spb_stateForegroundColor="@color/colorPrimary"
+                app:spb_stateNumberBackgroundColor="#808080"
+                app:spb_stateNumberForegroundColor="#eeeeee" />
 
-            <com.anton46.stepsview.StepsView
-                android:id="@+id/stepsView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                android:visibility="gone"/>
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_save"
-                style="@style/MaterialButton"
-                android:layout_gravity="end"
-                android:layout_marginRight="10dp"
-                android:text="Save" />
-
-        </androidx.appcompat.widget.Toolbar>
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1" />
 
 
 </LinearLayout>

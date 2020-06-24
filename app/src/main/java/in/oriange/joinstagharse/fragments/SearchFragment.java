@@ -193,7 +193,8 @@ public class SearchFragment extends Fragment {
             obj.addProperty("type", "getDetailsByLocation");
             obj.addProperty("user_id", userId);
             obj.addProperty("search_term", "");
-            obj.addProperty("location", params[0]);
+//            obj.addProperty("location", params[0]);
+            obj.addProperty("location", "");
             res = APICall.JSONAPICall(ApplicationConstants.SEARCHAPI, obj.toString());
             return res.trim();
         }
@@ -211,7 +212,12 @@ public class SearchFragment extends Fragment {
 
                     if (type.equalsIgnoreCase("success")) {
                         businessList = pojoDetails.getResult().getBusinesses();
-                        setDataToRecyclerView(isFavouriteSelected, edt_search.getText().toString().trim(), businessList);
+                        if (businessList.size() != 0) {
+                            setDataToRecyclerView(isFavouriteSelected, edt_search.getText().toString().trim(), businessList);
+                        } else {
+                            ll_nopreview.setVisibility(View.VISIBLE);
+                            rv_searchlist.setVisibility(View.GONE);
+                        }
                     } else {
                         ll_nopreview.setVisibility(View.VISIBLE);
                         rv_searchlist.setVisibility(View.GONE);
@@ -241,6 +247,16 @@ public class SearchFragment extends Fragment {
 
             filteredBusinessList.clear();
             filteredBusinessList.addAll(favBusinessList);
+        } else {
+            List<SearchDetailsModel.ResultBean.BusinessesBean> cityBusinessList = new ArrayList<>();
+
+            for (int i = 0; i < filteredBusinessList.size(); i++) {
+                if (filteredBusinessList.get(i).getCity().equalsIgnoreCase(session.getLocation().get(ApplicationConstants.KEY_LOCATION_INFO)))
+                    cityBusinessList.add(filteredBusinessList.get(i));
+            }
+
+            filteredBusinessList.clear();
+            filteredBusinessList.addAll(cityBusinessList);
         }
 
         if (!searchTerm.equals("")) {

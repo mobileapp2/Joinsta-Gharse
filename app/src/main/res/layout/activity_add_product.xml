@@ -67,7 +67,7 @@
                 <EditText
                     android:id="@+id/edt_code"
                     style="@style/EditableEditText"
-                    android:inputType="textCapWords" />
+                    android:inputType="textCapWords|textNoSuggestions" />
 
             </LinearLayout>
 
@@ -83,7 +83,7 @@
                 <EditText
                     android:id="@+id/edt_name"
                     style="@style/EditableEditText"
-                    android:inputType="textCapWords" />
+                    android:inputType="textCapWords|textNoSuggestions" />
 
             </LinearLayout>
 
@@ -99,7 +99,7 @@
                 <EditText
                     android:id="@+id/edt_description"
                     style="@style/EditableEditText"
-                    android:inputType="textMultiLine|textCapSentences" />
+                    android:inputType="textMultiLine|textCapSentences|textNoSuggestions" />
 
             </LinearLayout>
 
@@ -116,7 +116,24 @@
                     android:id="@+id/edt_category"
                     style="@style/SelectableEditText"
                     android:hint="Select Product Category"
-                    android:inputType="text" />
+                    android:inputType="text|textNoSuggestions" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/TitleTextView"
+                    android:text="Product Subcategory" />
+
+                <EditText
+                    android:id="@+id/edt_subcategory"
+                    style="@style/SelectableEditText"
+                    android:hint="Select Product Subcategory"
+                    android:inputType="text|textNoSuggestions|textNoSuggestions" />
 
             </LinearLayout>
 
@@ -133,7 +150,7 @@
                     android:id="@+id/edt_unit_of_measure"
                     style="@style/SelectableEditText"
                     android:hint="Select Unit of Measure"
-                    android:inputType="text" />
+                    android:inputType="text|textNoSuggestions" />
 
             </LinearLayout>
 

@@ -66,6 +66,7 @@ public class ProductCategoriesModel implements Serializable {
         private String created_by;
         private String updated_by;
         private String name;
+        private boolean isChecked;
         private List<SubCategoriesBean> sub_categories;
 
         public String getId() {
@@ -156,6 +157,14 @@ public class ProductCategoriesModel implements Serializable {
             this.name = name;
         }
 
+        public boolean isChecked() {
+            return isChecked;
+        }
+
+        public void setChecked(boolean checked) {
+            isChecked = checked;
+        }
+
         public List<SubCategoriesBean> getSub_categories() {
             return sub_categories;
         }
@@ -190,6 +199,7 @@ public class ProductCategoriesModel implements Serializable {
             private String created_by;
             private String updated_by;
             private String name;
+            private boolean isChecked;
 
             public String getId() {
                 return id;
@@ -277,6 +287,14 @@ public class ProductCategoriesModel implements Serializable {
 
             public void setName(String name) {
                 this.name = name;
+            }
+
+            public boolean isChecked() {
+                return isChecked;
+            }
+
+            public void setChecked(boolean checked) {
+                isChecked = checked;
             }
         }
     }

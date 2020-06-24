@@ -97,29 +97,28 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         holder.cv_mainlayout.setOnClickListener(v -> context.startActivity(new Intent(context, ViewMyBizDetailsActivity.class)
                 .putExtra("searchDetails", searchDetails)));
 
-        holder.ll_offer.setOnClickListener(v -> {
-            context.startActivity(new Intent(context, OffersForParticularRecordActivity.class)
-                    .putExtra("recordId", searchDetails.getId())
-                    .putExtra("categoryType", "1")
-                    .putExtra("CALLTYPE", "1")
-                    .putExtra("APITYPE", "getOfferDetails")
-                    .putExtra("categoryId", searchDetails.getType_id()));
-
-        });
+        holder.ll_offer.setOnClickListener(v ->
+                context.startActivity(new Intent(context, OffersForParticularRecordActivity.class)
+                        .putExtra("recordId", searchDetails.getId())
+                        .putExtra("categoryType", "1")
+                        .putExtra("CALLTYPE", "1")
+                        .putExtra("APITYPE", "getOfferDetails")
+                        .putExtra("categoryId", searchDetails.getType_id()))
+        );
 
         holder.ll_orders.setOnClickListener(v -> context.startActivity(new Intent(context, BookOrderBusinessOwnerOrdersActivity.class)
                 .putExtra("businessId", searchDetails.getId())));
 
-//        holder.ll_book_order.setOnClickListener(v -> context.startActivity(new Intent(context, BusinessProductsActivity.class)
-//                .putExtra("businessId", searchDetails.getId())));
-
-        holder.ll_book_order.setOnClickListener(v -> showProductContextMenu(v, searchDetails));
+        holder.ll_products.setOnClickListener(v -> context.startActivity(new Intent(context, BusinessProductsActivity.class)
+                .putExtra("businessId", searchDetails.getId())
+                .putExtra("businessCategoryId", searchDetails.getType_id())));
 
         holder.ll_enquire.setOnClickListener(v -> context.startActivity(new Intent(context, EnquiriesActivity.class)
                 .putExtra("businessId", searchDetails.getId())));
 
-//        holder.ll_terms.setOnClickListener(v -> context.startActivity(new Intent(context, EnquiriesActivity.class)
-//                .putExtra("businessId", searchDetails.getId())));
+        holder.ll_categories.setOnClickListener(v -> context.startActivity(new Intent(context, ProductCategoriesActivity.class)
+                .putExtra("businessCategoryId", searchDetails.getType_id())
+                .putExtra("businessCategoryName", searchDetails.getType_description())));
 
         holder.ll_settings.setOnClickListener(v -> showSettingsDialog());
     }
@@ -164,7 +163,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
         private CardView cv_mainlayout;
         private TagContainerLayout container_tags;
         private TextView tv_business_name, tv_address;
-        private LinearLayout ll_offer, ll_orders, ll_book_order, ll_enquire, ll_terms, ll_settings;
+        private LinearLayout ll_offer, ll_orders, ll_products, ll_enquire, ll_categories, ll_settings;
         private ImageView imv_store_pickup, imv_home_delivery;
 
         public MyViewHolder(View view) {
@@ -177,9 +176,9 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
             imv_home_delivery = view.findViewById(R.id.imv_home_delivery);
             ll_offer = view.findViewById(R.id.ll_offer);
             ll_orders = view.findViewById(R.id.ll_orders);
-            ll_book_order = view.findViewById(R.id.ll_book_order);
+            ll_products = view.findViewById(R.id.ll_products);
             ll_enquire = view.findViewById(R.id.ll_enquire);
-            ll_terms = view.findViewById(R.id.ll_terms);
+            ll_categories = view.findViewById(R.id.ll_categories);
             ll_settings = view.findViewById(R.id.ll_settings);
         }
     }

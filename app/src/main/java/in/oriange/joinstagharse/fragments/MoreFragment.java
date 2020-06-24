@@ -21,13 +21,15 @@ import in.oriange.joinstagharse.activities.MyAddedOffersActivity;
 import in.oriange.joinstagharse.activities.MyAddressActivity;
 import in.oriange.joinstagharse.activities.MyBusinessActivity;
 import in.oriange.joinstagharse.activities.NotificationActivity;
+import in.oriange.joinstagharse.activities.PolicyActivity;
 import in.oriange.joinstagharse.activities.SettingsActivity;
 import in.oriange.joinstagharse.activities.ViewBasicInformationActivity;
 
 public class MoreFragment extends Fragment {
 
     private Context context;
-    private CardView cv_basicinfo, cv_mybusiness, cv_myaddress, cv_settings, cv_enquires, cv_contactus, cv_myoffres;
+    private CardView cv_basicinfo, cv_mybusiness, cv_myaddress, cv_settings, cv_enquires, cv_contactus,
+            cv_myoffres, cv_policies;
     private ImageButton ib_notifications;
 
     @Override
@@ -58,6 +60,7 @@ public class MoreFragment extends Fragment {
         cv_enquires = rootView.findViewById(R.id.cv_enquires);
         cv_contactus = rootView.findViewById(R.id.cv_contactus);
         cv_myoffres = rootView.findViewById(R.id.cv_myoffres);
+        cv_policies = rootView.findViewById(R.id.cv_policies);
         ib_notifications = rootView.findViewById(R.id.ib_notifications);
     }
 
@@ -79,6 +82,8 @@ public class MoreFragment extends Fragment {
         cv_contactus.setOnClickListener(v -> startActivity(new Intent(context, ContactUsActivity.class)));
 
         cv_myoffres.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffersActivity.class)));
+
+        cv_policies.setOnClickListener(v -> startActivity(new Intent(context, PolicyActivity.class)));
 
         ib_notifications.setOnClickListener(v -> startActivity(new Intent(context, NotificationActivity.class)));
 

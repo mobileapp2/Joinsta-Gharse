@@ -20,11 +20,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -56,7 +58,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.models.MasterModel;
-import in.oriange.joinstagharse.models.ProductsCategoryModel;
+import in.oriange.joinstagharse.models.ProductCategoriesModel;
 import in.oriange.joinstagharse.models.UnitOfMeasuresModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
@@ -102,13 +104,17 @@ public class AddProductActivity extends AppCompatActivity {
     EditText edtBrochure;
     @BindView(R.id.btn_save)
     MaterialButton btnSave;
+    @BindView(R.id.edt_subcategory)
+    EditText edtSubcategory;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private String userId, businessId, productCategoryId = "", unitOfMeasureId;
+    private String userId, businessId, unitOfMeasureId, businessCategoryId;
+    private JsonArray categoryIdArray, subcategoryIdArray;
     private ArrayList<MasterModel> imageList;
-    private List<ProductsCategoryModel.ResultBean> productCategoriesList;
+    private List<ProductCategoriesModel.ResultBean> productCategoriesList;
+    private List<ProductCategoriesModel.ResultBean.SubCategoriesBean> productSubcategoriesList;
     private List<UnitOfMeasuresModel.ResultBean> unitOfMeasuresList;
     private int latestPosition;
     private File photoFileFolder;
@@ -137,7 +143,10 @@ public class AddProductActivity extends AppCompatActivity {
 
         imageList = new ArrayList<>();
         productCategoriesList = new ArrayList<>();
+        productSubcategoriesList = new ArrayList<>();
         unitOfMeasuresList = new ArrayList<>();
+        categoryIdArray = new JsonArray();
+        subcategoryIdArray = new JsonArray();
 
         photoFileFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Products");
         if (!photoFileFolder.exists())
@@ -164,6 +173,7 @@ public class AddProductActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessId = getIntent().getStringExtra("businessId");
+        businessCategoryId = getIntent().getStringExtra("businessCategoryId");
 
         imageList.add(new MasterModel("", ""));
         imageList.add(new MasterModel("", ""));
@@ -176,11 +186,28 @@ public class AddProductActivity extends AppCompatActivity {
 
             if (productCategoriesList.size() == 0)
                 if (Utilities.isNetworkAvailable(context))
-                    new GetProductCategories().execute();
+                    new GetProductCategories().execute(userId, businessCategoryId);
                 else
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             else
                 showProductCategoriesListDialog();
+        });
+
+        edtSubcategory.setOnClickListener(v -> {
+            productSubcategoriesList.clear();
+
+            for (ProductCategoriesModel.ResultBean resultBean : productCategoriesList) {
+                for (int i = 0; i < categoryIdArray.size(); i++) {
+                    if (categoryIdArray.get(i).getAsString().equals(resultBean.getId())) {
+                        productSubcategoriesList.addAll(resultBean.getSub_categories());
+                    }
+                }
+            }
+
+            if (productSubcategoriesList.size() != 0)
+                showProductSubcategoriesListDialog();
+            else
+                Utilities.showMessage("Subcategories not available", context, 2);
         });
 
         edtUnitOfMeasure.setOnClickListener(v -> {
@@ -282,7 +309,6 @@ public class AddProductActivity extends AppCompatActivity {
         mainObj.addProperty("type", "addProduct");
         mainObj.addProperty("name", edtName.getText().toString().trim());
         mainObj.addProperty("product_code", edtCode.getText().toString().trim());
-        mainObj.addProperty("category_id", productCategoryId);
         mainObj.addProperty("description", edtDescription.getText().toString().trim());
         mainObj.addProperty("unit_of_measure", unitOfMeasureId);
         mainObj.addProperty("max_retail_price", edtMaxRetailPrice.getText().toString().trim());
@@ -295,6 +321,8 @@ public class AddProductActivity extends AppCompatActivity {
         mainObj.addProperty("business_id", businessId);
         mainObj.addProperty("user_id", userId);
         mainObj.add("product_images", documentsArray);
+        mainObj.add("category_id", categoryIdArray);
+        mainObj.add("sub_category_id", subcategoryIdArray);
 
         if (Utilities.isNetworkAvailable(context))
             new AddProduct().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
@@ -315,10 +343,11 @@ public class AddProductActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... params) {
             String res = "[]";
-            List<ParamsPojo> param = new ArrayList<ParamsPojo>();
-            param.add(new ParamsPojo("type", "getProductCategories"));
-            param.add(new ParamsPojo("business_id", businessId));
-            res = APICall.FORMDATAAPICall(ApplicationConstants.MASTERAPI, param);
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getAllProductCategory");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("category_id", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.PRODUCTCATEGORYAPI, obj.toString());
             return res.trim();
         }
 
@@ -330,7 +359,7 @@ public class AddProductActivity extends AppCompatActivity {
             try {
                 if (!result.equals("")) {
                     productCategoriesList = new ArrayList<>();
-                    ProductsCategoryModel pojoDetails = new Gson().fromJson(result, ProductsCategoryModel.class);
+                    ProductCategoriesModel pojoDetails = new Gson().fromJson(result, ProductCategoriesModel.class);
                     type = pojoDetails.getType();
                     message = pojoDetails.getMessage();
 
@@ -348,27 +377,196 @@ public class AddProductActivity extends AppCompatActivity {
                 Utilities.showAlertDialog(context, "Server Not Responding", false);
             }
         }
+
     }
 
     private void showProductCategoriesListDialog() {
-        AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Product Category");
-        builderSingle.setCancelable(false);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_check_list, null);
 
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(view);
+        builder.setTitle("Select Category");
+        builder.setCancelable(false);
 
-        for (int i = 0; i < productCategoriesList.size(); i++) {
-            arrayAdapter.add(String.valueOf(productCategoriesList.get(i).getProduct_category()));
+        RecyclerView rv_checklist = view.findViewById(R.id.rv_checklist);
+        CheckBox cb_select_all = view.findViewById(R.id.cb_select_all);
+        cb_select_all.setVisibility(View.GONE);
+        rv_checklist.setLayoutManager(new LinearLayoutManager(context));
+        rv_checklist.setAdapter(new CategoryAdapter());
+
+        builder.setPositiveButton("Select", (dialog, which) -> {
+            categoryIdArray = new JsonArray();
+            edtCategory.setText("");
+
+            StringBuilder selectedCategories = new StringBuilder();
+
+            for (ProductCategoriesModel.ResultBean sample : productCategoriesList) {
+                if (sample.isChecked()) {
+                    selectedCategories.append(sample.getProduct_category()).append(", ");
+                    categoryIdArray.add(sample.getId());
+                }
+            }
+
+            if (selectedCategories.toString().length() != 0) {
+                String selectedLabsStr = selectedCategories.substring(0, selectedCategories.toString().length() - 2);
+                edtCategory.setText(selectedLabsStr);
+            }
+
+            subcategoryIdArray = new JsonArray();
+            edtSubcategory.setText("");
+        });
+
+        builder.setNegativeButton("clear", (dialog, which) -> {
+            for (int i = 0; i < productCategoriesList.size(); i++)
+                productCategoriesList.get(i).setChecked(false);
+
+            categoryIdArray = new JsonArray();
+            edtCategory.setText("");
+
+            subcategoryIdArray = new JsonArray();
+            edtSubcategory.setText("");
+        });
+
+        builder.create().show();
+    }
+
+    private class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyViewHolder> {
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_checklist, parent, false);
+            return new MyViewHolder(view);
         }
 
-        builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+            final int position = holder.getAdapterPosition();
 
-        builderSingle.setAdapter(arrayAdapter, (dialog, which) -> {
-            ProductsCategoryModel.ResultBean obj = productCategoriesList.get(which);
-            edtCategory.setText(obj.getProduct_category());
-            productCategoryId = obj.getId();
+            holder.cb_select.setText(productCategoriesList.get(position).getProduct_category());
+
+            if (productCategoriesList.get(position).isChecked()) {
+                holder.cb_select.setChecked(true);
+            }
+
+            holder.cb_select.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                productCategoriesList.get(position).setChecked(isChecked);
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return productCategoriesList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private CheckBox cb_select;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                cb_select = view.findViewById(R.id.cb_select);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+    }
+
+    private void showProductSubcategoriesListDialog() {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.dialog_check_list, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setView(view);
+        builder.setTitle("Select Subcategory");
+        builder.setCancelable(false);
+
+        RecyclerView rv_checklist = view.findViewById(R.id.rv_checklist);
+        CheckBox cb_select_all = view.findViewById(R.id.cb_select_all);
+        cb_select_all.setVisibility(View.GONE);
+        rv_checklist.setLayoutManager(new LinearLayoutManager(context));
+        rv_checklist.setAdapter(new SubcategoryAdapter());
+
+        builder.setPositiveButton("Select", (dialog, which) -> {
+            subcategoryIdArray = new JsonArray();
+            edtSubcategory.setText("");
+
+            StringBuilder selectedSubCategories = new StringBuilder();
+
+            for (ProductCategoriesModel.ResultBean.SubCategoriesBean sample : productSubcategoriesList) {
+                if (sample.isChecked()) {
+                    selectedSubCategories.append(sample.getProduct_category()).append(", ");
+                    subcategoryIdArray.add(sample.getId());
+                }
+            }
+
+            if (selectedSubCategories.toString().length() != 0) {
+                String selectedLabsStr = selectedSubCategories.substring(0, selectedSubCategories.toString().length() - 2);
+                edtSubcategory.setText(selectedLabsStr);
+            }
+
         });
-        builderSingle.show();
+
+        builder.setNegativeButton("clear", (dialog, which) -> {
+            for (int i = 0; i < productSubcategoriesList.size(); i++)
+                productSubcategoriesList.get(i).setChecked(false);
+
+            edtSubcategory.setText("");
+            subcategoryIdArray = new JsonArray();
+        });
+
+        builder.create().show();
+    }
+
+    private class SubcategoryAdapter extends RecyclerView.Adapter<SubcategoryAdapter.MyViewHolder> {
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_checklist, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+            final int position = holder.getAdapterPosition();
+
+            holder.cb_select.setText(productSubcategoriesList.get(position).getProduct_category());
+
+            if (productSubcategoriesList.get(position).isChecked()) {
+                holder.cb_select.setChecked(true);
+            }
+
+            holder.cb_select.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                productSubcategoriesList.get(position).setChecked(isChecked);
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return productSubcategoriesList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private CheckBox cb_select;
+
+            public MyViewHolder(@NonNull View view) {
+                super(view);
+                cb_select = view.findViewById(R.id.cb_select);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
     }
 
     private class GetUnitOfMeasures extends AsyncTask<String, Void, String> {
