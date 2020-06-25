@@ -126,7 +126,7 @@ public class ProductCategoryParentAdapter extends RecyclerView.Adapter<ProductCa
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+        return position;
     }
 
     private void openDeleteCategoryDialog(ProductCategoriesModel.ResultBean productCategoryDetails) {

@@ -474,7 +474,7 @@ public class ReceivedOrdersFragment extends Fragment {
             filteredOrderList.addAll(ordersSearchedList);
         }
 
-        if (filteredOrderList.size() > 0) {
+        if (!bookOrderReceivedOrdersAdapter.selectedOrderId.equals("0")) {
             BookOrderBusinessOwnerModel.ResultBean orderDetails = null;
             for (BookOrderBusinessOwnerModel.ResultBean resultBean : orderList)
                 if (resultBean.getId().equals(bookOrderReceivedOrdersAdapter.selectedOrderId)) {
@@ -483,6 +483,9 @@ public class ReceivedOrdersFragment extends Fragment {
                 }
 
             LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("ViewBookOrderBusinessOwnerOrderActivity").putExtra("orderDetails", orderDetails));
+        }
+
+        if (filteredOrderList.size() > 0) {
             bookOrderReceivedOrdersAdapter.refreshList(filteredOrderList);
             ll_nopreview.setVisibility(View.GONE);
             rv_orders.setVisibility(View.VISIBLE);

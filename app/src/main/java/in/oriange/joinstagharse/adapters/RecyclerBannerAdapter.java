@@ -68,4 +68,9 @@ public class RecyclerBannerAdapter extends RecyclerView.Adapter<RecyclerBannerAd
         }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
 }

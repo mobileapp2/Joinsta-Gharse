@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
@@ -31,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.material.button.MaterialButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -50,6 +52,7 @@ import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.models.BookOrderGetMyOrdersModel;
 import in.oriange.joinstagharse.models.BookOrderProductsListModel;
+import in.oriange.joinstagharse.models.ProductCategoriesModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
@@ -59,7 +62,7 @@ import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
 
-public class BookOrderProductsListActivity extends AppCompatActivity {
+public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
 
     @BindView(R.id.ib_back)
     ImageButton ibBack;
@@ -87,12 +90,14 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     LinearLayout llNopreview;
     @BindView(R.id.cv_this_business_cart)
     CardView cvThisBusinessCart;
+    @BindView(R.id.rv_categories)
+    RecyclerView rvCategories;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private String userId, businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName;
+    private String userId, businessOwnerId, businessOwnerUserId, businessOwnerAddress, businessOwnerCode, businessOwnerName, businessOwnerCategoryId;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
     private BookOrderProductsListAdapter bookOrderProductsListAdapter;
@@ -113,7 +118,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     }
 
     private void init() {
-        context = BookOrderProductsListActivity.this;
+        context = BookOrderProductsListActivity_v2.this;
         session = new UserSessionManager(context);
         changeStatusBar(context, getWindow());
 
@@ -122,6 +127,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         pd.setCancelable(false);
 
         rvProducts.setLayoutManager(new LinearLayoutManager(context));
+        rvCategories.setLayoutManager(new LinearLayoutManager(context));
 //        rvProducts.setLayoutManager(new GridLayoutManager(context, 2));
         bookOrderProductsListAdapter = new BookOrderProductsListAdapter();
 
@@ -144,14 +150,14 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
+        businessOwnerUserId = getIntent().getStringExtra("businessOwnerUserId");
         businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
         businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
         businessOwnerName = getIntent().getStringExtra("businessOwnerName");
-
+        businessOwnerCategoryId = getIntent().getStringExtra("businessOwnerCategoryId");
 
         if (Utilities.isNetworkAvailable(context)) {
-            new GetAllProducts().execute();
-            new GetOrders().execute();
+            new GetProductCategories().execute(businessOwnerUserId, businessOwnerCategoryId);
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
@@ -224,8 +230,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (Utilities.isNetworkAvailable(context)) {
-                new GetAllProducts().execute();
-                new GetOrders().execute();
+                new GetProductCategories().execute(businessOwnerUserId, businessOwnerCategoryId);
             } else {
                 swipeRefreshLayout.setRefreshing(false);
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
@@ -250,6 +255,74 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
     }
 
+    /////////////////////////////////////////////Product Category, Products and Orders API call/////////////////////////////////////////////
+
+    private class GetProductCategories extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+            llNopreview.setVisibility(View.GONE);
+            rvCategories.setVisibility(View.GONE);
+            swipeRefreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JsonObject obj = new JsonObject();
+            obj.addProperty("type", "getAllProductCategory");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("category_id", params[1]);
+            res = APICall.JSONAPICall(ApplicationConstants.PRODUCTCATEGORYAPI, obj.toString());
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            progressBar.setVisibility(View.GONE);
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    ProductCategoriesModel pojoDetails = new Gson().fromJson(result, ProductCategoriesModel.class);
+                    type = pojoDetails.getType();
+
+                    if (type.equalsIgnoreCase("success")) {
+                        List<ProductCategoriesModel.ResultBean> productCategoryList = pojoDetails.getResult();
+                        if (productCategoryList.size() > 0) {
+
+                            if (productCategoryList.size() == 1 && productCategoryList.get(0).getSub_categories().size() == 0) {
+                                if (Utilities.isNetworkAvailable(context)) {
+                                    new GetAllProducts().execute(userId, businessOwnerId, productCategoryList.get(0).getId(), "0");
+                                    new GetOrders().execute(userId);
+                                } else {
+                                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                                }
+                            } else {
+                                rvCategories.setAdapter(new ProductCategoryAdapter(context, productCategoryList));
+                                rvCategories.setVisibility(View.VISIBLE);
+                                rvProducts.setVisibility(View.GONE);
+                                new GetOrders().execute(userId);
+                            }
+                        } else {
+                            llNopreview.setVisibility(View.VISIBLE);
+                            rvCategories.setVisibility(View.GONE);
+                        }
+                    } else {
+                        llNopreview.setVisibility(View.VISIBLE);
+                        rvCategories.setVisibility(View.GONE);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                llNopreview.setVisibility(View.VISIBLE);
+                rvCategories.setVisibility(View.GONE);
+            }
+        }
+    }
+
     private class GetAllProducts extends AsyncTask<String, Void, String> {
 
         @Override
@@ -265,9 +338,11 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getallProducts");
-            obj.addProperty("user_id", userId);
-            obj.addProperty("business_id", businessOwnerId);
+            obj.addProperty("type", "getCategoriesProducts");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("business_id", params[1]);
+            obj.addProperty("category_id", params[2]);
+            obj.addProperty("sub_category_id", params[3]);
             res = APICall.JSONAPICall(ApplicationConstants.PRODUCTSAPI, obj.toString());
             return res.trim();
         }
@@ -276,6 +351,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             progressBar.setVisibility(View.GONE);
+            rvCategories.setVisibility(View.GONE);
             rvProducts.setVisibility(View.VISIBLE);
             String type = "", message = "";
             try {
@@ -298,20 +374,25 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                         searchedProductsList.addAll(filterProductList);
 
                         if (productsList.size() != 0) {
+                            rvProducts.setVisibility(View.VISIBLE);
+                            rvCategories.setVisibility(View.GONE);
                             rvProducts.setAdapter(bookOrderProductsListAdapter);
                         } else {
                             llNopreview.setVisibility(View.VISIBLE);
                             rvProducts.setVisibility(View.GONE);
+                            rvCategories.setVisibility(View.GONE);
                         }
                     } else {
                         llNopreview.setVisibility(View.VISIBLE);
                         rvProducts.setVisibility(View.GONE);
+                        rvCategories.setVisibility(View.GONE);
                     }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
                 llNopreview.setVisibility(View.VISIBLE);
                 rvProducts.setVisibility(View.GONE);
+                rvCategories.setVisibility(View.GONE);
             }
         }
     }
@@ -329,7 +410,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             String res = "[]";
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "getAllOrders");
-            obj.addProperty("user_id", userId);
+            obj.addProperty("user_id", params[0]);
             res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, obj.toString());
             return res.trim();
         }
@@ -353,6 +434,22 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    /////////////////////////////////////////////Products Already added and Cart Count/////////////////////////////////////////////
+
+    private void showAlreadyAddedStatusForProducts(BookOrderGetMyOrdersModel.ResultBean thisBusinessOrder) {
+        cvThisBusinessCart.setVisibility(View.VISIBLE);
+        for (int i = 0; i < productsList.size(); i++) {
+            for (BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean productDetailsBean : thisBusinessOrder.getProduct_details()) {
+                if (productDetailsBean.getProduct_id().equals(productsList.get(i).getId())) {
+                    productsList.get(i).setAlreadyAddedInCart(true);
+                    productsList.get(i).setQuantity(Integer.parseInt(productDetailsBean.getQuantity()));
+                }
+            }
+        }
+        searchedProductsList = productsList;
+        bookOrderProductsListAdapter.notifyDataSet();
     }
 
     private void showCartCount() {
@@ -389,19 +486,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         }
     }
 
-    private void showAlreadyAddedStatusForProducts(BookOrderGetMyOrdersModel.ResultBean thisBusinessOrder) {
-        cvThisBusinessCart.setVisibility(View.VISIBLE);
-        for (int i = 0; i < productsList.size(); i++) {
-            for (BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean productDetailsBean : thisBusinessOrder.getProduct_details()) {
-                if (productDetailsBean.getProduct_id().equals(productsList.get(i).getId())) {
-                    productsList.get(i).setAlreadyAddedInCart(true);
-                    productsList.get(i).setQuantity(Integer.parseInt(productDetailsBean.getQuantity()));
-                }
-            }
-        }
-        searchedProductsList = productsList;
-        bookOrderProductsListAdapter.notifyDataSet();
-    }
+    ///////////////////////////////////////////// Products Adapter /////////////////////////////////////////////
 
     private class BookOrderProductsListAdapter extends RecyclerView.Adapter<BookOrderProductsListAdapter.MyViewHolder> {
 
@@ -559,6 +644,137 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         }
     }
 
+    ///////////////////////////////////////////// Products Category Adapters /////////////////////////////////////////////
+
+    private class ProductCategoryAdapter extends RecyclerView.Adapter<ProductCategoryAdapter.MyViewHolder> {
+
+        private Context context;
+        private List<ProductCategoriesModel.ResultBean> productCategoryList;
+
+        public ProductCategoryAdapter(Context context, List<ProductCategoriesModel.ResultBean> productCategoryList) {
+            this.context = context;
+            this.productCategoryList = productCategoryList;
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_main_product_categories_v2, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+            int position = holder.getAdapterPosition();
+            ProductCategoriesModel.ResultBean productCategoryDetails = productCategoryList.get(position);
+
+            holder.tv_main_category.setText(productCategoryDetails.getProduct_category());
+
+            if (productCategoryDetails.getSub_categories().size() != 0) {
+                holder.rv_sub_categories.setAdapter(new ProductSubcategoryAdapter(context, productCategoryDetails.getSub_categories()));
+                holder.rv_sub_categories.setVisibility(View.VISIBLE);
+            } else {
+                holder.rv_sub_categories.setVisibility(View.GONE);
+                holder.view_divider.setVisibility(View.GONE);
+            }
+
+            holder.cv_mainlayout.setOnClickListener(v -> {
+                startCategoryWiseProductListActivity(productCategoryDetails.getId(), "0");
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return productCategoryList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private CardView cv_mainlayout;
+            private TextView tv_main_category;
+            private RecyclerView rv_sub_categories;
+            private View view_divider;
+
+            public MyViewHolder(@NonNull View itemView) {
+                super(itemView);
+                cv_mainlayout = itemView.findViewById(R.id.cv_mainlayout);
+                tv_main_category = itemView.findViewById(R.id.tv_main_category);
+                rv_sub_categories = itemView.findViewById(R.id.rv_sub_categories);
+                view_divider = itemView.findViewById(R.id.view_divider);
+                rv_sub_categories.setLayoutManager(new LinearLayoutManager(context));
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+    }
+
+    private class ProductSubcategoryAdapter extends RecyclerView.Adapter<ProductSubcategoryAdapter.MyViewHolder> {
+
+        private Context context;
+        private List<ProductCategoriesModel.ResultBean.SubCategoriesBean> subCategoryList;
+
+        public ProductSubcategoryAdapter(Context context, List<ProductCategoriesModel.ResultBean.SubCategoriesBean> subCategoryList) {
+            this.context = context;
+            this.subCategoryList = subCategoryList;
+        }
+
+        @NonNull
+        @Override
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.list_row_sub_product_categories_v2, parent, false);
+            return new MyViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+            int position = holder.getAdapterPosition();
+            ProductCategoriesModel.ResultBean.SubCategoriesBean productCategoryDetails = subCategoryList.get(position);
+
+            holder.tv_main_category.setText(productCategoryDetails.getProduct_category());
+
+            holder.cv_mainlayout.setOnClickListener(v -> {
+                startCategoryWiseProductListActivity(productCategoryDetails.getId(), productCategoryDetails.getParent_id());
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return subCategoryList.size();
+        }
+
+        public class MyViewHolder extends RecyclerView.ViewHolder {
+
+            private CardView cv_mainlayout;
+            private TextView tv_main_category;
+
+            public MyViewHolder(@NonNull View itemView) {
+                super(itemView);
+                cv_mainlayout = itemView.findViewById(R.id.cv_mainlayout);
+                tv_main_category = itemView.findViewById(R.id.tv_main_category);
+            }
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+    }
+
+    private void startCategoryWiseProductListActivity(String categoryId, String subcategoryId) {
+        startActivity(new Intent(context, BookOrderCategoryWiseProductsActivity.class)
+                .putExtra("categoryId", categoryId)
+                .putExtra("subcategoryId", subcategoryId)
+                .putExtra("businessOwnerUserId", businessOwnerUserId)
+                .putExtra("businessOwnerId", businessOwnerId));
+    }
+
+    ///////////////////////////////////////////// Logic to find pending order id /////////////////////////////////////////////
+
     private void findValidOrderId(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
         if (ordersList.size() == 0) {
             addOrderJsonCreation(productDetails, quantity);
@@ -582,6 +798,8 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             }
         }
     }
+
+    ///////////////////////////////////////////// Add order json creation and api call /////////////////////////////////////////////
 
     private void addOrderJsonCreation(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
         JsonObject mainObj = new JsonObject();
@@ -614,6 +832,49 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
     }
+
+    private class AddOrder extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
+                    type = pojoDetails.getType();
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                    if (type.equalsIgnoreCase("success")) {
+                        Utilities.showMessage("Product added to cart", context, 1);
+                        ordersList = pojoDetails.getResult();
+                        showCartCount();
+                    } else {
+                        Utilities.showMessage(message, context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    ///////////////////////////////////////////// Update order json creation and api call /////////////////////////////////////////////
 
     private void updateOrderWithNewProduct(BookOrderProductsListModel.ResultBean selectedProduct, BookOrderGetMyOrdersModel.ResultBean orderDetails, int quantity) {
         JsonObject mainObj = new JsonObject();
@@ -694,47 +955,6 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         }
     }
 
-    private class AddOrder extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
-            return res.trim();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            pd.dismiss();
-            String type = "", message = "";
-            try {
-                if (!result.equals("")) {
-                    BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
-                    type = pojoDetails.getType();
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
-                    if (type.equalsIgnoreCase("success")) {
-                        Utilities.showMessage("Product added to cart", context, 1);
-                        ordersList = pojoDetails.getResult();
-                        showCartCount();
-                    } else {
-                        Utilities.showMessage(message, context, 3);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     private class UpdateOrder extends AsyncTask<String, Void, String> {
 
         @Override
@@ -792,7 +1012,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            new GetOrders().execute();
+            new GetOrders().execute(userId);
         }
     };
 

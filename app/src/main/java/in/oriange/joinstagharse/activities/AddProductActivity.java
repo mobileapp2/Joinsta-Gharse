@@ -702,6 +702,11 @@ public class AddProductActivity extends AppCompatActivity {
             return imageList.size();
         }
 
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private ImageView imv_image, imv_image_delete;

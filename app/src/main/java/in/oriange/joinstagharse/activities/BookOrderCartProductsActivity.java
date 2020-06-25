@@ -202,6 +202,11 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
             return ordersList.size();
         }
 
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private TextView tv_order_for;
@@ -327,6 +332,11 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return productsList.size();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {

@@ -94,6 +94,11 @@ public class MyAddressAdapter extends RecyclerView.Adapter<MyAddressAdapter.MyVi
         return addressList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         private TextView tv_address_name, tv_address;
@@ -151,5 +156,7 @@ public class MyAddressAdapter extends RecyclerView.Adapter<MyAddressAdapter.MyVi
                 e.printStackTrace();
             }
         }
+
+
     }
 }

@@ -2,9 +2,11 @@ package in.oriange.joinstagharse.fragments;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +35,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -53,6 +57,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,7 +86,7 @@ import static in.oriange.joinstagharse.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 
-public class AddBusinessGeneralDetails extends Fragment {
+public class AddBusinessGeneralDetailsFragment extends Fragment {
 
     @BindView(R.id.imv_photo1)
     ImageView imvPhoto1;
@@ -122,6 +127,8 @@ public class AddBusinessGeneralDetails extends Fragment {
 
     private CheckBox cb_select_all;
 
+    private LocalBroadcastManager localBroadcastManager;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_business_general_details, container, false);
@@ -129,8 +136,8 @@ public class AddBusinessGeneralDetails extends Fragment {
 
         context = getActivity();
         init();
-        setDefault();
         getSessionDetails();
+        setDefault();
         setEventHandler();
         return rootView;
     }
@@ -171,6 +178,9 @@ public class AddBusinessGeneralDetails extends Fragment {
             new GetTagsList().execute("0");
         }
 
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("AddBusinessGeneralDetailsFragment");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void setEventHandler() {
@@ -357,6 +367,39 @@ public class AddBusinessGeneralDetails extends Fragment {
         alertD.show();
     }
 
+    private void submitData() {
+        JsonArray tagJSONArray = new JsonArray();
+
+        if (edtName.getText().toString().trim().isEmpty()) {
+            edtName.setError("Please enter the name of business");
+            edtName.requestFocus();
+            edtName.getParent().requestChildFocus(edtName, edtName);
+            return;
+        }
+
+        if (edtNature.getText().toString().trim().isEmpty()) {
+            Utilities.showMessage("Please select the nature of business", context, 2);
+            return;
+        }
+
+        for (int i = 0; i < tagsListTobeSubmitted.size(); i++) {
+            JsonObject tagsJSONObj = new JsonObject();
+            tagsJSONObj.addProperty("tag_id", tagsListTobeSubmitted.get(i).getTag_id());
+            tagsJSONObj.addProperty("tag_name", tagsListTobeSubmitted.get(i).getTag_name());
+            tagsJSONObj.addProperty("is_approved", tagsListTobeSubmitted.get(i).getIs_approved());
+            tagJSONArray.add(tagsJSONObj);
+        }
+
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessActivityBusiness")
+                .putExtra("imageName", imageName)
+                .putExtra("businessName", edtName.getText().toString().trim())
+                .putExtra("categoryId", categoryId)
+                .putExtra("subCategoryJsonArray", subCategoryJsonArray.toString())
+                .putExtra("designation", edtDesignation.getText().toString().trim())
+                .putExtra("tagsJsonArray", tagJSONArray.toString()));
+
+    }
+
     private class GetTagsList extends AsyncTask<String, Void, String> {
 
         @Override
@@ -536,7 +579,7 @@ public class AddBusinessGeneralDetails extends Fragment {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_check_list, null);
 
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(context);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(view);
         builder.setTitle("Select Subtype");
         builder.setCancelable(false);
@@ -897,5 +940,16 @@ public class AddBusinessGeneralDetails extends Fragment {
         }
     }
 
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            submitData();
+        }
+    };
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+    }
 }

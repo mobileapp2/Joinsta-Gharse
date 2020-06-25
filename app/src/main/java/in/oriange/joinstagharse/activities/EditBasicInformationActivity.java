@@ -1003,6 +1003,10 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     }
 
     private class MobilePrimaryAdapter extends RecyclerView.Adapter<MobilePrimaryAdapter.MyViewHolder> {
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
 
         public MobilePrimaryAdapter() {
 
@@ -1089,6 +1093,10 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     }
 
     private class MobilePublicAdapter extends RecyclerView.Adapter<MobilePublicAdapter.MyViewHolder> {
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
 
         public MobilePublicAdapter() {
 
@@ -1165,6 +1173,10 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     }
 
     private class LandLinePrimaryAdapter extends RecyclerView.Adapter<LandLinePrimaryAdapter.MyViewHolder> {
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
 
         public LandLinePrimaryAdapter() {
 
@@ -1252,6 +1264,10 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     }
 
     private class EmailPrimaryAdapter extends RecyclerView.Adapter<EmailPrimaryAdapter.MyViewHolder> {
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
 
         public EmailPrimaryAdapter() {
 

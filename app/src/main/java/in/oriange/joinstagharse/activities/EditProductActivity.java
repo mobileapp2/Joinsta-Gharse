@@ -705,6 +705,10 @@ public class EditProductActivity extends AppCompatActivity {
     }
 
     private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
 
         ImagesAdapter() {
 

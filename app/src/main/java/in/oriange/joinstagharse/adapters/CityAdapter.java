@@ -61,4 +61,10 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.MyViewHolder> 
             tv_city = itemView.findViewById(R.id.tv_city);
         }
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
 }

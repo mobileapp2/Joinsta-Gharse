@@ -118,7 +118,7 @@ public class MyBusinessActivity extends AppCompatActivity {
 
         });
 
-        btn_add.setOnClickListener(v -> startActivity(new Intent(context, AddBusinessActivity.class)));
+        btn_add.setOnClickListener(v -> startActivity(new Intent(context, AddBusinessActivity_v2.class)));
     }
 
     private class GetBusiness extends AsyncTask<String, Void, String> {

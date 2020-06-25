@@ -55,6 +55,6 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:onClick="removeEmailLayout"
         android:src="@drawable/icon_cross"
-        android:tint="@color/black" />
+        android:tint="@color/colorPrimary" />
 
 </LinearLayout>

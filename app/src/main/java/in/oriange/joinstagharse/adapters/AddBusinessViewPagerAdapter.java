@@ -8,14 +8,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
 
-import in.oriange.joinstagharse.fragments.AddBusinessContactDetails;
-import in.oriange.joinstagharse.fragments.AddBusinessGeneralDetails;
-import in.oriange.joinstagharse.fragments.AddBusinessOtherDetails;
-import in.oriange.joinstagharse.fragments.HomeFragment;
-import in.oriange.joinstagharse.fragments.MoreFragment;
-import in.oriange.joinstagharse.fragments.MyOrdersFragment;
-import in.oriange.joinstagharse.fragments.SearchFragment;
-import in.oriange.joinstagharse.fragments.VendorCustomerContactsFragment;
+import in.oriange.joinstagharse.fragments.AddBusinessContactDetailsFragment;
+import in.oriange.joinstagharse.fragments.AddBusinessGeneralDetailsFragment;
+import in.oriange.joinstagharse.fragments.AddBusinessOtherDetailsFragment;
 
 public class AddBusinessViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -25,9 +20,9 @@ public class AddBusinessViewPagerAdapter extends FragmentPagerAdapter {
     public AddBusinessViewPagerAdapter(FragmentManager fm) {
         super(fm);
         fragments.clear();
-        fragments.add(new AddBusinessGeneralDetails());
-        fragments.add(new AddBusinessContactDetails());
-        fragments.add(new AddBusinessOtherDetails());
+        fragments.add(new AddBusinessGeneralDetailsFragment());
+        fragments.add(new AddBusinessContactDetailsFragment());
+        fragments.add(new AddBusinessOtherDetailsFragment());
     }
 
     @Override

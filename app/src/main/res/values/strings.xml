@@ -4,6 +4,6 @@
     <string name="msgt_nointernetconnection">Please check your internet connection</string>
     <string name="places_api_key">AIzaSyBqsk7EvFj-f7wQ2QtR9x8NZJ2IvfusP2o</string>
     <string name="order_by_text_place_holder">You can placer order by simply typing your items list here. \ne.g. - Wheat - 50 Kgs \nRice - 20 Kgs \nSugar 5Kgs</string>
-    <string name="lorem" >Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
+    <string name="lorem">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
 
 </resources>

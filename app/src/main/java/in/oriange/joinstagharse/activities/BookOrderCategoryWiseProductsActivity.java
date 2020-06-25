@@ -59,7 +59,7 @@ import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
 
-public class BookOrderProductsListActivity extends AppCompatActivity {
+public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
 
     @BindView(R.id.ib_back)
     ImageButton ibBack;
@@ -73,10 +73,6 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     FrameLayout flCart;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.cv_text)
-    CardView cvText;
-    @BindView(R.id.cv_image)
-    CardView cvImage;
     @BindView(R.id.rv_products)
     RecyclerView rvProducts;
     @BindView(R.id.swipeRefreshLayout)
@@ -85,24 +81,22 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     SpinKitView progressBar;
     @BindView(R.id.ll_nopreview)
     LinearLayout llNopreview;
-    @BindView(R.id.cv_this_business_cart)
-    CardView cvThisBusinessCart;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private String userId, businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName;
+    private String userId, businessOwnerId, businessOwnerUserId, categoryId, subcategoryId;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
     private BookOrderProductsListAdapter bookOrderProductsListAdapter;
 
-    private LocalBroadcastManager localBroadcastManager, localBroadcastManager2;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_book_order_products_list);
+        setContentView(R.layout.activity_book_order_category_wise_products);
         ButterKnife.bind(this);
 
         init();
@@ -113,7 +107,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     }
 
     private void init() {
-        context = BookOrderProductsListActivity.this;
+        context = BookOrderCategoryWiseProductsActivity.this;
         session = new UserSessionManager(context);
         changeStatusBar(context, getWindow());
 
@@ -144,25 +138,21 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
-        businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
-        businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
-        businessOwnerName = getIntent().getStringExtra("businessOwnerName");
-
+        businessOwnerUserId = getIntent().getStringExtra("businessOwnerUserId");
+        categoryId = getIntent().getStringExtra("categoryId");
+        subcategoryId = getIntent().getStringExtra("subcategoryId");
 
         if (Utilities.isNetworkAvailable(context)) {
-            new GetAllProducts().execute();
+            new GetAllProducts().execute(userId, businessOwnerId, categoryId, subcategoryId);
             new GetOrders().execute();
         } else {
             Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("BookOrderProductsListActivity");
+        IntentFilter intentFilter = new IntentFilter("BookOrderCategoryWiseProductsActivity");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
 
-        localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter2 = new IntentFilter("BookOrderProductsListActivityRefreshOrderList");
-        localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
     }
 
     private void setEventHandler() {
@@ -217,37 +207,15 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                     .putExtra("particularBusinessId", "0"));
         });
 
-        cvThisBusinessCart.setOnClickListener(v -> {
-            startActivity(new Intent(context, BookOrderCartProductsActivity.class)
-                    .putExtra("particularBusinessId", businessOwnerId));
-        });
-
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (Utilities.isNetworkAvailable(context)) {
-                new GetAllProducts().execute();
+                new GetAllProducts().execute(userId, businessOwnerId, categoryId, subcategoryId);
                 new GetOrders().execute();
             } else {
                 swipeRefreshLayout.setRefreshing(false);
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
-
-        cvText.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
-                .putExtra("businessOwnerId", businessOwnerId)
-                .putExtra("businessOwnerAddress", businessOwnerAddress)
-                .putExtra("businessOwnerCode", businessOwnerCode)
-                .putExtra("businessOwnerName", businessOwnerName)
-                .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
-                .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
-
-        cvImage.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeImageActivity.class)
-                .putExtra("businessOwnerId", businessOwnerId)
-                .putExtra("businessOwnerAddress", businessOwnerAddress)
-                .putExtra("businessOwnerCode", businessOwnerCode)
-                .putExtra("businessOwnerName", businessOwnerName)
-                .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
-                .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
-
     }
 
     private class GetAllProducts extends AsyncTask<String, Void, String> {
@@ -265,9 +233,11 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getallProducts");
-            obj.addProperty("user_id", userId);
-            obj.addProperty("business_id", businessOwnerId);
+            obj.addProperty("type", "getCategoriesProducts");
+            obj.addProperty("user_id", params[0]);
+            obj.addProperty("business_id", params[1]);
+            obj.addProperty("category_id", params[2]);
+            obj.addProperty("sub_category_id", params[3]);
             res = APICall.JSONAPICall(ApplicationConstants.PRODUCTSAPI, obj.toString());
             return res.trim();
         }
@@ -390,7 +360,6 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
     }
 
     private void showAlreadyAddedStatusForProducts(BookOrderGetMyOrdersModel.ResultBean thisBusinessOrder) {
-        cvThisBusinessCart.setVisibility(View.VISIBLE);
         for (int i = 0; i < productsList.size(); i++) {
             for (BookOrderGetMyOrdersModel.ResultBean.ProductDetailsBean productDetailsBean : thisBusinessOrder.getProduct_details()) {
                 if (productDetailsBean.getProduct_id().equals(productsList.get(i).getId())) {
@@ -557,6 +526,7 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         public int getItemViewType(int position) {
             return position;
         }
+
     }
 
     private void findValidOrderId(BookOrderProductsListModel.ResultBean productDetails, int quantity) {
@@ -721,6 +691,8 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                     BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
                     type = pojoDetails.getType();
                     LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivityRefreshOrderList"));
+
                     if (type.equalsIgnoreCase("success")) {
                         Utilities.showMessage("Product added to cart", context, 1);
                         ordersList = pojoDetails.getResult();
@@ -762,6 +734,8 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
                     BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
                     type = pojoDetails.getType();
                     LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivityRefreshOrderList"));
+
                     if (type.equalsIgnoreCase("success")) {
                         Utilities.showMessage("Product added to cart", context, 1);
                         ordersList = pojoDetails.getResult();
@@ -789,17 +763,10 @@ public class BookOrderProductsListActivity extends AppCompatActivity {
         }
     };
 
-    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            new GetOrders().execute();
-        }
-    };
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
-        localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
     }
+
 }

@@ -463,6 +463,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeTextActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderOrderTypeImageActivity"));
                         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderProductsListActivity"));
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("BookOrderCategoryWiseProductsActivity"));
 
                         LayoutInflater layoutInflater = LayoutInflater.from(context);
                         View promptView = layoutInflater.inflate(R.layout.dialog_layout_success, null);

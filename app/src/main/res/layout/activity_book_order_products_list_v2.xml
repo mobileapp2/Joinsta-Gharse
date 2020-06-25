@@ -217,6 +217,7 @@
 
     </androidx.cardview.widget.CardView>
 
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -226,25 +227,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <FrameLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_products"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_categories"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_products"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-
-            </FrameLayout>
+                android:layout_height="match_parent" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 
         <com.github.ybq.android.spinkit.SpinKitView
             android:id="@+id/progressBar"

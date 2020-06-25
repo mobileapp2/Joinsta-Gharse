@@ -38,7 +38,7 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
     private Context context;
     private List<BookOrderGetMyOrdersModel.ResultBean> orderList;
     private String userId;
-    public String selectedOrderId;
+    public String selectedOrderId = "0";
 
     public BookOrderMyOrdersAdapter(Context context, List<BookOrderGetMyOrdersModel.ResultBean> orderList) {
         this.context = context;

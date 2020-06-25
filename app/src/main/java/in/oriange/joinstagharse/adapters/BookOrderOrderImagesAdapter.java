@@ -79,4 +79,10 @@ public class BookOrderOrderImagesAdapter extends RecyclerView.Adapter<BookOrderO
 
         }
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
 }
