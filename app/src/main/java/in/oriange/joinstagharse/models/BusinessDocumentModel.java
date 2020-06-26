@@ -5,6 +5,7 @@ public class BusinessDocumentModel {
     private String id;
     private String type;
     private String name;
+    private String isVerified;
 
     public BusinessDocumentModel() {
     }
@@ -13,6 +14,11 @@ public class BusinessDocumentModel {
         this.id = id;
         this.type = type;
         this.name = name;
+    }
+
+    public BusinessDocumentModel(String id, String type, String name, String isVerified) {
+        this(id, type, name);
+        this.isVerified = isVerified;
     }
 
     public String getId() {
@@ -37,5 +43,13 @@ public class BusinessDocumentModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getIsVerified() {
+        return isVerified;
+    }
+
+    public void setIsVerified(String isVerified) {
+        this.isVerified = isVerified;
     }
 }

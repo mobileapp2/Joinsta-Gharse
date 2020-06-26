@@ -381,7 +381,9 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
                 alertD.show();
                 break;
             case R.id.action_edit:
-                startActivity(new Intent(context, EditBusinessActivity.class)
+//                startActivity(new Intent(context, EditBusinessActivity.class)
+//                        .putExtra("searchDetails", searchDetails));
+                startActivity(new Intent(context, EditBusinessActivity_v2.class)
                         .putExtra("searchDetails", searchDetails));
                 finish();
                 break;

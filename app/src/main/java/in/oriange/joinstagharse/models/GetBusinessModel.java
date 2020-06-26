@@ -156,6 +156,7 @@ public class GetBusinessModel implements Serializable {
         private List<List<LandlineBean>> landline;
         private List<List<SubCategoriesBean>> sub_categories;
         private List<List<TagBean>> tag;
+        private List<BusinessDocuments> business_documents;
         private boolean isChecked;
 
         public ResultBean() {
@@ -635,6 +636,14 @@ public class GetBusinessModel implements Serializable {
             return tag;
         }
 
+        public List<BusinessDocuments> getBusiness_documents() {
+            return business_documents;
+        }
+
+        public void setBusiness_documents(List<BusinessDocuments> business_documents) {
+            this.business_documents = business_documents;
+        }
+
         public String getTypeSubTypeName() {
             StringBuilder subTypeNameSb = new StringBuilder();
             String subTypeNameStr = "";
@@ -888,6 +897,73 @@ public class GetBusinessModel implements Serializable {
 
             public void setIs_approved(String is_approved) {
                 this.is_approved = is_approved;
+            }
+        }
+
+        public static class BusinessDocuments implements Serializable {
+
+            private String id;
+            private String business_id;
+            private String doc_type_id;
+            private String document;
+            private String is_verified;
+            private String verified_by;
+            private String type;
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getBusiness_id() {
+                return business_id;
+            }
+
+            public void setBusiness_id(String business_id) {
+                this.business_id = business_id;
+            }
+
+            public String getDoc_type_id() {
+                return doc_type_id;
+            }
+
+            public void setDoc_type_id(String doc_type_id) {
+                this.doc_type_id = doc_type_id;
+            }
+
+            public String getDocument() {
+                return document;
+            }
+
+            public void setDocument(String document) {
+                this.document = document;
+            }
+
+            public String getIs_verified() {
+                return is_verified;
+            }
+
+            public void setIs_verified(String is_verified) {
+                this.is_verified = is_verified;
+            }
+
+            public String getVerified_by() {
+                return verified_by;
+            }
+
+            public void setVerified_by(String verified_by) {
+                this.verified_by = verified_by;
+            }
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
             }
         }
 
