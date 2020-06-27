@@ -39,7 +39,6 @@ import java.util.List;
 
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.adapters.BookOrderMyOrdersAdapter;
-import in.oriange.joinstagharse.models.BookOrderBusinessOwnerModel;
 import in.oriange.joinstagharse.models.BookOrderGetMyOrdersModel;
 import in.oriange.joinstagharse.models.MasterModel;
 import in.oriange.joinstagharse.utilities.APICall;

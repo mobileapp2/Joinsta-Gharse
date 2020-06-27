@@ -38,7 +38,6 @@ import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.AddCustomerActivity;
 import in.oriange.joinstagharse.activities.AddVendorActivity;
-import in.oriange.joinstagharse.activities.BookOrderProductsListActivity;
 import in.oriange.joinstagharse.activities.BookOrderProductsListActivity_v2;
 import in.oriange.joinstagharse.activities.OffersForParticularRecordActivity;
 import in.oriange.joinstagharse.activities.ViewSearchBizDetailsActivity;

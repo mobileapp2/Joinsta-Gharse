@@ -30,7 +30,6 @@ import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
-import static in.oriange.joinstagharse.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.getMd5;
 import static in.oriange.joinstagharse.utilities.Utilities.hideSoftKeyboard;

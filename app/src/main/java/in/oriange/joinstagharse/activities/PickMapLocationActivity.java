@@ -47,9 +47,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import in.oriange.joinstagharse.utilities.FieldSelector;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.models.MapAddressListModel;
+import in.oriange.joinstagharse.utilities.FieldSelector;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;

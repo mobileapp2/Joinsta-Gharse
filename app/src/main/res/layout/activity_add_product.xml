@@ -37,7 +37,7 @@
                 style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Save"/>
+                android:text="Save" />
 
         </androidx.appcompat.widget.Toolbar>
 

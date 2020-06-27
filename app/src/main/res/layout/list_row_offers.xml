@@ -90,7 +90,7 @@
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="This is the sub headingThis is the sub headingThis is the sub headingThis is the sub heading"
-                android:textColor="@color/darkGray"/>
+                android:textColor="@color/darkGray" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_promo_code"

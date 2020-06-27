@@ -37,7 +37,7 @@
                 style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Update"/>
+                android:text="Update" />
 
         </androidx.appcompat.widget.Toolbar>
 

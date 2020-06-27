@@ -27,8 +27,6 @@ import java.util.List;
 
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.AddProductSubCategoryActivity;
-import in.oriange.joinstagharse.activities.BookOrderCartProductsActivity;
-import in.oriange.joinstagharse.activities.ProductCategoriesActivity;
 import in.oriange.joinstagharse.models.ProductCategoriesModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;

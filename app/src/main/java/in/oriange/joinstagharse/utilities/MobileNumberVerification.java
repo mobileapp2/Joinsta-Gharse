@@ -29,7 +29,7 @@ public class MobileNumberVerification {
         mContext = context;
     }
 
-    public boolean isMobileNumberValid( String countryCode, String mobile) {
+    public boolean isMobileNumberValid(String countryCode, String mobile) {
         if (countryCode.equals("+91")) {
             return isValidMobileno(mobile);
         } else {

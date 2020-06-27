@@ -31,7 +31,6 @@ import org.ocpsoft.prettytime.PrettyTime;
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.models.EnquiriesListModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;

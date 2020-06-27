@@ -36,7 +36,7 @@
                 style="@style/MaterialButton"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
-                android:text="Submit"/>
+                android:text="Submit" />
 
         </androidx.appcompat.widget.Toolbar>
 

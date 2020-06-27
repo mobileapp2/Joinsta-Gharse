@@ -2,7 +2,6 @@ package in.oriange.joinstagharse.utilities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;

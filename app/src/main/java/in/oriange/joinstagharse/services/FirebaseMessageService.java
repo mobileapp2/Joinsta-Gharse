@@ -30,13 +30,10 @@ import java.util.Date;
 import java.util.Random;
 
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.activities.ChatActivity;
 import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.NotificationActivity;
 import in.oriange.joinstagharse.activities.SplashScreenActivity;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
-
-import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 
 public class FirebaseMessageService extends FirebaseMessagingService {
 

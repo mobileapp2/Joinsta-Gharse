@@ -39,7 +39,7 @@ public class ProductCategoriesModel implements Serializable {
         this.result = result;
     }
 
-    public static class ResultBean  implements Serializable{
+    public static class ResultBean implements Serializable {
         /**
          * id : 2
          * business_category_id : 2
@@ -173,7 +173,7 @@ public class ProductCategoriesModel implements Serializable {
             this.sub_categories = sub_categories;
         }
 
-        public static class SubCategoriesBean  implements Serializable{
+        public static class SubCategoriesBean implements Serializable {
             /**
              * id : 57
              * business_category_id : 2

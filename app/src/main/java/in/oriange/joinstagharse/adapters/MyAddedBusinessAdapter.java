@@ -1,6 +1,5 @@
 package in.oriange.joinstagharse.adapters;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,19 +7,12 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.appcompat.view.menu.MenuPopupHelper;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -29,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonObject;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -37,8 +28,6 @@ import java.util.List;
 
 import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.activities.AddCustomerActivity;
-import in.oriange.joinstagharse.activities.AddVendorActivity;
 import in.oriange.joinstagharse.activities.BookOrderBusinessOwnerOrdersActivity;
 import in.oriange.joinstagharse.activities.BusinessProductsActivity;
 import in.oriange.joinstagharse.activities.EnquiriesActivity;
@@ -46,7 +35,6 @@ import in.oriange.joinstagharse.activities.OffersForParticularRecordActivity;
 import in.oriange.joinstagharse.activities.ProductCategoriesActivity;
 import in.oriange.joinstagharse.activities.ViewMyBizDetailsActivity;
 import in.oriange.joinstagharse.models.GetBusinessModel;
-import in.oriange.joinstagharse.models.SearchDetailsModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.Utilities;
