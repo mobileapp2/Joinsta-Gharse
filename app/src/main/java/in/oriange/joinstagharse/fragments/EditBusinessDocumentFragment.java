@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -55,22 +54,15 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
 
-public class EditBusinessOtherDetailsFragment extends Fragment {
+public class EditBusinessDocumentFragment extends Fragment {
 
-    @BindView(R.id.cb_is_enquiry_available)
-    CheckBox cbIsEnquiryAvailable;
-    @BindView(R.id.cb_is_pick_up_available)
-    CheckBox cbIsPickUpAvailable;
-    @BindView(R.id.cb_is_home_delivery_available)
-    CheckBox cbIsHomeDeliveryAvailable;
-    @BindView(R.id.cb_show_in_search)
-    CheckBox cbShowInSearch;
     @BindView(R.id.rv_documents)
     RecyclerView rvDocuments;
     @BindView(R.id.btn_add_document)
     Button btnAddDocument;
     @BindView(R.id.sv_scroll)
     NestedScrollView svScroll;
+
 
     private Context context;
     private ProgressDialog pd;
@@ -87,7 +79,7 @@ public class EditBusinessOtherDetailsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_edit_business_other_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_edit_business_document, container, false);
         ButterKnife.bind(this, rootView);
 
         context = getActivity();
@@ -125,20 +117,8 @@ public class EditBusinessOtherDetailsFragment extends Fragment {
 
         documentAdapter.refreshData();
 
-        if (searchDetails.getIs_visible().equals("1"))
-            cbShowInSearch.setChecked(true);
-
-        if (searchDetails.getIs_enquiry_available().equals("1"))
-            cbIsEnquiryAvailable.setChecked(true);
-
-        if (searchDetails.getIs_pick_up_available().equals("1"))
-            cbIsPickUpAvailable.setChecked(true);
-
-        if (searchDetails.getIs_home_delivery_available().equals("1"))
-            cbIsHomeDeliveryAvailable.setChecked(true);
-
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("EditBusinessOtherDetailsFragment");
+        IntentFilter intentFilter = new IntentFilter("EditBusinessDocumentFragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -172,16 +152,6 @@ public class EditBusinessOtherDetailsFragment extends Fragment {
     private void submitData() {
         JsonArray documentJsonArray = new JsonArray();
 
-        String isVisible = "1";
-        String isEnquiryAvailable = cbIsEnquiryAvailable.isChecked() ? "1" : "0";
-        String isPickUpAvailable = cbIsPickUpAvailable.isChecked() ? "1" : "0";
-        String isHomeDeliveryAvailable = cbIsHomeDeliveryAvailable.isChecked() ? "1" : "0";
-
-        if (isPickUpAvailable.equals("0") && isHomeDeliveryAvailable.equals("0")) {
-            Utilities.showMessage("Please select delivery type", context, 2);
-            return;
-        }
-
         for (BusinessDocumentModel businessDocument : businessDocumentList) {
             if (businessDocument.getName().equals("") || businessDocument.getType().equals("")) {
                 Utilities.showMessage("Please select document details", context, 2);
@@ -193,27 +163,25 @@ public class EditBusinessOtherDetailsFragment extends Fragment {
             documentJsonArray.add(jsonObject);
         }
 
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessActivityOther")
-                .putExtra("isVisible", isVisible)
-                .putExtra("isEnquiryAvailable", isEnquiryAvailable)
-                .putExtra("isPickUpAvailable", isPickUpAvailable)
-                .putExtra("isHomeDeliveryAvailable", isHomeDeliveryAvailable)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessDocumentActivity")
                 .putExtra("documentJsonArray", documentJsonArray.toString()));
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessSettingsFragment"));
 
     }
+
 
     private class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.MyViewHolder> {
 
         @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public DocumentAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.list_row_document, parent, false);
-            return new MyViewHolder(view);
+            return new DocumentAdapter.MyViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+        public void onBindViewHolder(@NonNull DocumentAdapter.MyViewHolder holder, int pos) {
             int position = holder.getAdapterPosition();
             BusinessDocumentModel businessDetails = businessDocumentList.get(position);
 
@@ -443,5 +411,4 @@ public class EditBusinessOtherDetailsFragment extends Fragment {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
-
 }

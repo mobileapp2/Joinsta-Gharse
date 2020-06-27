@@ -37,10 +37,11 @@ import java.util.regex.Matcher;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.fragments.AddBusinessContactDetailsFragment;
-import in.oriange.joinstagharse.fragments.EditBusinessContactDetailsFragment;
-import in.oriange.joinstagharse.fragments.EditBusinessGeneralDetailsFragment;
-import in.oriange.joinstagharse.fragments.EditBusinessOtherDetailsFragment;
+import in.oriange.joinstagharse.fragments.EditBusinessAddressFragment;
+import in.oriange.joinstagharse.fragments.EditBusinessContactFragment;
+import in.oriange.joinstagharse.fragments.EditBusinessDocumentFragment;
+import in.oriange.joinstagharse.fragments.EditBusinessGeneralFragment;
+import in.oriange.joinstagharse.fragments.EditBusinessSettingsFragment;
 import in.oriange.joinstagharse.models.GetBusinessModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
@@ -66,9 +67,9 @@ public class EditBusinessActivity_v2 extends AppCompatActivity {
 
     private String userId;
     private GetBusinessModel.ResultBean searchDetails;
-    private LocalBroadcastManager localBroadcastManager1;
-    private LocalBroadcastManager localBroadcastManager2;
-    private LocalBroadcastManager localBroadcastManager3;
+
+    private LocalBroadcastManager localBroadcastManager1, localBroadcastManager2, localBroadcastManager3,
+            localBroadcastManager4, localBroadcastManager5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,55 +107,67 @@ public class EditBusinessActivity_v2 extends AppCompatActivity {
     private void setDefault() {
         searchDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
-        EditBusinessGeneralDetailsFragment editBusinessGeneralDetailsFragment = new EditBusinessGeneralDetailsFragment();
-        EditBusinessContactDetailsFragment editBusinessContactDetailsFragment = new EditBusinessContactDetailsFragment();
-        EditBusinessOtherDetailsFragment editBusinessOtherDetailsFragment = new EditBusinessOtherDetailsFragment();
+        EditBusinessGeneralFragment editBusinessGeneralFragment = new EditBusinessGeneralFragment();
+        EditBusinessAddressFragment editBusinessAddressFragment = new EditBusinessAddressFragment();
+        EditBusinessContactFragment editBusinessContactFragment = new EditBusinessContactFragment();
+        EditBusinessDocumentFragment editBusinessDocumentFragment = new EditBusinessDocumentFragment();
+        EditBusinessSettingsFragment editBusinessSettingsFragment = new EditBusinessSettingsFragment();
 
         Bundle bundle = new Bundle();
         bundle.putSerializable("searchDetails", searchDetails);
 
-        editBusinessGeneralDetailsFragment.setArguments(bundle);
-        editBusinessContactDetailsFragment.setArguments(bundle);
-        editBusinessOtherDetailsFragment.setArguments(bundle);
+        editBusinessGeneralFragment.setArguments(bundle);
+        editBusinessAddressFragment.setArguments(bundle);
+        editBusinessContactFragment.setArguments(bundle);
+        editBusinessDocumentFragment.setArguments(bundle);
+        editBusinessSettingsFragment.setArguments(bundle);
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(editBusinessGeneralDetailsFragment, "General");
-        adapter.addFrag(editBusinessContactDetailsFragment, "Contact");
-        adapter.addFrag(editBusinessOtherDetailsFragment, "Other");
+        adapter.addFrag(editBusinessGeneralFragment, "General");
+        adapter.addFrag(editBusinessAddressFragment, "Address");
+        adapter.addFrag(editBusinessContactFragment, "Contact");
+        adapter.addFrag(editBusinessDocumentFragment, "Document");
+        adapter.addFrag(editBusinessSettingsFragment, "Settings");
 
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(5);
         viewPager.setAdapter(adapter);
         tabs.setViewPager(viewPager);
 
         localBroadcastManager1 = LocalBroadcastManager.getInstance(context);
         localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
         localBroadcastManager3 = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager4 = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager5 = LocalBroadcastManager.getInstance(context);
 
-        IntentFilter intentFilter1 = new IntentFilter("EditBusinessActivityBusiness");
-        IntentFilter intentFilter2 = new IntentFilter("EditBusinessActivityContact");
-        IntentFilter intentFilter3 = new IntentFilter("EditBusinessActivityOther");
+        IntentFilter intentFilter1 = new IntentFilter("EditBusinessBusinessActivity");
+        IntentFilter intentFilter2 = new IntentFilter("EditBusinessAddressActivity");
+        IntentFilter intentFilter3 = new IntentFilter("EditBusinessContactActivity");
+        IntentFilter intentFilter4 = new IntentFilter("EditBusinessDocumentActivity");
+        IntentFilter intentFilter5 = new IntentFilter("EditBusinessSettingsActivity");
 
         localBroadcastManager1.registerReceiver(broadcastReceiver1, intentFilter1);
         localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
         localBroadcastManager3.registerReceiver(broadcastReceiver3, intentFilter3);
+        localBroadcastManager4.registerReceiver(broadcastReceiver4, intentFilter4);
+        localBroadcastManager5.registerReceiver(broadcastReceiver5, intentFilter5);
     }
 
     private void setEventListner() {
         btnSave.setOnClickListener(v -> {
-            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessGeneralDetailsFragment"));
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessGeneralFragment"));
         });
     }
 
     public void removeLandlineLayout(View view) {
-        EditBusinessContactDetailsFragment.removeLandlineLayout(view);
+        EditBusinessContactFragment.removeLandlineLayout(view);
     }
 
     public void removeMobileLayout(View view) {
-        EditBusinessContactDetailsFragment.removeMobileLayout(view);
+        EditBusinessContactFragment.removeMobileLayout(view);
     }
 
     public void selectContryCode(View view) {
-        EditBusinessContactDetailsFragment.selectContryCode(view);
+        EditBusinessContactFragment.selectContryCode(view);
     }
 
     private void setUpToolbar() {
@@ -196,7 +209,7 @@ public class EditBusinessActivity_v2 extends AppCompatActivity {
     private String imageName, businessName, categoryId, designation, email, website, address, pincode,
             city, district, state, country, latitude, longitude;
 
-    private String subCategoryJsonArray, tagsJsonArray, mobilesJsonArray, landlineJsonArray;
+    private String subCategoryJsonArray, tagsJsonArray, mobilesJsonArray, landlineJsonArray, documentJsonArray;
 
     private BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
         @Override
@@ -213,11 +226,6 @@ public class EditBusinessActivity_v2 extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            mobilesJsonArray = intent.getStringExtra("mobilesJsonArray");
-            landlineJsonArray = intent.getStringExtra("landlineJsonArray");
-            email = intent.getStringExtra("email");
-            website = intent.getStringExtra("website");
             address = intent.getStringExtra("address");
             pincode = intent.getStringExtra("pincode");
             city = intent.getStringExtra("city");
@@ -232,11 +240,27 @@ public class EditBusinessActivity_v2 extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver3 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            mobilesJsonArray = intent.getStringExtra("mobilesJsonArray");
+            landlineJsonArray = intent.getStringExtra("landlineJsonArray");
+            email = intent.getStringExtra("email");
+            website = intent.getStringExtra("website");
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver4 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            documentJsonArray = intent.getStringExtra("documentJsonArray");
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver5 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             String isVisible = intent.getStringExtra("isVisible");
             String isEnquiryAvailable = intent.getStringExtra("isEnquiryAvailable");
             String isPickUpAvailable = intent.getStringExtra("isPickUpAvailable");
             String isHomeDeliveryAvailable = intent.getStringExtra("isHomeDeliveryAvailable");
-            String documentJsonArray = intent.getStringExtra("documentJsonArray");
 
             JsonObject mainObj = new JsonObject();
 
@@ -364,6 +388,8 @@ public class EditBusinessActivity_v2 extends AppCompatActivity {
         localBroadcastManager1.unregisterReceiver(broadcastReceiver1);
         localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
         localBroadcastManager3.unregisterReceiver(broadcastReceiver3);
+        localBroadcastManager4.unregisterReceiver(broadcastReceiver4);
+        localBroadcastManager5.unregisterReceiver(broadcastReceiver5);
     }
 
 

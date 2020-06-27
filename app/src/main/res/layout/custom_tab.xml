@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:background="?attr/selectableItemBackground"
     android:gravity="center"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:textColor="@drawable/custom_tab"
     android:textSize="16sp">
 

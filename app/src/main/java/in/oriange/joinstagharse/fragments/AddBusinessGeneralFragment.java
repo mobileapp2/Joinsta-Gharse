@@ -25,9 +25,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,20 +55,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.lujun.androidtagview.TagContainerLayout;
 import co.lujun.androidtagview.TagView;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.activities.AddBusinessActivity;
-import in.oriange.joinstagharse.activities.PickMapLocationActivity;
 import in.oriange.joinstagharse.models.BizProfEmpProfileDesignationsModel;
 import in.oriange.joinstagharse.models.CategotyListModel;
 import in.oriange.joinstagharse.models.CategotyListPojo;
 import in.oriange.joinstagharse.models.GetTagsListModel;
-import in.oriange.joinstagharse.models.MapAddressListModel;
 import in.oriange.joinstagharse.models.SubCategotyListModel;
 import in.oriange.joinstagharse.models.SubCategotyListPojo;
 import in.oriange.joinstagharse.models.TagsListModel;
@@ -84,9 +78,8 @@ import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 import static in.oriange.joinstagharse.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
-import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 
-public class AddBusinessGeneralDetailsFragment extends Fragment {
+public class AddBusinessGeneralFragment extends Fragment {
 
     @BindView(R.id.imv_photo1)
     ImageView imvPhoto1;
@@ -131,7 +124,7 @@ public class AddBusinessGeneralDetailsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_business_general_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_add_business_general, container, false);
         ButterKnife.bind(this, rootView);
 
         context = getActivity();
@@ -179,7 +172,7 @@ public class AddBusinessGeneralDetailsFragment extends Fragment {
         }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("AddBusinessGeneralDetailsFragment");
+        IntentFilter intentFilter = new IntentFilter("AddBusinessGeneralFragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -390,7 +383,7 @@ public class AddBusinessGeneralDetailsFragment extends Fragment {
             tagJSONArray.add(tagsJSONObj);
         }
 
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessActivityBusiness")
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessBusinessActivity")
                 .putExtra("imageName", imageName)
                 .putExtra("businessName", edtName.getText().toString().trim())
                 .putExtra("categoryId", categoryId)

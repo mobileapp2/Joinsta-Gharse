@@ -38,13 +38,11 @@ import java.util.regex.Matcher;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.adapters.AddBusinessViewPagerAdapter;
-import in.oriange.joinstagharse.fragments.AddBusinessContactDetailsFragment;
-import in.oriange.joinstagharse.fragments.AddBusinessGeneralDetailsFragment;
-import in.oriange.joinstagharse.fragments.AddBusinessOtherDetailsFragment;
-import in.oriange.joinstagharse.fragments.MyOrdersFragment;
-import in.oriange.joinstagharse.fragments.ReceivedOrdersFragment;
-import in.oriange.joinstagharse.fragments.SentOrdersFragment;
+import in.oriange.joinstagharse.fragments.AddBusinessAddressFragment;
+import in.oriange.joinstagharse.fragments.AddBusinessContactFragment;
+import in.oriange.joinstagharse.fragments.AddBusinessDocumentFragment;
+import in.oriange.joinstagharse.fragments.AddBusinessGeneralFragment;
+import in.oriange.joinstagharse.fragments.AddBusinessSettingsFragment;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.NonSwipeableViewPager;
@@ -72,10 +70,8 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
     private String userId;
     private int currentPosition = 0;
 
-    private LocalBroadcastManager localBroadcastManager1;
-    private LocalBroadcastManager localBroadcastManager2;
-    private LocalBroadcastManager localBroadcastManager3;
-
+    private LocalBroadcastManager localBroadcastManager1, localBroadcastManager2, localBroadcastManager3,
+            localBroadcastManager4, localBroadcastManager5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,9 +94,11 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
         changeStatusBar(context, getWindow());
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new AddBusinessGeneralDetailsFragment(), "");
-        adapter.addFrag(new AddBusinessContactDetailsFragment(), "");
-        adapter.addFrag(new AddBusinessOtherDetailsFragment(), "");
+        adapter.addFrag(new AddBusinessGeneralFragment(), "");
+        adapter.addFrag(new AddBusinessAddressFragment(), "");
+        adapter.addFrag(new AddBusinessContactFragment(), "");
+        adapter.addFrag(new AddBusinessDocumentFragment(), "");
+        adapter.addFrag(new AddBusinessSettingsFragment(), "");
 
         viewPager.setOffscreenPageLimit(3);
         viewPager.setAdapter(adapter);
@@ -120,33 +118,43 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
 
     private void setDefault() {
 
-        String[] descriptionData = {"General", "Contact", "Other"};
+        String[] descriptionData = {"General", "Address", "Contact", "Document", "Setting"};
         statusProgressBar.setStateDescriptionData(descriptionData);
         updatePosition();
 
         localBroadcastManager1 = LocalBroadcastManager.getInstance(context);
         localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
         localBroadcastManager3 = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager4 = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager5 = LocalBroadcastManager.getInstance(context);
 
-        IntentFilter intentFilter1 = new IntentFilter("AddBusinessActivityBusiness");
-        IntentFilter intentFilter2 = new IntentFilter("AddBusinessActivityContact");
-        IntentFilter intentFilter3 = new IntentFilter("AddBusinessActivityOther");
+        IntentFilter intentFilter1 = new IntentFilter("AddBusinessBusinessActivity");
+        IntentFilter intentFilter2 = new IntentFilter("AddBusinessAddressActivity");
+        IntentFilter intentFilter3 = new IntentFilter("AddBusinessContactActivity");
+        IntentFilter intentFilter4 = new IntentFilter("AddBusinessDocumentActivity");
+        IntentFilter intentFilter5 = new IntentFilter("AddBusinessSettingActivity");
 
         localBroadcastManager1.registerReceiver(broadcastReceiver1, intentFilter1);
         localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
         localBroadcastManager3.registerReceiver(broadcastReceiver3, intentFilter3);
+        localBroadcastManager4.registerReceiver(broadcastReceiver4, intentFilter4);
+        localBroadcastManager5.registerReceiver(broadcastReceiver5, intentFilter5);
     }
 
     private void setEventListner() {
         btnSave.setOnClickListener(v -> {
-            if (currentPosition < 2) {
+            if (currentPosition < 4) {
                 if (currentPosition == 0) {
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessGeneralDetailsFragment"));
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessGeneralFragment"));
                 } else if (currentPosition == 1) {
-                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessContactDetailsFragment"));
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessAddressFragment"));
+                } else if (currentPosition == 2) {
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessContactFragment"));
+                } else if (currentPosition == 3) {
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessDocumentFragment"));
                 }
-            } else if (currentPosition == 2) {
-                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessOtherDetailsFragment"));
+            } else if (currentPosition == 4) {
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessSettingFragment"));
             }
         });
     }
@@ -164,22 +172,30 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
                 statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
                 break;
             case 2:
-                btnSave.setText("Save");
+                btnSave.setText("Next");
                 statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
+                break;
+            case 3:
+                btnSave.setText("Next");
+                statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FOUR);
+                break;
+            case 4:
+                btnSave.setText("Save");
+                statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FIVE);
                 break;
         }
     }
 
     public void removeLandlineLayout(View view) {
-        AddBusinessContactDetailsFragment.removeLandlineLayout(view);
+        AddBusinessContactFragment.removeLandlineLayout(view);
     }
 
     public void removeMobileLayout(View view) {
-        AddBusinessContactDetailsFragment.removeMobileLayout(view);
+        AddBusinessContactFragment.removeMobileLayout(view);
     }
 
     public void selectContryCode(View view) {
-        AddBusinessContactDetailsFragment.selectContryCode(view);
+        AddBusinessContactFragment.selectContryCode(view);
     }
 
     private void setUpToolbar() {
@@ -234,7 +250,7 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
     private String imageName, businessName, categoryId, designation, email, website, address, pincode,
             city, district, state, country, latitude, longitude;
 
-    private String subCategoryJsonArray, tagsJsonArray, mobilesJsonArray, landlineJsonArray;
+    private String subCategoryJsonArray, tagsJsonArray, mobilesJsonArray, landlineJsonArray, documentJsonArray;
 
     private BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
         @Override
@@ -257,10 +273,6 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
             currentPosition = currentPosition + 1;
             updatePosition();
 
-            mobilesJsonArray = intent.getStringExtra("mobilesJsonArray");
-            landlineJsonArray = intent.getStringExtra("landlineJsonArray");
-            email = intent.getStringExtra("email");
-            website = intent.getStringExtra("website");
             address = intent.getStringExtra("address");
             pincode = intent.getStringExtra("pincode");
             city = intent.getStringExtra("city");
@@ -275,11 +287,33 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver3 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            currentPosition = currentPosition + 1;
+            updatePosition();
+
+            mobilesJsonArray = intent.getStringExtra("mobilesJsonArray");
+            landlineJsonArray = intent.getStringExtra("landlineJsonArray");
+            email = intent.getStringExtra("email");
+            website = intent.getStringExtra("website");
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver4 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            currentPosition = currentPosition + 1;
+            updatePosition();
+
+            documentJsonArray = intent.getStringExtra("documentJsonArray");
+        }
+    };
+
+    private BroadcastReceiver broadcastReceiver5 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
             String isVisible = intent.getStringExtra("isVisible");
             String isEnquiryAvailable = intent.getStringExtra("isEnquiryAvailable");
             String isPickUpAvailable = intent.getStringExtra("isPickUpAvailable");
             String isHomeDeliveryAvailable = intent.getStringExtra("isHomeDeliveryAvailable");
-            String documentJsonArray = intent.getStringExtra("documentJsonArray");
 
             JsonObject mainObj = new JsonObject();
 
@@ -333,8 +367,6 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
-
-
         }
     };
 
@@ -409,5 +441,7 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
         localBroadcastManager1.unregisterReceiver(broadcastReceiver1);
         localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
         localBroadcastManager3.unregisterReceiver(broadcastReceiver3);
+        localBroadcastManager4.unregisterReceiver(broadcastReceiver4);
+        localBroadcastManager5.unregisterReceiver(broadcastReceiver5);
     }
 }

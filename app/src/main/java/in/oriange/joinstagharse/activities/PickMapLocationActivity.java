@@ -54,6 +54,7 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.isLocationEnabled;
 import static in.oriange.joinstagharse.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinstagharse.utilities.Utilities.turnOnLocation;
@@ -81,6 +82,7 @@ public class PickMapLocationActivity extends FragmentActivity implements OnMapRe
         btn_pick = findViewById(R.id.btn_pick);
         cv_search = findViewById(R.id.cv_search);
         btn_select_location = findViewById(R.id.btn_select_location);
+        changeStatusBar(context, getWindow());
 
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), getString(R.string.places_api_key), Locale.US);

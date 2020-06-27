@@ -18,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -42,7 +41,7 @@ import in.oriange.joinstagharse.utilities.Utilities;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class EditBusinessContactDetailsFragment extends Fragment {
+public class EditBusinessContactFragment extends Fragment {
 
     @BindView(R.id.btn_add_mobile)
     Button btnAddMobile;
@@ -52,29 +51,15 @@ public class EditBusinessContactDetailsFragment extends Fragment {
     EditText edtEmail;
     @BindView(R.id.edt_website)
     EditText edtWebsite;
-    @BindView(R.id.btn_select)
-    MaterialButton btnSelect;
-    @BindView(R.id.edt_address)
-    EditText edtAddress;
-    @BindView(R.id.edt_pincode)
-    EditText edtPincode;
-    @BindView(R.id.edt_city)
-    EditText edtCity;
-    @BindView(R.id.edt_district)
-    EditText edtDistrict;
-    @BindView(R.id.edt_state)
-    EditText edtState;
-    @BindView(R.id.edt_country)
-    EditText edtCountry;
     @BindView(R.id.sv_scroll)
     ScrollView svScroll;
 
     private static Context context;
     private static LinearLayout llMobile, llLandline;
+
     private UserSessionManager session;
     private static ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
-    private String userId, latitude = "", longitude = "";
-    private final int LOCATION_REQUEST = 300;
+    private String userId;
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -93,7 +78,6 @@ public class EditBusinessContactDetailsFragment extends Fragment {
 
     private void init(View rootView) {
         session = new UserSessionManager(context);
-
 
         llMobile = rootView.findViewById(R.id.ll_mobile);
         llLandline = rootView.findViewById(R.id.ll_landline);
@@ -116,24 +100,15 @@ public class EditBusinessContactDetailsFragment extends Fragment {
     private void setDefault() {
         GetBusinessModel.ResultBean searchDetails = (GetBusinessModel.ResultBean) this.getArguments().getSerializable("searchDetails");
 
-        latitude = searchDetails.getLatitude();
-        longitude = searchDetails.getLongitude();
-
         edtEmail.setText(searchDetails.getEmail());
         edtWebsite.setText(searchDetails.getWebsite());
-        edtAddress.setText(searchDetails.getAddress());
-        edtPincode.setText(searchDetails.getPincode());
-        edtCity.setText(searchDetails.getCity());
-        edtDistrict.setText(searchDetails.getDistrict());
-        edtState.setText(searchDetails.getState());
-        edtCountry.setText(searchDetails.getCountry());
 
         List<GetBusinessModel.ResultBean.MobilesBean> mobilesList = searchDetails.getMobiles().get(0);
 
         if (mobilesList != null)
             if (mobilesList.size() > 0)
                 for (int i = 0; i < mobilesList.size(); i++) {
-                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
                     final View rowView = inflater.inflate(R.layout.layout_add_mobile, null);
                     LinearLayout ll = (LinearLayout) rowView;
                     mobileLayoutsList.add(ll);
@@ -151,7 +126,7 @@ public class EditBusinessContactDetailsFragment extends Fragment {
         if (landlineList != null)
             if (landlineList.size() > 0)
                 for (int i = 0; i < landlineList.size(); i++) {
-                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
                     final View rowView = inflater.inflate(R.layout.layout_add_landline, null);
                     LinearLayout ll = (LinearLayout) rowView;
                     landlineLayoutsList.add(ll);
@@ -167,7 +142,7 @@ public class EditBusinessContactDetailsFragment extends Fragment {
 
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("EditBusinessContactDetailsFragment");
+        IntentFilter intentFilter = new IntentFilter("EditBusinessContactFragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -175,8 +150,6 @@ public class EditBusinessContactDetailsFragment extends Fragment {
         btnAddMobile.setOnClickListener(v -> addMobileLayout());
 
         btnAddLandline.setOnClickListener(v -> addLandlineLayout());
-
-        btnSelect.setOnClickListener(v -> startActivityForResult(new Intent(context, PickMapLocationActivity.class), LOCATION_REQUEST));
     }
 
     private void addMobileLayout() {
@@ -251,29 +224,6 @@ public class EditBusinessContactDetailsFragment extends Fragment {
             }
         }
 
-        if (edtAddress.getText().toString().trim().isEmpty()) {
-            edtAddress.setError("Please select address");
-            edtAddress.requestFocus();
-            edtAddress.getParent().requestChildFocus(edtAddress, edtAddress);
-            return;
-        }
-
-        if (!edtPincode.getText().toString().trim().isEmpty()) {
-            if (edtPincode.getText().toString().trim().length() != 6) {
-                edtPincode.setError("Please enter pincode");
-                edtPincode.requestFocus();
-                edtPincode.getParent().requestChildFocus(edtPincode, edtPincode);
-                return;
-            }
-        }
-
-        if (edtCity.getText().toString().trim().isEmpty()) {
-            edtCity.setError("Please select city");
-            edtCity.requestFocus();
-            edtCity.getParent().requestChildFocus(edtCity, edtCity);
-            return;
-        }
-
         for (int i = 0; i < mobileLayoutsList.size(); i++) {
             if (!((EditText) mobileLayoutsList.get(i).findViewById(R.id.edt_mobile)).getText().toString().trim().equals("")) {
                 JsonObject mobileJSONObj = new JsonObject();
@@ -292,43 +242,12 @@ public class EditBusinessContactDetailsFragment extends Fragment {
             }
         }
 
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessActivityContact")
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessContactActivity")
                 .putExtra("mobilesJsonArray", mobileJSONArray.toString())
                 .putExtra("landlineJsonArray", landlineJSONArray.toString())
                 .putExtra("email", edtEmail.getText().toString().trim())
-                .putExtra("website", edtWebsite.getText().toString().trim())
-                .putExtra("address", edtAddress.getText().toString().trim())
-                .putExtra("pincode", edtPincode.getText().toString().trim())
-                .putExtra("city", edtCity.getText().toString().trim())
-                .putExtra("district", edtDistrict.getText().toString().trim())
-                .putExtra("state", edtState.getText().toString().trim())
-                .putExtra("country", edtCountry.getText().toString().trim())
-                .putExtra("latitude", latitude)
-                .putExtra("longitude", longitude));
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessOtherDetailsFragment"));
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            if (requestCode == LOCATION_REQUEST) {
-                MapAddressListModel addressList = (MapAddressListModel) data.getSerializableExtra("addressList");
-                if (addressList != null) {
-                    latitude = addressList.getMap_location_lattitude();
-                    longitude = addressList.getMap_location_logitude();
-                    edtAddress.setText(addressList.getAddress_line_one());
-                    edtCountry.setText(addressList.getCountry());
-                    edtState.setText(addressList.getState());
-                    edtDistrict.setText(addressList.getDistrict());
-                    edtPincode.setText(addressList.getPincode());
-                    edtCity.setText(addressList.getDistrict());
-                } else {
-                    Utilities.showMessage("Address not found, please try again", context, 3);
-                }
-            }
-        }
+                .putExtra("website", edtWebsite.getText().toString().trim()));
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessDocumentFragment"));
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

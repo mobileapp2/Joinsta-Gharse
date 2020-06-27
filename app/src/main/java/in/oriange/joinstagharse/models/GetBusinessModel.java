@@ -152,6 +152,7 @@ public class GetBusinessModel implements Serializable {
         private String rating_by_user;
         private String total_number_review;
         private String offer_count;
+        private String allow_all_to_book_order;
         private List<List<MobilesBean>> mobiles;
         private List<List<LandlineBean>> landline;
         private List<List<SubCategoriesBean>> sub_categories;
@@ -598,6 +599,18 @@ public class GetBusinessModel implements Serializable {
 
         public void setOffer_count(String offer_count) {
             this.offer_count = offer_count;
+        }
+
+        public String getAllow_all_to_book_order() {
+            if (allow_all_to_book_order != null) {
+                return allow_all_to_book_order;
+            } else {
+                return "0";
+            }
+        }
+
+        public void setAllow_all_to_book_order(String allow_all_to_book_order) {
+            this.allow_all_to_book_order = allow_all_to_book_order;
         }
 
         public boolean isChecked() {

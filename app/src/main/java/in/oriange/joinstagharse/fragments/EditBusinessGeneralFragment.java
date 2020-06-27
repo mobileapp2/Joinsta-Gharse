@@ -84,7 +84,7 @@ import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK
 import static in.oriange.joinstagharse.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
 
-public class EditBusinessGeneralDetailsFragment extends Fragment {
+public class EditBusinessGeneralFragment extends Fragment {
 
     @BindView(R.id.imv_photo1)
     ImageView imvPhoto1;
@@ -241,7 +241,7 @@ public class EditBusinessGeneralDetailsFragment extends Fragment {
         }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("EditBusinessGeneralDetailsFragment");
+        IntentFilter intentFilter = new IntentFilter("EditBusinessGeneralFragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -452,14 +452,14 @@ public class EditBusinessGeneralDetailsFragment extends Fragment {
             tagJSONArray.add(tagsJSONObj);
         }
 
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessActivityBusiness")
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessBusinessActivity")
                 .putExtra("imageName", imageName)
                 .putExtra("businessName", edtName.getText().toString().trim())
                 .putExtra("categoryId", categoryId)
                 .putExtra("subCategoryJsonArray", subCategoryJsonArray.toString())
                 .putExtra("designation", edtDesignation.getText().toString().trim())
                 .putExtra("tagsJsonArray", tagJSONArray.toString()));
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessContactDetailsFragment"));
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessAddressFragment"));
 
     }
 

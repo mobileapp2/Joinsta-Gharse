@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -29,9 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.squareup.picasso.Picasso;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.NormalFile;
@@ -47,11 +42,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.activities.AddBusinessActivity;
-import in.oriange.joinstagharse.activities.AddProductActivity;
-import in.oriange.joinstagharse.models.BusinessDocumentModel;
-import in.oriange.joinstagharse.models.CategotyListModel;
 import in.oriange.joinstagharse.models.BusinessCategoryMasterModel;
+import in.oriange.joinstagharse.models.BusinessDocumentModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.MultipartUtility;
@@ -60,16 +52,8 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
 
-public class AddBusinessOtherDetailsFragment extends Fragment {
+public class AddBusinessDocumentFragment extends Fragment {
 
-    @BindView(R.id.cb_is_enquiry_available)
-    CheckBox cbIsEnquiryAvailable;
-    @BindView(R.id.cb_is_pick_up_available)
-    CheckBox cbIsPickUpAvailable;
-    @BindView(R.id.cb_is_home_delivery_available)
-    CheckBox cbIsHomeDeliveryAvailable;
-    @BindView(R.id.cb_show_in_search)
-    CheckBox cbShowInSearch;
     @BindView(R.id.rv_documents)
     RecyclerView rvDocuments;
     @BindView(R.id.btn_add_document)
@@ -90,9 +74,10 @@ public class AddBusinessOtherDetailsFragment extends Fragment {
 
     private LocalBroadcastManager localBroadcastManager;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_business_other_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_add_business_document, container, false);
         ButterKnife.bind(this, rootView);
 
         context = getActivity();
@@ -120,7 +105,7 @@ public class AddBusinessOtherDetailsFragment extends Fragment {
         addDocument();
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("AddBusinessOtherDetailsFragment");
+        IntentFilter intentFilter = new IntentFilter("AddBusinessDocumentFragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -154,16 +139,6 @@ public class AddBusinessOtherDetailsFragment extends Fragment {
     private void submitData() {
         JsonArray documentJsonArray = new JsonArray();
 
-        String isVisible = "1";
-        String isEnquiryAvailable = cbIsEnquiryAvailable.isChecked() ? "1" : "0";
-        String isPickUpAvailable = cbIsPickUpAvailable.isChecked() ? "1" : "0";
-        String isHomeDeliveryAvailable = cbIsHomeDeliveryAvailable.isChecked() ? "1" : "0";
-
-        if (isPickUpAvailable.equals("0") && isHomeDeliveryAvailable.equals("0")) {
-            Utilities.showMessage("Please select delivery type", context, 2);
-            return;
-        }
-
         for (BusinessDocumentModel businessDocument : businessDocumentList) {
             if (businessDocument.getName().equals("") || businessDocument.getType().equals("")) {
                 Utilities.showMessage("Please select document details", context, 2);
@@ -175,11 +150,7 @@ public class AddBusinessOtherDetailsFragment extends Fragment {
             documentJsonArray.add(jsonObject);
         }
 
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessActivityOther")
-                .putExtra("isVisible", isVisible)
-                .putExtra("isEnquiryAvailable", isEnquiryAvailable)
-                .putExtra("isPickUpAvailable", isPickUpAvailable)
-                .putExtra("isHomeDeliveryAvailable", isHomeDeliveryAvailable)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessDocumentActivity")
                 .putExtra("documentJsonArray", documentJsonArray.toString()));
 
     }
@@ -188,14 +159,14 @@ public class AddBusinessOtherDetailsFragment extends Fragment {
 
         @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public DocumentAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.list_row_document, parent, false);
-            return new MyViewHolder(view);
+            return new DocumentAdapter.MyViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
+        public void onBindViewHolder(@NonNull DocumentAdapter.MyViewHolder holder, int pos) {
             int position = holder.getAdapterPosition();
             BusinessDocumentModel businessDetails = businessDocumentList.get(position);
 
@@ -407,5 +378,4 @@ public class AddBusinessOtherDetailsFragment extends Fragment {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
-
 }

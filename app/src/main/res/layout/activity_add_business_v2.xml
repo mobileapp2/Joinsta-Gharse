@@ -54,12 +54,14 @@
                 app:spb_checkStateCompleted="true"
                 app:spb_currentStateDescriptionColor="@color/colorPrimary"
                 app:spb_currentStateNumber="one"
-                app:spb_maxStateNumber="three"
+                app:spb_maxStateNumber="five"
                 app:spb_stateBackgroundColor="#BDBDBD"
                 app:spb_stateDescriptionColor="#808080"
+                app:spb_stateDescriptionSize="12sp"
                 app:spb_stateForegroundColor="@color/colorPrimary"
                 app:spb_stateNumberBackgroundColor="#808080"
-                app:spb_stateNumberForegroundColor="#eeeeee" />
+                app:spb_stateNumberForegroundColor="#eeeeee"
+                app:spb_stateTextSize="14sp" />
 
         </LinearLayout>
 
