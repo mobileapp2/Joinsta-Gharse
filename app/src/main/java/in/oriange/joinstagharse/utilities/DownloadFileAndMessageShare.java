@@ -94,8 +94,6 @@ public class DownloadFileAndMessageShare {
                 }
                 success = true;
 
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -132,15 +130,15 @@ public class DownloadFileAndMessageShare {
             pd.dismiss();
             super.onPostExecute(aBoolean);
             if (file != null) {
-                ArrayList<Uri> downloadedImagesUriList = new ArrayList<>();
+//                ArrayList<Uri> downloadedImagesUriList = new ArrayList<>();
                 Uri uri = Uri.parse("file:///" + file);
-                downloadedImagesUriList.add(uri);
+//                downloadedImagesUriList.add(uri);
                 context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
 
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/html");
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
-                sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
+                sharingIntent.putExtra(Intent.EXTRA_STREAM, uri);
                 context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
             } else {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);

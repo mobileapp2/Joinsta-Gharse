@@ -2,9 +2,7 @@ package in.oriange.joinstagharse.adapters;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,9 +34,8 @@ import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
-import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.Utilities.changeDateFormat;
-import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
+import static in.oriange.joinstagharse.utilities.Utilities.showCallDialog;
 
 public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyViewHolder> {
 
@@ -112,104 +108,60 @@ public class EnquiriesAdapter extends RecyclerView.Adapter<EnquiriesAdapter.MyVi
         }
 
         if (enquiryDetails.getCommunication_mode().equals("mobile")) {
-            holder.ib_call.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_call));
+            holder.ib_call.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_call_red));
         } else if (enquiryDetails.getCommunication_mode().equals("email")) {
-            holder.ib_call.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_email));
+            holder.ib_call.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_email_red));
         }
 
-        holder.ib_call.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (enquiryDetails.getCommunication_mode().equals("mobile")) {
-
-                    if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        provideCallPremission(context);
-                    } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                        builder.setMessage("Are you sure you want to make a call?");
-                        builder.setTitle("Alert");
-                        builder.setIcon(R.drawable.icon_call);
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                context.startActivity(new Intent(Intent.ACTION_CALL,
-                                        Uri.parse("tel:" + enquiryDetails.getMobile())));
-                            }
-                        });
-                        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog alertD = builder.create();
-                        alertD.show();
-                    }
-
-                } else if (enquiryDetails.getCommunication_mode().equals("email")) {
-                    Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-                            "mailto", enquiryDetails.getEmail(), null));
-                    context.startActivity(Intent.createChooser(emailIntent, "Send email..."));
-                }
-
+        holder.ib_call.setOnClickListener(v -> {
+            if (enquiryDetails.getCommunication_mode().equals("mobile")) {
+                showCallDialog(context, enquiryDetails.getMobile());
+            } else if (enquiryDetails.getCommunication_mode().equals("email")) {
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                        "mailto", enquiryDetails.getEmail(), null));
+                context.startActivity(Intent.createChooser(emailIntent, "Send email..."));
             }
         });
 
-        holder.cv_mainlayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.ll_buttons.getVisibility() == View.GONE) {
-                    holder.ll_buttons.setVisibility(View.VISIBLE);
-                } else if (holder.ll_buttons.getVisibility() == View.VISIBLE) {
-                    holder.ll_buttons.setVisibility(View.GONE);
-                }
+        holder.cv_mainlayout.setOnClickListener(v -> {
+            if (holder.ll_buttons.getVisibility() == View.GONE) {
+                holder.ll_buttons.setVisibility(View.VISIBLE);
+            } else if (holder.ll_buttons.getVisibility() == View.VISIBLE) {
+                holder.ll_buttons.setVisibility(View.GONE);
+            }
 
+        });
+
+        holder.sw_attend.setOnClickListener(v -> {
+            String is_attended = "0";
+
+            if (holder.sw_attend.isChecked()) {
+                is_attended = "1";
+            }
+
+            if (Utilities.isNetworkAvailable(context)) {
+                new AttendEnquiry().execute(enquiryDetails.getId(), is_attended);
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
 
-        holder.sw_attend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String is_attended = "0";
-
-                if (holder.sw_attend.isChecked()) {
-                    is_attended = "1";
-                }
-
+        holder.btn_delete.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+            builder.setMessage("Are you sure you want to delete this enquiry?");
+            builder.setTitle("Alert");
+            builder.setIcon(R.drawable.icon_alertred);
+            builder.setCancelable(false);
+            builder.setPositiveButton("YES", (dialog, id) -> {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new AttendEnquiry().execute(enquiryDetails.getId(), is_attended);
+                    new DeleteEnquiry().execute(enquiryDetails.getId());
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
-            }
-        });
-
-        holder.btn_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to delete this enquiry?");
-                builder.setTitle("Alert");
-                builder.setIcon(R.drawable.icon_alertred);
-                builder.setCancelable(false);
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new DeleteEnquiry().execute(enquiryDetails.getId());
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-                    }
-                });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertD = builder.create();
-                alertD.show();
-            }
+            });
+            builder.setNegativeButton("NO", (dialog, which) -> dialog.dismiss());
+            AlertDialog alertD = builder.create();
+            alertD.show();
         });
 
         holder.btn_share.setOnClickListener(new View.OnClickListener() {

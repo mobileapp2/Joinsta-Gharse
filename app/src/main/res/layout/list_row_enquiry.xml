@@ -24,8 +24,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:text="Joinsta Development"
             android:textColor="@color/black"
             android:textSize="16sp" />
@@ -41,8 +39,6 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:text="Joinsta Development"
             android:textColor="@color/darkGray"
             android:textSize="16sp" />
@@ -51,8 +47,6 @@
             android:id="@+id/tv_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
             android:text="Joinsta Development Joinsta Development Joinsta Development Joinsta Development"
             android:textColor="@color/darkGray"
             android:textSize="16sp" />
@@ -60,9 +54,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/tv_createdby"
@@ -78,10 +70,11 @@
 
             <ImageButton
                 android:id="@+id/ib_call"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/icon_call" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/icon_call_red" />
 
         </LinearLayout>
 

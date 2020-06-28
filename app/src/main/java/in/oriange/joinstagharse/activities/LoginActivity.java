@@ -143,7 +143,7 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        checkPermissions();
+//        checkPermissions();
     }
 
     private void setEventHandler() {

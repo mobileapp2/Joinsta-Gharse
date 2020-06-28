@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -29,12 +30,13 @@ import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -73,10 +75,23 @@ import in.oriange.joinstagharse.utilities.DownloadFileAndMessageShare;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
-import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
-import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
+import static in.oriange.joinstagharse.utilities.Utilities.showCallDialog;
 
 public class ViewSearchBizDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -354,13 +369,9 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
 
         ll_mobile.setOnClickListener(v -> {
             if (searchDetails.getMobiles().get(0) != null)
-                if (searchDetails.getMobiles().get(0).size() > 0) {
-                    if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        provideCallPremission(context);
-                    } else {
-                        showMobileListDialog(searchDetails.getMobiles().get(0));
-                    }
-                } else
+                if (searchDetails.getMobiles().get(0).size() > 0)
+                    showMobileListDialog(searchDetails.getMobiles().get(0));
+                else
                     Utilities.showMessage("Mobile number not added", context, 2);
 
             else
@@ -370,28 +381,19 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
 
         ll_whatsapp.setOnClickListener(v -> {
             if (searchDetails.getMobiles().get(0) != null)
-                if (searchDetails.getMobiles().get(0).size() > 0) {
-                    if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        provideCallPremission(context);
-                    } else {
-                        showWhatsAppListDialog(searchDetails.getMobiles().get(0));
-                    }
-                } else
+                if (searchDetails.getMobiles().get(0).size() > 0)
+                    showWhatsAppListDialog(searchDetails.getMobiles().get(0));
+                else
                     Utilities.showMessage("Mobile number not added", context, 2);
-
             else
                 Utilities.showMessage("Mobile number not added", context, 2);
         });
 
         ll_landline.setOnClickListener(v -> {
             if (searchDetails.getLandline().get(0) != null)
-                if (searchDetails.getLandline().get(0).size() > 0) {
-                    if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                        provideCallPremission(context);
-                    } else {
-                        showLandlineListDialog(searchDetails.getLandline().get(0));
-                    }
-                } else
+                if (searchDetails.getLandline().get(0).size() > 0)
+                    showLandlineListDialog(searchDetails.getLandline().get(0));
+                else
                     Utilities.showMessage("Landline number not added", context, 2);
             else
                 Utilities.showMessage("Landline number not added", context, 2);
@@ -609,19 +611,10 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             arrayAdapter.add(mobileList.get(i).getCountry_code() + mobileList.get(i).getMobile_number());
         }
 
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Intent.ACTION_CALL,
-                        Uri.parse("tel:" + mobileList.get(which).getCountry_code() + mobileList.get(which).getMobile_number())));
-            }
+        builderSingle.setAdapter(arrayAdapter, (dialog, which) -> {
+            showCallDialog(context, mobileList.get(which).getCountry_code() + mobileList.get(which).getMobile_number());
         });
         builderSingle.show();
     }
@@ -665,19 +658,10 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             arrayAdapter.add(landlineList.get(i).getCountry_code() + landlineList.get(i).getLandline_number());
         }
 
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        builderSingle.setAdapter(arrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                startActivity(new Intent(Intent.ACTION_CALL,
-                        Uri.parse("tel:" + landlineList.get(which).getCountry_code() + landlineList.get(which).getLandline_number())));
-            }
+        builderSingle.setAdapter(arrayAdapter, (dialog, which) -> {
+            showCallDialog(context, landlineList.get(which).getCountry_code() + landlineList.get(which).getLandline_number());
         });
         builderSingle.show();
     }
@@ -722,25 +706,7 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
             holder.tv_mobile.setText(searchDetails.getCountry_code() + searchDetails.getMobile_number());
 
             holder.ib_call.setOnClickListener(v -> {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to make a call?");
-                builder.setTitle("Alert");
-                builder.setIcon(R.drawable.icon_call);
-                builder.setCancelable(false);
-                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        startActivity(new Intent(Intent.ACTION_CALL,
-                                Uri.parse("tel:" + searchDetails.getCountry_code() + searchDetails.getMobile_number())));
-                    }
-                });
-                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertD = builder.create();
-                alertD.show();
+                showCallDialog(context, searchDetails.getCountry_code() + searchDetails.getMobile_number());
             });
         }
 
@@ -923,6 +889,12 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
 
     private void shareDetails() {
         if (!searchDetails.getImage_url().equals("")) {
+            if (doesAppNeedPermissions()) {
+                if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
+                    return;
+                }
+            }
+
             new DownloadFileAndMessageShare(context, "Business", IMAGE_LINK + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url(), businessDetails());
         } else {
             String message = businessDetails();
@@ -1073,4 +1045,46 @@ public class ViewSearchBizDetailsActivity extends AppCompatActivity implements O
 
         return super.onOptionsItemSelected(item);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+        }
+    }
+
 }

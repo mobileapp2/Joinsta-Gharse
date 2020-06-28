@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,12 +13,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,7 +26,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -60,8 +56,20 @@ import in.oriange.joinstagharse.utilities.MultipartUtility;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
-import static in.oriange.joinstagharse.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isCameraStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.hideSoftKeyboard;
@@ -86,8 +94,6 @@ public class AddOffersActivity extends AppCompatActivity {
     private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200;
     private int IMAGE_TYPE = 0;
     private String imageOneName = "", imageTwoName = "", imageThreeName = "";
-
-    private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,183 +167,122 @@ public class AddOffersActivity extends AppCompatActivity {
     }
 
     private void setEventHandler() {
-        edt_start_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        edt_start_date.setOnClickListener(v -> {
 
-                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        edt_end_date.setText("");
-                        startDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_start_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", startDate));
+            DatePickerDialog dialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
+                edt_end_date.setText("");
+                startDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                edt_start_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", startDate));
 
-                        mYear = year;
-                        mMonth = month;
-                        mDay = dayOfMonth;
-                    }
-                }, mYear, mMonth, mDay);
-                try {
-                    Calendar c = Calendar.getInstance();
-                    c.set(mYear, mMonth + 1, mDay);
+                mYear = year;
+                mMonth = month;
+                mDay = dayOfMonth;
+            }, mYear, mMonth, mDay);
+            try {
+                Calendar c = Calendar.getInstance();
+                c.set(mYear, mMonth + 1, mDay);
 
-                    dialog.getDatePicker().setCalendarViewShown(false);
-                    dialog.getDatePicker().setMinDate(System.currentTimeMillis());
-                    dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                dialog.show();
+                dialog.getDatePicker().setCalendarViewShown(false);
+                dialog.getDatePicker().setMinDate(System.currentTimeMillis());
+                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+            dialog.show();
         });
 
-        edt_end_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (edt_start_date.getText().toString().trim().isEmpty()) {
-                    edt_start_date.setError("Please select start date");
-                    edt_start_date.requestFocus();
-                    return;
-                }
-
-                DatePickerDialog dialog = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                        endDate = yyyyMMddDate(dayOfMonth, month + 1, year);
-                        edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", endDate));
-
-                        mYear1 = year;
-                        mMonth1 = month;
-                        mDay1 = dayOfMonth;
-                    }
-                }, mYear1, mMonth1, mDay1);
-                try {
-                    dialog.getDatePicker().setCalendarViewShown(false);
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(mYear, mMonth, mDay);
-                    Calendar calendar1 = Calendar.getInstance();
-                    calendar1.set(mYear, mMonth + 1, mDay);
-                    dialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
-                    dialog.getDatePicker().setMaxDate(calendar1.getTimeInMillis());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                dialog.show();
+        edt_end_date.setOnClickListener(v -> {
+            if (edt_start_date.getText().toString().trim().isEmpty()) {
+                edt_start_date.setError("Please select start date");
+                edt_start_date.requestFocus();
+                return;
             }
+
+            DatePickerDialog dialog = new DatePickerDialog(context, (view, year, month, dayOfMonth) -> {
+                endDate = yyyyMMddDate(dayOfMonth, month + 1, year);
+                edt_end_date.setText(changeDateFormat("yyyy-MM-dd", "dd-MM-yyyy", endDate));
+
+                mYear1 = year;
+                mMonth1 = month;
+                mDay1 = dayOfMonth;
+            }, mYear1, mMonth1, mDay1);
+            try {
+                dialog.getDatePicker().setCalendarViewShown(false);
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(mYear, mMonth, mDay);
+                Calendar calendar1 = Calendar.getInstance();
+                calendar1.set(mYear, mMonth + 1, mDay);
+                dialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+                dialog.getDatePicker().setMaxDate(calendar1.getTimeInMillis());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            dialog.show();
         });
 
-        imv_image_one.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IMAGE_TYPE = 1;
-                if (Utilities.isNetworkAvailable(context)) {
-                    if (doesAppNeedPermissions()) {
-                        askPermission();
-                    } else {
-                        selectImage();
-                    }
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
+        imv_image_one.setOnClickListener(v -> {
+            IMAGE_TYPE = 1;
+            selectImage();
         });
 
-        imv_image_two.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IMAGE_TYPE = 2;
-                if (Utilities.isNetworkAvailable(context)) {
-                    if (doesAppNeedPermissions()) {
-                        askPermission();
-                    } else {
-                        selectImage();
-                    }
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
+        imv_image_two.setOnClickListener(v -> {
+            IMAGE_TYPE = 2;
+            selectImage();
         });
 
-        imv_image_three.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IMAGE_TYPE = 3;
-                if (Utilities.isNetworkAvailable(context)) {
-                    if (doesAppNeedPermissions()) {
-                        askPermission();
-                    } else {
-                        selectImage();
-                    }
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
-            }
+        imv_image_three.setOnClickListener(v -> {
+            IMAGE_TYPE = 3;
+            selectImage();
         });
 
-        imv_image_one_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageOneName = "";
-                setPaddingForView(context, imv_image_one, 40);
-                imv_image_one.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
-                imv_image_one_delete.setVisibility(View.GONE);
-            }
+        imv_image_one_delete.setOnClickListener(v -> {
+            imageOneName = "";
+            setPaddingForView(context, imv_image_one, 40);
+            imv_image_one.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+            imv_image_one_delete.setVisibility(View.GONE);
         });
 
-        imv_image_two_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageTwoName = "";
-                setPaddingForView(context, imv_image_two, 40);
-                imv_image_two.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
-                imv_image_two_delete.setVisibility(View.GONE);
-            }
+        imv_image_two_delete.setOnClickListener(v -> {
+            imageTwoName = "";
+            setPaddingForView(context, imv_image_two, 40);
+            imv_image_two.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+            imv_image_two_delete.setVisibility(View.GONE);
         });
 
-        imv_image_three_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageThreeName = "";
-                setPaddingForView(context, imv_image_three, 40);
-                imv_image_three.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
-                imv_image_three_delete.setVisibility(View.GONE);
-            }
+        imv_image_three_delete.setOnClickListener(v -> {
+            imageThreeName = "";
+            setPaddingForView(context, imv_image_three, 40);
+            imv_image_three.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_orange));
+            imv_image_three_delete.setVisibility(View.GONE);
         });
 
-        btn_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                submitData();
-            }
-        });
+        btn_save.setOnClickListener(v -> submitData());
     }
 
     private void selectImage() {
+        if (doesAppNeedPermissions()) {
+            if (!isCameraStoragePermissionGiven(context, CAMERA_AND_STORAGE_PERMISSION)) {
+                return;
+            }
+        }
+
         final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builder.setCancelable(false);
-        builder.setItems(options, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (options[item].equals("Take a Photo")) {
-                    File file = new File(photoFileFolder, "doc_image.png");
-                    photoURI = Uri.fromFile(file);
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    startActivityForResult(intent, CAMERA_REQUEST);
-                } else if (options[item].equals("Choose from Gallery")) {
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, GALLERY_REQUEST);
-                }
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals("Take a Photo")) {
+                File file = new File(photoFileFolder, "doc_image.png");
+                photoURI = Uri.fromFile(file);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(intent, CAMERA_REQUEST);
+            } else if (options[item].equals("Choose from Gallery")) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, GALLERY_REQUEST);
             }
         });
-        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builder.setPositiveButton("Cancel", (dialog, which) -> dialog.dismiss());
         AlertDialog alertD = builder.create();
         alertD.show();
     }
@@ -624,40 +569,43 @@ public class AddOffersActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void askPermission() {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(PERMISSIONS, PERMISSION_ALL);
-        } else {
-            selectImage();
-        }
-    }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                selectImage();
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setTitle("Alert");
-                builder.setMessage("Please provide permission for Camera and Gallery");
-                builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", context.getPackageName(), null)));
-                    }
-                });
-                builder.create();
-                AlertDialog alertD = builder.create();
-                alertD.show();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
             }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
         }
     }
 
@@ -666,4 +614,5 @@ public class AddOffersActivity extends AppCompatActivity {
         super.onPause();
         hideSoftKeyboard(AddOffersActivity.this);
     }
+
 }

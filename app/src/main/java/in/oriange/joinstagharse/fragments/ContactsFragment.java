@@ -1,6 +1,9 @@
 package in.oriange.joinstagharse.fragments;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -19,10 +22,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,7 +40,8 @@ import in.oriange.joinstagharse.adapters.ContactsAdapter;
 import in.oriange.joinstagharse.models.ContactsModel;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static in.oriange.joinstagharse.utilities.Utilities.provideReadContactsPremission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isReadContactsPermissionGiven;
 
 public class ContactsFragment extends Fragment {
 
@@ -47,7 +53,10 @@ public class ContactsFragment extends Fragment {
     private AppCompatTextView tv_no_review;
     private SpinKitView progressBar;
     private LinearLayout ll_nopreview;
+    private MaterialButton btn_grant_permission;
     private List<ContactsModel> contactList;
+
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -68,28 +77,35 @@ public class ContactsFragment extends Fragment {
         rv_contacts = rootView.findViewById(R.id.rv_contacts);
         progressBar = rootView.findViewById(R.id.progressBar);
         ll_nopreview = rootView.findViewById(R.id.ll_nopreview);
+        btn_grant_permission = rootView.findViewById(R.id.btn_grant_permission);
 
         rv_contacts.setLayoutManager(new LinearLayoutManager(context));
         contactList = new ArrayList<>();
     }
 
     private void setDefault() {
-        if (ActivityCompat.checkSelfPermission(context, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            rv_contacts.setVisibility(View.GONE);
-            ll_nopreview.setVisibility(View.VISIBLE);
-            tv_no_review.setText("Please provide premission to read contacts");
-        } else {
-            new GetPhoneBookContacts().execute();
-        }
+        loadPhoneBookList();
+
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
+        IntentFilter intentFilter = new IntentFilter("ContactsFragment");
+        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
     private void getSessionDetails() {
     }
 
     private void setEventHandler() {
+        btn_grant_permission.setOnClickListener(v -> {
+            if (ActivityCompat.checkSelfPermission(context, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                isReadContactsPermissionGiven(context, READ_CONTACTS_PERMISSION);
+            } else {
+                new GetPhoneBookContacts().execute();
+            }
+        });
+
         imb_refresh.setOnClickListener(v -> {
             if (ActivityCompat.checkSelfPermission(context, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                provideReadContactsPremission(context);
+                isReadContactsPermissionGiven(context, READ_CONTACTS_PERMISSION);
             } else {
                 new GetPhoneBookContacts().execute();
             }
@@ -136,6 +152,18 @@ public class ContactsFragment extends Fragment {
 
             }
         });
+    }
+
+    private void loadPhoneBookList() {
+        if (ActivityCompat.checkSelfPermission(context, READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            rv_contacts.setVisibility(View.GONE);
+            ll_nopreview.setVisibility(View.VISIBLE);
+            tv_no_review.setText("Please provide permission to read contacts");
+            btn_grant_permission.setVisibility(View.VISIBLE);
+        } else {
+            new GetPhoneBookContacts().execute();
+        }
+
     }
 
     private class GetPhoneBookContacts extends AsyncTask<Void, Void, List<ContactsModel>> {
@@ -186,5 +214,16 @@ public class ContactsFragment extends Fragment {
         return contactList;
     }
 
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            loadPhoneBookList();
+        }
+    };
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+    }
 }

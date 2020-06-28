@@ -2,10 +2,11 @@ package in.oriange.joinstagharse.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -59,7 +62,22 @@ import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
+import static in.oriange.joinstagharse.utilities.Utilities.showCallDialog;
 
 public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -401,6 +419,12 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
 
     private void shareDetails() {
         if (!searchDetails.getImage_url().equals("")) {
+            if (doesAppNeedPermissions()) {
+                if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
+                    return;
+                }
+            }
+
             new DownloadFileAndMessageShare(context, "Business", IMAGE_LINK + searchDetails.getCreated_by() + "/" + searchDetails.getImage_url(), businessDetails());
         } else {
             String message = businessDetails();
@@ -488,30 +512,7 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
 
             holder.tv_mobile.setText(searchDetails.getCountry_code() + searchDetails.getMobile_number());
 
-            holder.tv_mobile.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setMessage("Are you sure you want to make a call?");
-                    builder.setTitle("Alert");
-                    builder.setIcon(R.drawable.icon_call);
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            startActivity(new Intent(Intent.ACTION_CALL,
-                                    Uri.parse("tel:" + searchDetails.getCountry_code() + searchDetails.getMobile_number())));
-                        }
-                    });
-                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
-                }
-            });
+            holder.tv_mobile.setOnClickListener(v -> showCallDialog(context, searchDetails.getCountry_code() + searchDetails.getMobile_number()));
         }
 
         @Override
@@ -625,6 +626,47 @@ public class ViewMyBizDetailsActivity extends AppCompatActivity implements OnMap
                 e.printStackTrace();
                 Utilities.showAlertDialog(context, "Ratings and reviews not available", false);
             }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
         }
     }
 

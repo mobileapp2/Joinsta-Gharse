@@ -57,10 +57,10 @@
                     android:layout_marginTop="30dp"
                     android:background="@drawable/bg_overlay"
                     android:gravity="center"
-                    android:visibility="gone"
                     android:text="Added in cart"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:visibility="gone" />
 
             </FrameLayout>
 
@@ -85,7 +85,7 @@
                 android:paddingRight="2dp"
                 android:text="Kiwi Fruit is the best fruit for health"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:id="@+id/ll_prices"
@@ -153,7 +153,7 @@
                         android:gravity="center"
                         android:text="You Save ₹ 100"
                         android:textColor="@color/darkGray"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:textStyle="italic" />
 
                 </LinearLayout>
@@ -167,7 +167,7 @@
                 android:layout_gravity="center"
                 android:text="Price Not Disclosed"
                 android:textColor="@color/red"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <TextView
                 android:id="@+id/tv_out_of_stock"
@@ -176,7 +176,7 @@
                 android:layout_gravity="center"
                 android:text="Out of Stock"
                 android:textColor="@color/red"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_addtocart"

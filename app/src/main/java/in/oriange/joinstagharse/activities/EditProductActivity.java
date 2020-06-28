@@ -3,8 +3,10 @@ package in.oriange.joinstagharse.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -21,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -69,6 +72,22 @@ import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isCameraStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.setPaddingForView;
 
@@ -288,6 +307,12 @@ public class EditProductActivity extends AppCompatActivity {
 
         edtBrochure.setOnClickListener(v -> {
             if (Utilities.isNetworkAvailable(context)) {
+                if (doesAppNeedPermissions()) {
+                    if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
+                        return;
+                    }
+                }
+
                 Intent intent = new Intent(context, NormalFilePickActivity.class);
                 intent.putExtra(Constant.MAX_NUMBER, 1);
                 intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
@@ -705,14 +730,6 @@ public class EditProductActivity extends AppCompatActivity {
     }
 
     private class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.MyViewHolder> {
-        @Override
-        public int getItemViewType(int position) {
-            return position;
-        }
-
-        ImagesAdapter() {
-
-        }
 
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -738,25 +755,7 @@ public class EditProductActivity extends AppCompatActivity {
             holder.imv_image.setOnClickListener(v -> {
                 if (Utilities.isNetworkAvailable(context)) {
                     latestPosition = position;
-                    final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setCancelable(false);
-                    builder.setItems(options, (dialog, item) -> {
-                        if (options[item].equals("Take a Photo")) {
-                            File file = new File(photoFileFolder, "doc_image.png");
-                            photoURI = Uri.fromFile(file);
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                            startActivityForResult(intent, CAMERA_REQUEST);
-                        } else if (options[item].equals("Choose from Gallery")) {
-                            Intent intent = new Intent(Intent.ACTION_PICK);
-                            intent.setType("image/*");
-                            startActivityForResult(intent, GALLERY_REQUEST);
-                        }
-                    });
-                    builder.setPositiveButton("Cancel", (dialog, which) -> dialog.dismiss());
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
+                    selectImage();
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -784,6 +783,40 @@ public class EditProductActivity extends AppCompatActivity {
 
             }
         }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+    }
+
+    private void selectImage() {
+        if (doesAppNeedPermissions()) {
+            if (!isCameraStoragePermissionGiven(context, CAMERA_AND_STORAGE_PERMISSION)) {
+                return;
+            }
+        }
+
+        final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setCancelable(false);
+        builder.setItems(options, (dialog, item) -> {
+            if (options[item].equals("Take a Photo")) {
+                File file = new File(photoFileFolder, "doc_image.png");
+                photoURI = Uri.fromFile(file);
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(intent, CAMERA_REQUEST);
+            } else if (options[item].equals("Choose from Gallery")) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent, GALLERY_REQUEST);
+            }
+        });
+        builder.setPositiveButton("Cancel", (dialog, which) -> dialog.dismiss());
+        AlertDialog alertD = builder.create();
+        alertD.show();
     }
 
     @Override
@@ -973,6 +1006,47 @@ public class EditProductActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+        }
     }
 
 }

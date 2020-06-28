@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.view.LayoutInflater;
@@ -32,6 +31,10 @@ import in.oriange.joinstagharse.models.BannerListModel;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.Utilities;
 
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isStoragePermissionGiven;
+
 public class BannerSliderAdapter extends SliderViewAdapter<BannerSliderAdapter.SliderAdapterVH> {
 
     private Context context;
@@ -49,9 +52,7 @@ public class BannerSliderAdapter extends SliderViewAdapter<BannerSliderAdapter.S
 
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            builder.detectFileUriExposure();
-        }
+        builder.detectFileUriExposure();
     }
 
     @Override
@@ -72,16 +73,20 @@ public class BannerSliderAdapter extends SliderViewAdapter<BannerSliderAdapter.S
                 .into(holder.imageViewBackground);
 
 
-        holder.ib_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        holder.ib_share.setOnClickListener(v -> {
+            if (doesAppNeedPermissions()) {
+                if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
+                    return;
+                }
+            }
+
+            if (Utilities.isNetworkAvailable(context)) {
                 subject = bannerDetails.getBanner_name();
                 description = bannerDetails.getBanner_description();
-                if (Utilities.isNetworkAvailable(context)) {
-                    new DownloadDocument().execute(bannerDetails.getBanners_image());
-                } else {
-                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                }
+
+                new DownloadDocument().execute(bannerDetails.getBanners_image());
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
         });
         holder.ib_share.bringToFront();

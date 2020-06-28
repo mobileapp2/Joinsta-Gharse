@@ -1,16 +1,13 @@
 package in.oriange.joinstagharse.fragments;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -29,9 +26,7 @@ import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -76,8 +71,9 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-import static in.oriange.joinstagharse.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isCameraStoragePermissionGiven;
 
 public class AddBusinessGeneralFragment extends Fragment {
 
@@ -116,8 +112,6 @@ public class AddBusinessGeneralFragment extends Fragment {
     private Uri photoURI;
     private final int CAMERA_REQUEST = 100, GALLERY_REQUEST = 200;
     private File file, profilPicFolder;
-    private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-
     private CheckBox cb_select_all;
 
     private LocalBroadcastManager localBroadcastManager;
@@ -178,27 +172,11 @@ public class AddBusinessGeneralFragment extends Fragment {
 
     private void setEventHandler() {
         imvPhoto1.setOnClickListener(view -> {
-            if (Utilities.isNetworkAvailable(context)) {
-                if (doesAppNeedPermissions()) {
-                    askPermission();
-                } else {
-                    selectImage();
-                }
-            } else {
-                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-            }
+            selectImage();
         });
 
         imvPhoto2.setOnClickListener(view -> {
-            if (Utilities.isNetworkAvailable(context)) {
-                if (doesAppNeedPermissions()) {
-                    askPermission();
-                } else {
-                    selectImage();
-                }
-            } else {
-                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-            }
+            selectImage();
         });
 
         edtNature.setOnClickListener(v -> {
@@ -339,6 +317,17 @@ public class AddBusinessGeneralFragment extends Fragment {
     }
 
     private void selectImage() {
+        if (Utilities.isNetworkAvailable(context)) {
+            if (doesAppNeedPermissions()) {
+                if (!isCameraStoragePermissionGiven(context, CAMERA_AND_STORAGE_PERMISSION)) {
+                    return;
+                }
+            }
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            return;
+        }
+
         final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
         AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builder.setCancelable(false);
@@ -361,8 +350,6 @@ public class AddBusinessGeneralFragment extends Fragment {
     }
 
     private void submitData() {
-        JsonArray tagJSONArray = new JsonArray();
-
         if (edtName.getText().toString().trim().isEmpty()) {
             edtName.setError("Please enter the name of business");
             edtName.requestFocus();
@@ -374,6 +361,8 @@ public class AddBusinessGeneralFragment extends Fragment {
             Utilities.showMessage("Please select the nature of business", context, 2);
             return;
         }
+
+        JsonArray tagJSONArray = new JsonArray();
 
         for (int i = 0; i < tagsListTobeSubmitted.size(); i++) {
             JsonObject tagsJSONObj = new JsonObject();
@@ -888,47 +877,6 @@ public class AddBusinessGeneralFragment extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void askPermission() {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(PERMISSIONS, PERMISSION_ALL);
-            return;
-        } else {
-            selectImage();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                    selectImage();
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setTitle("Alert");
-                    builder.setMessage("Please provide permission for Camera and Gallery");
-                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                    Uri.fromParts("package", context.getPackageName(), null)));
-                        }
-                    });
-                    builder.create();
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
-                }
             }
         }
     }

@@ -24,27 +24,94 @@
                 android:orientation="vertical"
                 android:padding="5dp">
 
-                <CheckBox
-                    android:id="@+id/cb_is_enquiry_available"
-                    style="@style/CheckBox"
-                    android:text="Do you need enquiries?" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <CheckBox
-                    android:id="@+id/cb_is_pick_up_available"
-                    style="@style/CheckBox"
-                    android:checked="true"
-                    android:text="Do you allow store pickup?" />
+                    <CheckBox
+                        android:id="@+id/cb_is_enquiry_available"
+                        style="@style/CheckBox"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Do you need enquiries?" />
 
-                <CheckBox
-                    android:id="@+id/cb_is_home_delivery_available"
-                    style="@style/CheckBox"
-                    android:text="Do you do home delivery?" />
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_question"
+                        android:tint="@color/colorPrimary" />
 
-                <CheckBox
-                    android:id="@+id/cb_show_in_search"
-                    style="@style/CheckBox"
-                    android:text="Show business in business listing?"
-                    android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/cb_is_pick_up_available"
+                        style="@style/CheckBox"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Do you allow store pickup?" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_question"
+                        android:tint="@color/colorPrimary" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/cb_is_home_delivery_available"
+                        style="@style/CheckBox"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Do you do home delivery?" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_question"
+                        android:tint="@color/colorPrimary" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <CheckBox
+                        android:id="@+id/cb_show_in_search"
+                        style="@style/CheckBox"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Show business in business listing?" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_question"
+                        android:tint="@color/colorPrimary" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

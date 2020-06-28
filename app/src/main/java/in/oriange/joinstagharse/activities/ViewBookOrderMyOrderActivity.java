@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +19,12 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,11 +54,21 @@ import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
-import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
-import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
+import static in.oriange.joinstagharse.utilities.Utilities.showCallDialog;
 
 public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
 
@@ -410,11 +422,11 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         });
 
         ibCustomerMobileCall.setOnClickListener(v -> {
-            callMobile(tvCustomerMobile.getText().toString().trim());
+            showCallDialog(context, tvCustomerMobile.getText().toString().trim());
         });
 
         ibSupplierMobileCall.setOnClickListener(v -> {
-            callMobile(tvSupplierMobile.getText().toString().trim());
+            showCallDialog(context, tvSupplierMobile.getText().toString().trim());
         });
 
         tvMoreOrderImages.setOnClickListener(v -> {
@@ -428,26 +440,6 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 rvImages.setLayoutManager(new GridLayoutManager(context, 3));
             }
         });
-    }
-
-    private void callMobile(String mobile) {
-        if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            provideCallPremission(context);
-        } else {
-            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(context, R.style.CustomDialogTheme);
-            builder.setMessage("Are you sure you want to make a call?");
-            builder.setTitle("Alert");
-            builder.setIcon(R.drawable.icon_call);
-            builder.setCancelable(false);
-            builder.setPositiveButton("YES", (dialog, id) ->
-                    context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mobile)))
-            );
-            builder.setNegativeButton("NO", (dialog, which) ->
-                    dialog.dismiss()
-            );
-            androidx.appcompat.app.AlertDialog alertD = builder.create();
-            alertD.show();
-        }
     }
 
     private class ChangeOrderStatus extends AsyncTask<String, Void, String> {
@@ -535,4 +527,46 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+        }
+    }
+
 }

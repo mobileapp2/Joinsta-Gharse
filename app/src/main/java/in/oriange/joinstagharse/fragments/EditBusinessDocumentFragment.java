@@ -53,6 +53,9 @@ import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static android.app.Activity.RESULT_OK;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isStoragePermissionGiven;
 
 public class EditBusinessDocumentFragment extends Fragment {
 
@@ -153,8 +156,8 @@ public class EditBusinessDocumentFragment extends Fragment {
         JsonArray documentJsonArray = new JsonArray();
 
         for (BusinessDocumentModel businessDocument : businessDocumentList) {
-            if (businessDocument.getName().equals("") || businessDocument.getType().equals("")) {
-                Utilities.showMessage("Please select document details", context, 2);
+            if (businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
+                Utilities.showMessage("Please select document file", context, 2);
                 return;
             }
             JsonObject jsonObject = new JsonObject();
@@ -218,6 +221,17 @@ public class EditBusinessDocumentFragment extends Fragment {
 
             holder.edt_document_file.setOnClickListener(v -> {
                 if (businessDetails.getIsVerified().equals("0")) {
+                    if (holder.edt_document_type.getText().toString().trim().isEmpty()) {
+                        Utilities.showMessage("Please select document type", context, 2);
+                        return;
+                    }
+
+                    if (doesAppNeedPermissions()) {
+                        if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
+                            return;
+                        }
+                    }
+
                     documentPosition = position;
                     if (Utilities.isNetworkAvailable(context)) {
                         Intent intent = new Intent(context, NormalFilePickActivity.class);

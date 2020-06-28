@@ -52,6 +52,9 @@ import es.dmoral.toasty.Toasty;
 import in.oriange.joinstagharse.R;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.JOINSTA_PLAYSTORELINK;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isCallPermissionGiven;
 
 public class Utilities {
 
@@ -586,6 +589,25 @@ public class Utilities {
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
         context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+    }
+
+    public static void showCallDialog(Context context, String mobile) {
+        if (doesAppNeedPermissions()) {
+            if (!isCallPermissionGiven(context, CALL_PHONE_PERMISSION)) {
+                return;
+            }
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setMessage("Are you sure you want to make a call?");
+        builder.setTitle("Alert");
+        builder.setIcon(R.drawable.icon_call);
+        builder.setCancelable(false);
+        builder.setPositiveButton("YES", (dialog, id) -> context.startActivity(new Intent(Intent.ACTION_CALL,
+                Uri.parse("tel:" + mobile))));
+        builder.setNegativeButton("NO", (dialog, which) -> dialog.dismiss());
+        AlertDialog alertD = builder.create();
+        alertD.show();
     }
 
 }

@@ -1,27 +1,17 @@
 package in.oriange.joinstagharse.adapters;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.gson.JsonObject;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,14 +20,12 @@ import co.lujun.androidtagview.TagContainerLayout;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.BookOrderBusinessOwnerOrdersActivity;
 import in.oriange.joinstagharse.activities.BusinessProductsActivity;
+import in.oriange.joinstagharse.activities.BusinessSettingsActivity;
 import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.OffersForParticularRecordActivity;
 import in.oriange.joinstagharse.activities.ProductCategoriesActivity;
 import in.oriange.joinstagharse.activities.ViewMyBizDetailsActivity;
 import in.oriange.joinstagharse.models.GetBusinessModel;
-import in.oriange.joinstagharse.utilities.APICall;
-import in.oriange.joinstagharse.utilities.ApplicationConstants;
-import in.oriange.joinstagharse.utilities.Utilities;
 
 public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusinessAdapter.MyViewHolder> {
 
@@ -127,7 +115,10 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
                 .putExtra("businessCategoryId", searchDetails.getType_id())
                 .putExtra("businessCategoryName", searchDetails.getType_description())));
 
-        holder.ll_settings.setOnClickListener(v -> showSettingsDialog(searchDetails));
+        holder.ll_settings.setOnClickListener(v -> {
+            context.startActivity(new Intent(context, BusinessSettingsActivity.class)
+                    .putExtra("searchDetails", searchDetails));
+        });
     }
 
     @Override
@@ -164,86 +155,4 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
     public int getItemViewType(int position) {
         return position;
     }
-
-    private void showSettingsDialog(GetBusinessModel.ResultBean searchDetails) {
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View promptView = layoutInflater.inflate(R.layout.dialog_layout_business_settings, null);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        alertDialogBuilder.setView(promptView);
-
-        final SwitchCompat sw_allow_book_order = promptView.findViewById(R.id.sw_allow_book_order);
-        final ImageButton ib_close = promptView.findViewById(R.id.ib_close);
-
-        if (searchDetails.getAllow_all_to_book_order().equals("1"))
-            sw_allow_book_order.setChecked(true);
-
-        final AlertDialog alertD = alertDialogBuilder.create();
-
-        sw_allow_book_order.setOnClickListener(v -> {
-            String allowBookOrder = "0";
-
-            if (sw_allow_book_order.isChecked()) {
-                allowBookOrder = "1";
-            }
-
-            if (Utilities.isNetworkAvailable(context)) {
-                new ChangeAllowBookOrderFlag().execute(searchDetails.getId(), allowBookOrder);
-            } else {
-                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-            }
-        });
-
-        ib_close.setOnClickListener(v -> alertD.dismiss());
-
-        alertD.show();
-    }
-
-    private class ChangeAllowBookOrderFlag extends AsyncTask<String, Void, String> {
-
-        ProgressDialog pd;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-            pd.setMessage("Please wait ...");
-            pd.setCancelable(false);
-            pd.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String res = "[]";
-            JsonObject obj = new JsonObject();
-            obj.addProperty("type", "updateAllBookOrder");
-            obj.addProperty("business_id", params[0]);
-            obj.addProperty("allow_all_to_book_order", params[1]);
-            res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, obj.toString());
-            return res;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            String type = "", message = "";
-            try {
-                pd.dismiss();
-                if (!result.equals("")) {
-                    JSONObject mainObj = new JSONObject(result);
-                    type = mainObj.getString("type");
-                    message = mainObj.getString("message");
-                    if (type.equalsIgnoreCase("success")) {
-                        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("MyBusinessActivity"));
-                        Utilities.showMessage(message, context, 1);
-                    } else {
-                        Utilities.showMessage(message, context, 3);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
 }

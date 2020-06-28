@@ -132,7 +132,7 @@
                             android:layout_height="wrap_content"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/icon_share"
-                            android:tint="@color/darkGray" />
+                            android:tint="@color/colorPrimary" />
 
                     </LinearLayout>
 
@@ -184,7 +184,6 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/icon_promo_code"
                         android:drawablePadding="10dp"
                         android:drawableTint="@color/colorPrimary"
                         android:text="Promo Code"
@@ -233,22 +232,31 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_outline"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:padding="5dp">
 
                     <TextView
                         android:id="@+id/tv_url"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:clickable="false"
-                        android:drawableLeft="@drawable/icon_website"
-                        android:drawablePadding="5dp"
-                        android:drawableTint="@color/colorPrimary"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
                         android:longClickable="false"
-                        android:padding="2dp"
-                        android:textColor="@color/black"
+                        android:paddingTop="2dp"
+                        android:text="Website"
+                        android:textColor="@color/darkGray"
                         android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/ib_website"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_website_red" />
 
                 </LinearLayout>
 

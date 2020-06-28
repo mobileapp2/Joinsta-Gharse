@@ -15,9 +15,9 @@ import android.os.Looper;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -52,21 +52,31 @@ import in.oriange.joinstagharse.models.MapAddressListModel;
 import in.oriange.joinstagharse.utilities.FieldSelector;
 import in.oriange.joinstagharse.utilities.Utilities;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isLocationPermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.isLocationEnabled;
-import static in.oriange.joinstagharse.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinstagharse.utilities.Utilities.turnOnLocation;
 
 
 public class PickMapLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private static final int REQUEST_LOCATION_CODE = 99;
     private LatLng latLng1;
     private Context context;
     private GoogleMap mMap;
-    private CardView cv_search;
     private FloatingActionButton btn_pick;
     private FieldSelector fieldSelector;
     private Button btn_select_location;
@@ -80,7 +90,6 @@ public class PickMapLocationActivity extends FragmentActivity implements OnMapRe
 
         context = PickMapLocationActivity.this;
         btn_pick = findViewById(R.id.btn_pick);
-        cv_search = findViewById(R.id.cv_search);
         btn_select_location = findViewById(R.id.btn_select_location);
         changeStatusBar(context, getWindow());
 
@@ -90,21 +99,6 @@ public class PickMapLocationActivity extends FragmentActivity implements OnMapRe
 
         fieldSelector = new FieldSelector(findViewById(R.id.use_custom_fields), findViewById(R.id.custom_fields_list), savedInstanceState);
         setupAutocompleteSupportFragment();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-            provideLocationAccess(context);
-            return;
-        }
-
-        if (!isLocationEnabled(context)) {
-            turnOnLocation(context);
-            return;
-        }
-        startLocationUpdates();
     }
 
     private void setupAutocompleteSupportFragment() {
@@ -170,63 +164,40 @@ public class PickMapLocationActivity extends FragmentActivity implements OnMapRe
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_LOCATION_CODE) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    mMap.setMyLocationEnabled(true);
+    private void init() {
+        btn_pick.setOnClickListener(v -> {
+            if (doesAppNeedPermissions()) {
+                if (!isLocationPermissionGiven(context, LOCATION_PERMISSION)) {
+                    return;
+                }
+            }
+
+            if (!isLocationEnabled(context)) {
+                turnOnLocation(context);
+                return;
+            }
+
+            if (latLng == null) {
+                Utilities.showAlertDialog(context, "Unable to get address from current location. Please try again or search manually", false);
+                return;
+            }
+
+            addMapMarker(latLng);
+        });
+
+        btn_select_location.setOnClickListener(v -> {
+            if (latLng1 != null) {
+                try {
+                    getAllAddress();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             } else {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    private void init() {
-        btn_pick.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-                    provideLocationAccess(context);
-                    return;
-                }
-
-                if (!isLocationEnabled(context)) {
-                    turnOnLocation(context);
-                    return;
-                }
-
-                if (latLng == null) {
-                    Utilities.showAlertDialog(context, "Unable to get address from current location. Please try again or search manually", false);
-                    return;
-                }
-
-                addMapMarker(latLng);
+                Utilities.showAlertDialog(context, "Please search and pick a location", false);
             }
         });
 
-        btn_select_location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (latLng1 != null) {
-                    try {
-                        getAllAddress();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Utilities.showAlertDialog(context, "Please search and pick a location", false);
-                }
-            }
-        });
-
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                addMapMarker(latLng);
-            }
-        });
+        mMap.setOnMapClickListener(latLng -> addMapMarker(latLng));
     }
 
     public void getAllAddress() throws IOException {
@@ -303,6 +274,53 @@ public class PickMapLocationActivity extends FragmentActivity implements OnMapRe
 
     public void onLocationChanged(Location location) {
         latLng = new LatLng(location.getLatitude(), location.getLongitude());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                } else {
+                    if (!isLocationEnabled(context)) {
+                        turnOnLocation(context);
+                        return;
+                    }
+                    startLocationUpdates();
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+        }
     }
 
 //    @Override

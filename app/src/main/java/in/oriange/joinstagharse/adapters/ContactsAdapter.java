@@ -29,6 +29,7 @@ import in.oriange.joinstagharse.models.ContactsModel;
 
 import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
+import static in.oriange.joinstagharse.utilities.Utilities.showCallDialog;
 
 public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyViewHolder> {
 
@@ -58,24 +59,7 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.MyView
         holder.tv_mobile.setText(contactsModel.getPhoneNo());
 
         holder.ib_call.setOnClickListener(v -> {
-            if (ActivityCompat.checkSelfPermission(context, CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                provideCallPremission(context);
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                builder.setMessage("Are you sure you want to make a call?");
-                builder.setTitle("Alert");
-                builder.setIcon(R.drawable.icon_call);
-                builder.setCancelable(false);
-                builder.setPositiveButton("YES", (dialog, id) ->
-                        context.startActivity(new Intent(Intent.ACTION_CALL,
-                                Uri.parse("tel:" + holder.tv_mobile.getText().toString().trim())))
-                );
-                builder.setNegativeButton("NO", (dialog, which) ->
-                        dialog.dismiss()
-                );
-                AlertDialog alertD = builder.create();
-                alertD.show();
-            }
+            showCallDialog(context,  holder.tv_mobile.getText().toString().trim());
         });
 
         holder.imv_add.setOnClickListener(v -> showContextMenu(v, contactsModel));

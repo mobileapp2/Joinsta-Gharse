@@ -5,12 +5,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.StrictMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,13 +33,6 @@ import com.smarteist.autoimageslider.SliderView;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,11 +42,26 @@ import in.oriange.joinstagharse.models.BannerListModel;
 import in.oriange.joinstagharse.models.MyOffersListModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
+import in.oriange.joinstagharse.utilities.DownloadFileAndMessageShare;
 import in.oriange.joinstagharse.utilities.ParamsPojo;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeDateFormat;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 
@@ -61,6 +71,7 @@ public class ViewMyOfferDetailsActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
     private TextView tv_business_name, tv_title, tv_description, tv_validity, tv_url, tv_promo_code;
+    private ImageButton ib_website;
     private CardView cv_url, cv_promo_code;
     private ImageButton imb_share;
     private SliderView imageSlider;
@@ -68,12 +79,7 @@ public class ViewMyOfferDetailsActivity extends AppCompatActivity {
     private MyOffersListModel.ResultBean offerDetails;
     private String userId;
 
-    private String shareMessage;
-    private ArrayList<Uri> downloadedImagesUriList;
-    private int numOfDocuments = 0;
-    private int numOfFilesDownloaded = 0;
     private String CALLTYPE;
-    private File file, downloadedDocsfolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,22 +103,13 @@ public class ViewMyOfferDetailsActivity extends AppCompatActivity {
         tv_description = findViewById(R.id.tv_description);
         tv_validity = findViewById(R.id.tv_validity);
         tv_url = findViewById(R.id.tv_url);
+        ib_website = findViewById(R.id.ib_website);
         tv_promo_code = findViewById(R.id.tv_promo_code);
         imb_share = findViewById(R.id.imb_share);
         imageSlider = findViewById(R.id.imageSlider);
 
         cv_url = findViewById(R.id.cv_url);
         cv_promo_code = findViewById(R.id.cv_promo_code);
-
-        downloadedImagesUriList = new ArrayList<>();
-
-        downloadedDocsfolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Offer Images");
-        if (!downloadedDocsfolder.exists())
-            downloadedDocsfolder.mkdirs();
-
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        builder.detectFileUriExposure();
     }
 
     private void setDefault() {
@@ -187,53 +184,41 @@ public class ViewMyOfferDetailsActivity extends AppCompatActivity {
 
     private void setEventHandler() {
 
-        tv_url.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = offerDetails.getUrl();
+        ib_website.setOnClickListener(v -> {
+            String url = offerDetails.getUrl();
 
-                if (!url.startsWith("https://") || !url.startsWith("http://")) {
-                    url = "http://" + url;
-                }
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                context.startActivity(i);
+            if (!url.startsWith("https://") || !url.startsWith("http://")) {
+                url = "http://" + url;
             }
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(url));
+            context.startActivity(i);
         });
 
-        cv_promo_code.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                clipboard.setText(offerDetails.getPromo_code());
-                Utilities.showMessage("Promo code copied to clipboard", context, 1);
-            }
+        cv_promo_code.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(offerDetails.getPromo_code());
+            Utilities.showMessage("Promo code copied to clipboard", context, 1);
         });
 
-        imb_share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (offerDetails.getDocuments().size() != 0) {
-                    numOfDocuments = offerDetails.getDocuments().size();
-                    shareMessage = getShareMessage(offerDetails);
-                    downloadedImagesUriList = new ArrayList<>();
-                    numOfFilesDownloaded = 0;
-                    for (int i = 0; i < offerDetails.getDocuments().size(); i++) {
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new DownloadDocumentForShare().execute(IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(i).getDocument());
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-                    }
-                } else {
-                    String shareMessage = getShareMessage(offerDetails);
-                    Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                    sharingIntent.setType("text/html");
-                    sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                    context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
+        imb_share.setOnClickListener(v -> shareDetails());
+    }
+
+    private void shareDetails() {
+        if (offerDetails.getDocuments().size() != 0) {
+            if (doesAppNeedPermissions()) {
+                if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
+                    return;
                 }
             }
-        });
+            new DownloadFileAndMessageShare(context, "Offer Images", IMAGE_LINK + "offerdoc/business/" + offerDetails.getDocuments().get(0).getDocument(), getShareMessage());
+        } else {
+            String message = getShareMessage();
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
+            context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+        }
     }
 
     @Override
@@ -333,108 +318,7 @@ public class ViewMyOfferDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private class DownloadDocumentForShare extends AsyncTask<String, Integer, Boolean> {
-        int lenghtOfFile = -1;
-        int count = 0;
-        int content = -1;
-        int counter = 0;
-        int progress = 0;
-        URL downloadurl = null;
-        ProgressDialog pd;
-        File file;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pd = new ProgressDialog(context, R.style.CustomDialogTheme);
-            pd.setCancelable(true);
-            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            pd.setMessage("Downloading Document");
-            pd.setIndeterminate(false);
-            pd.setCancelable(false);
-            pd.show();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-            boolean success = false;
-            HttpURLConnection httpURLConnection = null;
-            InputStream inputStream = null;
-            int read = -1;
-            byte[] buffer = new byte[1024];
-            FileOutputStream fileOutputStream = null;
-            long total = 0;
-
-
-            try {
-                downloadurl = new URL(params[0]);
-                httpURLConnection = (HttpURLConnection) downloadurl.openConnection();
-                lenghtOfFile = httpURLConnection.getContentLength();
-                inputStream = httpURLConnection.getInputStream();
-
-                file = new File(downloadedDocsfolder, Uri.parse(params[0]).getLastPathSegment());
-                fileOutputStream = new FileOutputStream(file);
-                while ((read = inputStream.read(buffer)) != -1) {
-                    fileOutputStream.write(buffer, 0, read);
-                    counter = counter + read;
-                    publishProgress(counter);
-                }
-                success = true;
-
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-
-                if (httpURLConnection != null) {
-                    httpURLConnection.disconnect();
-                }
-                if (inputStream != null) {
-                    try {
-                        inputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (fileOutputStream != null) {
-                    try {
-                        fileOutputStream.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            return success;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            progress = (int) (((double) values[0] / lenghtOfFile) * 100);
-            pd.setProgress(progress);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            pd.dismiss();
-            super.onPostExecute(aBoolean);
-            Uri uri = Uri.parse("file:///" + file);
-            downloadedImagesUriList.add(uri);
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-            numOfFilesDownloaded = numOfFilesDownloaded + 1;
-
-            if (numOfFilesDownloaded == numOfDocuments) {
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.setType("text/html");
-                sharingIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
-                sharingIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, downloadedImagesUriList);
-                context.startActivity(Intent.createChooser(sharingIntent, "Share via"));
-            }
-        }
-    }
-
-    private String getShareMessage(MyOffersListModel.ResultBean offerDetails) {
+    private String getShareMessage() {
         StringBuilder sb = new StringBuilder();
 
         if (!offerDetails.getRecord_name().equals("")) {
@@ -465,6 +349,47 @@ public class ViewMyOfferDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         mToolbar.setNavigationOnClickListener(view -> finish());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+        }
     }
 
 }

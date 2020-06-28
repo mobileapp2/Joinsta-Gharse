@@ -117,6 +117,12 @@
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_grant_permission"
+                style="@style/MaterialButton"
+                android:text="Grant Permission"
+                android:visibility="gone" />
+
         </LinearLayout>
 
     </FrameLayout>

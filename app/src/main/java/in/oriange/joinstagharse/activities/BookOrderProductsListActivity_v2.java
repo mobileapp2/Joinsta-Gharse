@@ -57,6 +57,8 @@ import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.Utilities.animateCollapse;
+import static in.oriange.joinstagharse.utilities.Utilities.animateExpand;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
 
@@ -671,11 +673,18 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
 
             if (productCategoryDetails.getSub_categories().size() != 0) {
                 holder.rv_sub_categories.setAdapter(new ProductSubcategoryAdapter(context, productCategoryDetails.getSub_categories()));
-                holder.rv_sub_categories.setVisibility(View.VISIBLE);
             } else {
                 holder.rv_sub_categories.setVisibility(View.GONE);
                 holder.view_divider.setVisibility(View.GONE);
+                holder.imv_arrow.setVisibility(View.GONE);
             }
+
+            holder.rv_sub_categories.setVisibility(View.GONE);
+            holder.view_divider.setVisibility(View.GONE);
+
+            holder.imv_arrow.setOnClickListener(v -> {
+                showSubCategories(holder);
+            });
 
             holder.cv_mainlayout.setOnClickListener(v -> {
                 startCategoryWiseProductListActivity(productCategoryDetails.getId(), "0");
@@ -693,6 +702,7 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
             private TextView tv_main_category;
             private RecyclerView rv_sub_categories;
             private View view_divider;
+            private ImageButton imv_arrow;
 
             public MyViewHolder(@NonNull View itemView) {
                 super(itemView);
@@ -700,6 +710,7 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
                 tv_main_category = itemView.findViewById(R.id.tv_main_category);
                 rv_sub_categories = itemView.findViewById(R.id.rv_sub_categories);
                 view_divider = itemView.findViewById(R.id.view_divider);
+                imv_arrow = itemView.findViewById(R.id.imv_arrow);
                 rv_sub_categories.setLayoutManager(new LinearLayoutManager(context));
             }
         }
@@ -708,6 +719,20 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
         public int getItemViewType(int position) {
             return position;
         }
+
+        private void showSubCategories(ProductCategoryAdapter.MyViewHolder holder) {
+            if (holder.rv_sub_categories.getVisibility() == View.VISIBLE) {
+                holder.rv_sub_categories.setVisibility(View.GONE);
+                holder.view_divider.setVisibility(View.GONE);
+                animateCollapse(holder.imv_arrow);
+            } else {
+                holder.cv_mainlayout.requestFocus();
+                holder.rv_sub_categories.setVisibility(View.VISIBLE);
+                holder.view_divider.setVisibility(View.VISIBLE);
+                animateExpand(holder.imv_arrow);
+            }
+        }
+
     }
 
     private class ProductSubcategoryAdapter extends RecyclerView.Adapter<ProductSubcategoryAdapter.MyViewHolder> {

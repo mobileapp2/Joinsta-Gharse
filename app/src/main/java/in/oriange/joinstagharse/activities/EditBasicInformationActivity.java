@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -86,15 +87,27 @@ import in.oriange.joinstagharse.utilities.ParamsPojo;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
-import static in.oriange.joinstagharse.utilities.PermissionUtil.PERMISSION_ALL;
 import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isCameraStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isLocationPermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.hideSoftKeyboard;
 import static in.oriange.joinstagharse.utilities.Utilities.isLocationEnabled;
-import static in.oriange.joinstagharse.utilities.Utilities.provideLocationAccess;
 import static in.oriange.joinstagharse.utilities.Utilities.turnOnLocation;
 
 public class EditBasicInformationActivity extends AppCompatActivity {
@@ -125,7 +138,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
     private final int CAMERA_REQUEST = 100;
     private final int GALLERY_REQUEST = 200;
     private File file, photoFileToUpload, profilPicFolder;
-    private String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
 
     List<UserProfileDetailsModel.ResultBean.MobileNumbersBean> mobileSessionList;
     List<UserProfileDetailsModel.ResultBean.LandlineNumbersBean> landlineSessionList;
@@ -333,10 +345,11 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         imv_user.setOnClickListener(view -> {
             if (Utilities.isNetworkAvailable(context)) {
                 if (doesAppNeedPermissions()) {
-                    askPermission();
-                } else {
-                    selectImage();
+                    if (!isCameraStoragePermissionGiven(context, CAMERA_AND_STORAGE_PERMISSION)) {
+                        return;
+                    }
                 }
+                selectImage();
             } else {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
             }
@@ -382,38 +395,29 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         });
 
         ib_location.setOnClickListener(v -> {
-            if (ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED /*&& ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED*/) {
-                provideLocationAccess(context);
-            } else {
-                if (!isLocationEnabled(context)) {
-                    turnOnLocation(context);
-                } else {
-                    startLocationUpdates();
-                    if (MainDrawerActivity.latLng != null) {
-                        latLng = MainDrawerActivity.latLng;
-                        if (Utilities.isNetworkAvailable(context)) {
-                            new GetAddress().execute(
-                                    String.valueOf(latLng.latitude),
-                                    String.valueOf(latLng.longitude));
-                        } else {
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                        }
-                    } else {
-                        if (latLng != null) {
-                            if (Utilities.isNetworkAvailable(context)) {
-                                new GetAddress().execute(
-                                        String.valueOf(latLng.latitude),
-                                        String.valueOf(latLng.longitude));
-                            } else {
-                                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                            }
-                        } else {
-                            edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
-                        }
-                    }
-
-
+            if (doesAppNeedPermissions()) {
+                if (!isLocationPermissionGiven(context, LOCATION_PERMISSION)) {
+                    return;
                 }
+            }
+
+            if (!isLocationEnabled(context)) {
+                turnOnLocation(context);
+                return;
+            }
+
+            startLocationUpdates();
+
+            if (latLng != null) {
+                if (Utilities.isNetworkAvailable(context)) {
+                    new GetAddress().execute(
+                            String.valueOf(latLng.latitude),
+                            String.valueOf(latLng.longitude));
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+            } else {
+                edt_nativeplace.setError("Unable to get address from this location. Please try again or entry your current city manually");
             }
         });
 
@@ -1501,50 +1505,6 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         });
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    public void askPermission() {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(PERMISSIONS, PERMISSION_ALL);
-            return;
-        } else {
-            selectImage();
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                    selectImage();
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setTitle("Alert");
-                    builder.setMessage("Please provide permission for Camera and Gallery");
-                    builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                            startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                    Uri.fromParts("package", context.getPackageName(), null)));
-                        }
-                    });
-                    builder.create();
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
-                }
-            }
-
-        }
-    }
-
     private class GetAddress extends AsyncTask<String, Void, List<Address>> {
 
         @Override
@@ -1627,5 +1587,50 @@ public class EditBasicInformationActivity extends AppCompatActivity {
         hideSoftKeyboard(EditBasicInformationActivity.this);
     }
 
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                } else {
+                    if (!isLocationEnabled(context)) {
+                        turnOnLocation(context);
+                        return;
+                    }
+                    startLocationUpdates();
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+        }
+    }
 }
