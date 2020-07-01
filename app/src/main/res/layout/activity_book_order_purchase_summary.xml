@@ -109,7 +109,6 @@
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -166,6 +165,15 @@
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 
+                    <TextView
+                        android:id="@+id/tv_delivery_instructions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="2dp"
+                        android:text="Store pickup and home delivery instructions"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
                     <LinearLayout
                         android:id="@+id/ll_price"
                         android:layout_width="match_parent"
@@ -192,7 +200,6 @@
                             android:textStyle="bold" />
 
                     </LinearLayout>
-
 
                 </LinearLayout>
 

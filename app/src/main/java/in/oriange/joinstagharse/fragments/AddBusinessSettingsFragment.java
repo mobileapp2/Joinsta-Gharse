@@ -92,8 +92,8 @@ public class AddBusinessSettingsFragment extends Fragment {
     private void setEventHandler() {
         swIsEnquiryAvailable.setOnToggledListener((toggleableView, isOn) -> {
             if (isOn) {
-                swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.green));
-                swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.green));
+                swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+                swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             } else {
                 swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
                 swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));
@@ -102,8 +102,8 @@ public class AddBusinessSettingsFragment extends Fragment {
 
         swIsPickUpAvailable.setOnToggledListener((toggleableView, isOn) -> {
             if (isOn) {
-                swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.green));
-                swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.green));
+                swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+                swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             } else {
                 swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
                 swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));
@@ -112,8 +112,8 @@ public class AddBusinessSettingsFragment extends Fragment {
 
         swIsHomeDeliveryAvailable.setOnToggledListener((toggleableView, isOn) -> {
             if (isOn) {
-                swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.green));
-                swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.green));
+                swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+                swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             } else {
                 swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
                 swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));

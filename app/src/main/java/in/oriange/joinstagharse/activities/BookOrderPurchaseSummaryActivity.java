@@ -1,5 +1,6 @@
 package in.oriange.joinstagharse.activities;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -92,12 +93,14 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
     TextView tvPrice;
     @BindView(R.id.ll_price)
     LinearLayout llPrice;
+    @BindView(R.id.tv_delivery_instructions)
+    TextView tvDeliveryInstructions;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId, businessOwnerId = "0", purchaseOrderType, orderType, orderText = "",
-            customerBusinessId = "0", orderImageArray = "", deliveryStatus, customerAddressId;
+            customerBusinessId = "0", orderImageArray = "", deliveryStatus, customerAddressId, storePickUpInstructions, homeDeliveryInstructions;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
     private JsonArray orderImageJsonArray;
     private boolean isOrderImagesExpanded = false;
@@ -137,6 +140,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
         String businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
@@ -151,6 +155,8 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
         orderText = getIntent().getStringExtra("orderText");
         String customerName = getIntent().getStringExtra("customerName");
         orderImageArray = getIntent().getStringExtra("orderImageArray");
+        storePickUpInstructions = getIntent().getStringExtra("storePickUpInstructions");
+        homeDeliveryInstructions = getIntent().getStringExtra("homeDeliveryInstructions");
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
 
         tvBusinessOwnerName.setText("Vendor - " + businessOwnerCode + " - " + businessOwnerName);
@@ -161,6 +167,7 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
 
         if (deliveryStatus.equals("store_pickup")) {
             tvDeliveryType.setText("Delivery option - Store Pickup");
+
             if (!businessOwnerAddress.equals("")) {
 //                tvStorePickupText.setVisibility(View.VISIBLE);
                 tvAddress.setText("Pickup Address - " + businessOwnerAddress);
@@ -169,10 +176,22 @@ public class BookOrderPurchaseSummaryActivity extends AppCompatActivity {
                 tvAddress.setText("Store address not available");
                 tvAddress.setTextColor(context.getResources().getColor(R.color.red));
             }
+
+            if (!storePickUpInstructions.equals(""))
+                tvDeliveryInstructions.setText("Store Pickup Instructions - \n" + storePickUpInstructions);
+            else
+                tvDeliveryInstructions.setVisibility(View.GONE);
+
         } else if (deliveryStatus.equals("home_delivery")) {
 //            tvHomeDeliveryText.setVisibility(View.VISIBLE);
             tvDeliveryType.setText("Delivery option - Home Delivery");
+
             tvAddress.setText("Address - " + customerAddress);
+
+            if (!homeDeliveryInstructions.equals(""))
+                tvDeliveryInstructions.setText("Home Delivery Instructions - \n" + homeDeliveryInstructions);
+            else
+                tvDeliveryInstructions.setVisibility(View.GONE);
         }
 
         StringBuilder stringBuilder = new StringBuilder();

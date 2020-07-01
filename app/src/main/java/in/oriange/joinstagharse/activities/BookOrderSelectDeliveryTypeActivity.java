@@ -120,13 +120,17 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     RelativeLayout llStore;
     @BindView(R.id.ll_home)
     RelativeLayout llHome;
+    @BindView(R.id.tv_store_pickup_instructions)
+    TextView tvStorePickupInstructions;
+    @BindView(R.id.tv_home_delivery_instructions)
+    TextView tvHomeDeliveryInstructions;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId, businessOwnerId, businessOwnerAddress, isHomeDeliveryAvailable, isPickUpAvailable,
             orderType, orderText = "", customerBusinessId = "0", customerAddressId = "0", customerAddress = "", orderImageArray = "",
-            businessOwnerCode, businessOwnerName;
+            businessOwnerCode, businessOwnerName, storePickUpInstructions, homeDeliveryInstructions;
 
     private List<GetBusinessModel.ResultBean> businessList;
     private List<AddressModel.ResultBean> addressList;
@@ -225,6 +229,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         orderType = getIntent().getStringExtra("orderType");  //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
         orderText = getIntent().getStringExtra("orderText");
         orderImageArray = getIntent().getStringExtra("orderImageArray");
+        storePickUpInstructions = getIntent().getStringExtra("storePickUpInstructions");
+        homeDeliveryInstructions = getIntent().getStringExtra("homeDeliveryInstructions");
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
 
         if (orderDetails == null) {
@@ -247,6 +253,16 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
 
         if (!orderType.equals("1"))
             cvImages.setVisibility(View.GONE);
+
+        if (!storePickUpInstructions.equals(""))
+            tvStorePickupInstructions.setText("Store Pickup Instructions - \n" + storePickUpInstructions);
+        else
+            tvStorePickupInstructions.setVisibility(View.GONE);
+
+        if (!homeDeliveryInstructions.equals(""))
+            tvHomeDeliveryInstructions.setText("Home Delivery Instructions - \n" + homeDeliveryInstructions);
+        else
+            tvHomeDeliveryInstructions.setVisibility(View.GONE);
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderSelectDeliveryTypeActivity");
@@ -388,6 +404,8 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 .putExtra("orderImageArray", orderImageArray)
                 .putExtra("orderDetails", orderDetails)
                 .putExtra("customerBusinessId", customerBusinessId)
+                .putExtra("storePickUpInstructions", storePickUpInstructions)
+                .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
                 .putExtra("customerName", customerName));
     }
 

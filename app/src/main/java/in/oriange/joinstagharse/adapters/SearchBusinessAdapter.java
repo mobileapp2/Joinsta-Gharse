@@ -204,8 +204,11 @@ public class SearchBusinessAdapter extends RecyclerView.Adapter<SearchBusinessAd
                         .putExtra("businessOwnerAddress", searchDetails.getAddress())
                         .putExtra("businessOwnerCode", searchDetails.getBusiness_code())
                         .putExtra("businessOwnerName", searchDetails.getBusiness_name())
+                        .putExtra("storePickUpInstructions", searchDetails.getStore_pickup_instructions())
+                        .putExtra("homeDeliveryInstructions", searchDetails.getHome_delivery_instructions())
                         .putExtra("isHomeDeliveryAvailable", searchDetails.getIs_home_delivery_available())
-                        .putExtra("isPickUpAvailable", searchDetails.getIs_pick_up_available()));
+                        .putExtra("isPickUpAvailable", searchDetails.getIs_pick_up_available())
+                        .putExtra("canShareProduct", searchDetails.getCan_product_share()));
             else
                 Utilities.showMessage("Book order facility not available", context, 2);
         });

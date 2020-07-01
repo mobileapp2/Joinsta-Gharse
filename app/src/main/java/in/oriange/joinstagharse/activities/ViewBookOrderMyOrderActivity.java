@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -132,8 +131,8 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
     FrameLayout flCart;
     @BindView(R.id.ib_address)
     ImageButton ibAddress;
-    @BindView(R.id.ll_address)
-    LinearLayout llAddress;
+    @BindView(R.id.tv_delivery_instructions)
+    TextView tvDeliveryInstructions;
 
     private Context context;
     private UserSessionManager session;
@@ -269,10 +268,15 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
             if (!orderDetails.getOwner_address().equals(""))
                 tvAddress.setText("Pick up address - " + orderDetails.getOwner_address());
             else
-                llAddress.setVisibility(View.GONE);
+                tvAddress.setVisibility(View.GONE);
 
             latitude = orderDetails.getOwner_business_latitude();
             longitude = orderDetails.getOwner_business_longitude();
+
+            if (!orderDetails.getOwner_store_pickup_instructions().equals(""))
+                tvDeliveryInstructions.setText("Store Pickup Instructions - \n" + orderDetails.getOwner_store_pickup_instructions());
+            else
+                tvDeliveryInstructions.setVisibility(View.GONE);
 
         } else if (orderDetails.getDelivery_option().equals("home_delivery")) {
             tvDeliveryType.setText("Home Delivery");
@@ -280,10 +284,15 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
             if (!orderDetails.getUser_address_line_one().equals(""))
                 tvAddress.setText("Delivery address - " + orderDetails.getUser_address_line_one());
             else
-                llAddress.setVisibility(View.GONE);
+                tvAddress.setVisibility(View.GONE);
 
             latitude = orderDetails.getUser_address_latitude();
             longitude = orderDetails.getUser_address_longitude();
+
+            if (!orderDetails.getOwner_home_delivery_instructions().equals(""))
+                tvDeliveryInstructions.setText("Home Delivery Instructions - \n" + orderDetails.getOwner_home_delivery_instructions());
+            else
+                tvDeliveryInstructions.setVisibility(View.GONE);
         }
 
         if (latitude.equals("") || longitude.equals("") || latitude.equals("0") || longitude.equals("0"))
@@ -371,8 +380,9 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         if (orderDetails.getStatus_details().get(orderDetails.getStatus_details().size() - 1).getStatus().equals("1")) {
             tvDeliveryType.setVisibility(View.GONE);
             tvPurchaseOrderType.setVisibility(View.GONE);
-            llAddress.setVisibility(View.GONE);
+            tvAddress.setVisibility(View.GONE);
             flCart.setVisibility(View.GONE);
+            tvDeliveryInstructions.setVisibility(View.GONE);
         }
     }
 
@@ -396,6 +406,8 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                     .putExtra("businessOwnerName", orderDetails.getOwner_business_name())
                     .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
                     .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
+                    .putExtra("storePickUpInstructions", orderDetails.getOwner_store_pickup_instructions())
+                    .putExtra("homeDeliveryInstructions", orderDetails.getOwner_home_delivery_instructions())
                     .putExtra("orderType", "1")
                     .putExtra("orderText", "")
                     .putExtra("orderDetails", orderDetails)

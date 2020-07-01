@@ -86,7 +86,7 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private String userId, businessOwnerId, businessOwnerUserId, categoryId, subcategoryId;
+    private String userId, businessOwnerId, businessOwnerUserId, categoryId, subcategoryId, canShareProduct, businessCodeName;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
     private BookOrderProductsListAdapter bookOrderProductsListAdapter;
@@ -141,6 +141,8 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
         businessOwnerUserId = getIntent().getStringExtra("businessOwnerUserId");
         categoryId = getIntent().getStringExtra("categoryId");
         subcategoryId = getIntent().getStringExtra("subcategoryId");
+        canShareProduct = getIntent().getStringExtra("canShareProduct");
+        businessCodeName = getIntent().getStringExtra("businessCodeName");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetAllProducts().execute(userId, businessOwnerId, categoryId, subcategoryId);
@@ -459,7 +461,9 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
                 startActivity(new Intent(context, BookOrderProductDetailsActivity.class)
                         .putExtra("productDetails", productDetails)
                         .putExtra("ordersList", (Serializable) ordersList)
-                        .putExtra("businessOwnerId", businessOwnerId));
+                        .putExtra("businessOwnerId", businessOwnerId)
+                        .putExtra("canShareProduct", canShareProduct)
+                        .putExtra("businessCodeName", businessCodeName));
             });
 
             holder.btn_remove.setOnClickListener(v -> {

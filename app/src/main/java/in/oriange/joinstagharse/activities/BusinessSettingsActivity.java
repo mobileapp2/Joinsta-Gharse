@@ -99,14 +99,14 @@ public class BusinessSettingsActivity extends AppCompatActivity {
         searchDetails = (GetBusinessModel.ResultBean) getIntent().getSerializableExtra("searchDetails");
 
         if (searchDetails.getAllow_all_to_book_order().equals("1")) {
-            swAllowBookOrder.setColorBorder(getResources().getColor(R.color.green));
-            swAllowBookOrder.setColorOn(getResources().getColor(R.color.green));
+            swAllowBookOrder.setColorBorder(getResources().getColor(R.color.LimeGreen));
+            swAllowBookOrder.setColorOn(getResources().getColor(R.color.LimeGreen));
             swAllowBookOrder.setOn(true);
         }
 
         if (searchDetails.getCan_product_share().equals("1")) {
-            swCanProductShare.setColorBorder(getResources().getColor(R.color.green));
-            swCanProductShare.setColorOn(getResources().getColor(R.color.green));
+            swCanProductShare.setColorBorder(getResources().getColor(R.color.LimeGreen));
+            swCanProductShare.setColorOn(getResources().getColor(R.color.LimeGreen));
             swCanProductShare.setOn(true);
         }
 
@@ -120,8 +120,8 @@ public class BusinessSettingsActivity extends AppCompatActivity {
 
             if (isOn) {
                 allowBookOrder = "1";
-                swAllowBookOrder.setColorBorder(getResources().getColor(R.color.green));
-                swAllowBookOrder.setColorOn(getResources().getColor(R.color.green));
+                swAllowBookOrder.setColorBorder(getResources().getColor(R.color.LimeGreen));
+                swAllowBookOrder.setColorOn(getResources().getColor(R.color.LimeGreen));
             } else {
                 allowBookOrder = "0";
                 swAllowBookOrder.setColorBorder(getResources().getColor(R.color.colorPrimary));
@@ -140,8 +140,8 @@ public class BusinessSettingsActivity extends AppCompatActivity {
 
             if (isOn) {
                 canProductShare = "1";
-                swCanProductShare.setColorBorder(getResources().getColor(R.color.green));
-                swCanProductShare.setColorOn(getResources().getColor(R.color.green));
+                swCanProductShare.setColorBorder(getResources().getColor(R.color.LimeGreen));
+                swCanProductShare.setColorOn(getResources().getColor(R.color.LimeGreen));
             } else {
                 canProductShare = "0";
                 swCanProductShare.setColorBorder(getResources().getColor(R.color.colorPrimary));

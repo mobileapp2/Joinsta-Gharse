@@ -75,20 +75,20 @@ public class EditBusinessSettingsFragment extends Fragment {
         GetBusinessModel.ResultBean searchDetails = (GetBusinessModel.ResultBean) this.getArguments().getSerializable("searchDetails");
 
         if (searchDetails.getIs_enquiry_available().equals("1")) {
-            swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.green));
-            swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.green));
+            swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+            swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             swIsEnquiryAvailable.setOn(true);
         }
 
         if (searchDetails.getIs_pick_up_available().equals("1")) {
-            swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.green));
-            swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.green));
+            swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+            swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             swIsPickUpAvailable.setOn(true);
         }
 
         if (searchDetails.getIs_home_delivery_available().equals("1")) {
-            swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.green));
-            swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.green));
+            swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+            swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             swIsHomeDeliveryAvailable.setOn(true);
         }
 
@@ -111,8 +111,8 @@ public class EditBusinessSettingsFragment extends Fragment {
     private void setEventHandler() {
         swIsEnquiryAvailable.setOnToggledListener((toggleableView, isOn) -> {
             if (isOn) {
-                swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.green));
-                swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.green));
+                swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+                swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             } else {
                 swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
                 swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));
@@ -121,8 +121,8 @@ public class EditBusinessSettingsFragment extends Fragment {
 
         swIsPickUpAvailable.setOnToggledListener((toggleableView, isOn) -> {
             if (isOn) {
-                swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.green));
-                swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.green));
+                swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+                swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             } else {
                 swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
                 swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));
@@ -131,8 +131,8 @@ public class EditBusinessSettingsFragment extends Fragment {
 
         swIsHomeDeliveryAvailable.setOnToggledListener((toggleableView, isOn) -> {
             if (isOn) {
-                swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.green));
-                swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.green));
+                swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.LimeGreen));
+                swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.LimeGreen));
             } else {
                 swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
                 swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));

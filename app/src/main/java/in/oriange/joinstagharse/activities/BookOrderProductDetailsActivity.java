@@ -3,17 +3,22 @@ package in.oriange.joinstagharse.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -21,6 +26,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -45,10 +51,25 @@ import in.oriange.joinstagharse.models.BookOrderProductsListModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.DownloadFile;
+import in.oriange.joinstagharse.utilities.DownloadFileAndMessageShare;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
 import static in.oriange.joinstagharse.utilities.Utilities.linkifyTextView;
@@ -87,8 +108,6 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
     LinearLayout llAddToCart;
     @BindView(R.id.tv_out_of_stock)
     TextView tvOutOfStock;
-    @BindView(R.id.tv_add_to_cart)
-    TextView tvAddToCart;
     @BindView(R.id.anim_toolbar)
     Toolbar animToolbar;
     @BindView(R.id.collapsing_toolbar)
@@ -103,17 +122,22 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
     TextView tvBrochure;
     @BindView(R.id.ll_brochure)
     LinearLayout llBrochure;
+    @BindView(R.id.btn_share)
+    FloatingActionButton btnShare;
+    @BindView(R.id.tv_add_to_cart)
+    TextView tvAddToCart;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
-    private String userId, businessOwnerId;
+    private String userId, businessOwnerId, canShareProduct, businessCodeName;
     private int quantity;
     private int sellingPrice, maxRetailPrice, savedAmount, applicablePrice = 0;
     private boolean appBarExpanded = true;
 
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
     private BookOrderProductsListModel.ResultBean productDetails;
+    private Menu collapsedMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,6 +178,8 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
 
     private void setDefault() {
         businessOwnerId = getIntent().getStringExtra("businessOwnerId");
+        canShareProduct = getIntent().getStringExtra("canShareProduct");
+        businessCodeName = getIntent().getStringExtra("businessCodeName");
         productDetails = (BookOrderProductsListModel.ResultBean) getIntent().getSerializableExtra("productDetails");
         ordersList = (List<BookOrderGetMyOrdersModel.ResultBean>) getIntent().getSerializableExtra("ordersList");
 
@@ -227,6 +253,10 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
             llBrochure.setVisibility(View.GONE);
         }
 
+        if (canShareProduct.equals("1"))
+            btnShare.setVisibility(View.VISIBLE);
+        else
+            btnShare.setVisibility(View.GONE);
     }
 
     private void setEventHandler() {
@@ -268,6 +298,10 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
 
         tvAddToCart.setOnClickListener(v -> {
             findValidOrderId(productDetails, quantity);
+        });
+
+        btnShare.setOnClickListener(v -> {
+            shareDetails();
         });
 
         tvBrochure.setOnClickListener(v -> new DownloadFile(context, "Products", IMAGE_LINK + "product/" + productDetails.getProduct_brouchure().get(0)));
@@ -510,8 +544,14 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if ((!appBarExpanded)) {
+        if (collapsedMenu != null && (!appBarExpanded)) {
             animToolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
+
+            if (canShareProduct.equals("1"))
+                collapsedMenu.add("Share")
+                        .setIcon(R.drawable.icon_share)
+                        .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
             collapsingToolbar.setTitle("Product Details");
             changeStatusBar(context, getWindow());
         } else {
@@ -524,8 +564,113 @@ public class BookOrderProductDetailsActivity extends AppCompatActivity {
         }
         collapsingToolbar.setCollapsedTitleTextColor(context.getResources().getColor(R.color.black));
         collapsingToolbar.setExpandedTitleColor(context.getResources().getColor(R.color.black));
-        return super.onPrepareOptionsMenu(menu);
+        return super.onPrepareOptionsMenu(collapsedMenu);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+        collapsedMenu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        if (item.getTitle() == "Share") {
+            shareDetails();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void shareDetails() {
+        if (productDetails.getProduct_brouchure().size() != 0) {
+            if (doesAppNeedPermissions()) {
+                if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
+                    return;
+                }
+            }
+
+            new DownloadFileAndMessageShare(context, "Products", IMAGE_LINK + "product/" + productDetails.getProduct_images().get(0), getStringShareMessage());
+        } else {
+            String message = getStringShareMessage();
+            Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+            sharingIntent.setType("text/plain");
+            sharingIntent.putExtra(Intent.EXTRA_TEXT, message);
+            context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+        }
+    }
+
+    private String getStringShareMessage() {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Product Name - " + productDetails.getName() + "\n");
+
+        if (sellingPrice == 0)
+            sb.append("Price Not Disclosed" + "\n");
+        else {
+            sb.append("Price - ₹" + sellingPrice + "/" + productDetails.getUnit_of_measure() + "\n");
+            float savedAmount = maxRetailPrice - sellingPrice;
+            if (savedAmount != 0) {
+                float divide = (float) sellingPrice / maxRetailPrice;
+                int percent = (int) (divide * 100);
+                sb.append("Discount - " + (100 - percent) + "% off" + "\n");
+            }
+        }
+
+        if (!productDetails.getDescription().equals("")) {
+            sb.append("Description - " + productDetails.getDescription() + "\n");
+        }
+
+        sb.append("Business Name - " + businessCodeName + "\n");
+
+        return sb.toString() + "\n" + "Joinsta Gharse\n" + "Click Here - " + ApplicationConstants.JOINSTA_PLAYSTORELINK;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+        }
+    }
 
 }

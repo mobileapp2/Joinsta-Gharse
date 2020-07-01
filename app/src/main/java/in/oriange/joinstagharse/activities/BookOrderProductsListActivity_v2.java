@@ -97,7 +97,8 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
     private UserSessionManager session;
     private ProgressDialog pd;
 
-    private String userId, businessOwnerId, businessOwnerUserId, businessOwnerAddress, businessOwnerCode, businessOwnerName, businessOwnerCategoryId;
+    private String userId, businessOwnerId, businessOwnerUserId, businessOwnerAddress, businessOwnerCode, businessOwnerName, businessOwnerCategoryId,
+            storePickUpInstructions, homeDeliveryInstructions, canShareProduct;
     private List<BookOrderProductsListModel.ResultBean> productsList, searchedProductsList;
     private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
     private BookOrderProductsListAdapter bookOrderProductsListAdapter;
@@ -155,6 +156,9 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
         businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
         businessOwnerName = getIntent().getStringExtra("businessOwnerName");
         businessOwnerCategoryId = getIntent().getStringExtra("businessOwnerCategoryId");
+        storePickUpInstructions = getIntent().getStringExtra("storePickUpInstructions");
+        homeDeliveryInstructions = getIntent().getStringExtra("homeDeliveryInstructions");
+        canShareProduct = getIntent().getStringExtra("canShareProduct");
 
         if (Utilities.isNetworkAvailable(context)) {
             new GetProductCategories().execute(businessOwnerUserId, businessOwnerCategoryId);
@@ -242,6 +246,8 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
                 .putExtra("businessOwnerAddress", businessOwnerAddress)
                 .putExtra("businessOwnerCode", businessOwnerCode)
                 .putExtra("businessOwnerName", businessOwnerName)
+                .putExtra("storePickUpInstructions", storePickUpInstructions)
+                .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
                 .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
                 .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
 
@@ -250,6 +256,8 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
                 .putExtra("businessOwnerAddress", businessOwnerAddress)
                 .putExtra("businessOwnerCode", businessOwnerCode)
                 .putExtra("businessOwnerName", businessOwnerName)
+                .putExtra("storePickUpInstructions", storePickUpInstructions)
+                .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
                 .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
                 .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
 
@@ -575,7 +583,9 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
                 startActivity(new Intent(context, BookOrderProductDetailsActivity.class)
                         .putExtra("productDetails", productDetails)
                         .putExtra("ordersList", (Serializable) ordersList)
-                        .putExtra("businessOwnerId", businessOwnerId));
+                        .putExtra("businessOwnerId", businessOwnerId)
+                        .putExtra("canShareProduct", canShareProduct)
+                        .putExtra("businessCodeName", businessOwnerCode + " - " + businessOwnerName));
             });
 
             holder.btn_remove.setOnClickListener(v -> {
@@ -787,7 +797,9 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
                 .putExtra("categoryId", categoryId)
                 .putExtra("subcategoryId", subcategoryId)
                 .putExtra("businessOwnerUserId", businessOwnerUserId)
-                .putExtra("businessOwnerId", businessOwnerId));
+                .putExtra("businessOwnerId", businessOwnerId)
+                .putExtra("canShareProduct", canShareProduct)
+                .putExtra("businessCodeName", businessOwnerCode + " - " + businessOwnerName));
     }
 
     ///////////////////////////////////////////// Logic to find pending order id /////////////////////////////////////////////

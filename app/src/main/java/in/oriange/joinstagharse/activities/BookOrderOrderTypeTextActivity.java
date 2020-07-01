@@ -30,7 +30,7 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
     MaterialButton btnSave;
 
     private Context context;
-    private String businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName;
+    private String businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName, storePickUpInstructions, homeDeliveryInstructions;
 
     private LocalBroadcastManager localBroadcastManager;
 
@@ -61,6 +61,8 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
         businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
         businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
         businessOwnerName = getIntent().getStringExtra("businessOwnerName");
+        storePickUpInstructions = getIntent().getStringExtra("storePickUpInstructions");
+        homeDeliveryInstructions = getIntent().getStringExtra("homeDeliveryInstructions");
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderOrderTypeTextActivity");
@@ -81,6 +83,8 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
                     .putExtra("businessOwnerName", businessOwnerName)
                     .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
                     .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))
+                    .putExtra("storePickUpInstructions", storePickUpInstructions)
+                    .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
                     .putExtra("orderType", "3")
                     .putExtra("orderText", edtOrderText.getText().toString().trim())
                     .putExtra("orderImageArray", new JsonArray().toString()));

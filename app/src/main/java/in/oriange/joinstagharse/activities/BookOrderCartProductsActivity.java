@@ -171,6 +171,8 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                         .putExtra("businessOwnerName", orderDetails.getOwner_business_name())
                         .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
                         .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
+                        .putExtra("storePickUpInstructions", orderDetails.getOwner_store_pickup_instructions())
+                        .putExtra("homeDeliveryInstructions", orderDetails.getOwner_home_delivery_instructions())
                         .putExtra("orderType", "1")
                         .putExtra("orderText", "")
                         .putExtra("orderDetails", orderDetails)

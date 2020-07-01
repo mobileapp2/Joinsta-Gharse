@@ -330,11 +330,20 @@
                         android:id="@+id/ll_store_pickup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:visibility="gone">
 
                         <TextView
                             android:id="@+id/tv_store_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Priyesh Pawar"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                        <TextView
+                            android:id="@+id/tv_store_pickup_instructions"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="5dp"
@@ -372,6 +381,15 @@
                             android:layout_gravity="end"
                             android:text="Add Address"
                             android:textAllCaps="false" />
+
+                        <TextView
+                            android:id="@+id/tv_home_delivery_instructions"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="Priyesh Pawar"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                     </LinearLayout>
 

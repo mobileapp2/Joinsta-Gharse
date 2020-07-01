@@ -67,7 +67,7 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
 
     private Context context;
     private ProgressDialog pd;
-    private String businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName;
+    private String businessOwnerId, businessOwnerAddress, businessOwnerCode, businessOwnerName, storePickUpInstructions, homeDeliveryInstructions;
 
     private LocalBroadcastManager localBroadcastManager;
     private ArrayList<MasterModel> imageList;
@@ -124,6 +124,8 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
         businessOwnerAddress = getIntent().getStringExtra("businessOwnerAddress");
         businessOwnerCode = getIntent().getStringExtra("businessOwnerCode");
         businessOwnerName = getIntent().getStringExtra("businessOwnerName");
+        storePickUpInstructions = getIntent().getStringExtra("storePickUpInstructions");
+        homeDeliveryInstructions = getIntent().getStringExtra("homeDeliveryInstructions");
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderOrderTypeImageActivity");
@@ -176,6 +178,8 @@ public class BookOrderOrderTypeImageActivity extends AppCompatActivity {
                 .putExtra("businessOwnerName", businessOwnerName)
                 .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
                 .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))
+                .putExtra("storePickUpInstructions", storePickUpInstructions)
+                .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
                 .putExtra("orderType", "2")
                 .putExtra("orderText", "")
                 .putExtra("orderImageArray", imageJsonArray.toString()));
