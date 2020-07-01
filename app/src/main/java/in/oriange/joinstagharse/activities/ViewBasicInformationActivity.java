@@ -25,6 +25,7 @@ import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
-import static in.oriange.joinstagharse.utilities.Utilities.inviteMessage;
 
 public class ViewBasicInformationActivity extends AppCompatActivity {
 
@@ -220,7 +220,13 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
             }
         });
 
-        imv_share.setOnClickListener(v -> inviteMessage(context, edt_fname.getText().toString().trim(), edt_referral_code.getText().toString().trim()));
+        imv_share.setOnClickListener(v -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new InviteMessage().execute();
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        });
     }
 
     public void verifyEmail(View view) {
@@ -322,6 +328,59 @@ public class ViewBasicInformationActivity extends AppCompatActivity {
                         getSessionDetails();
                     } else {
                         Utilities.showMessage("User details failed to update", context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class InviteMessage extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("type", "inviteMsg");
+                obj.put("user_id", userId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            res = APICall.JSONAPICall(ApplicationConstants.USERSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        String inviteMessage = mainObj.getString("result");
+
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, inviteMessage);
+                        context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+
+
+                    } else if (type.equalsIgnoreCase("failure")) {
+                        Utilities.showMessage(message, context, 3);
                     }
                 }
             } catch (Exception e) {

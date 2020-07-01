@@ -16,6 +16,6 @@
         android:padding="5dp"
         android:text="Sub Category"
         android:textColor="@color/darkGray"
-        android:textSize="16sp" />
+        android:textSize="15sp" />
 
 </androidx.cardview.widget.CardView>

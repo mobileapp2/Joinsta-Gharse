@@ -111,14 +111,17 @@ public class EditBusinessDocumentFragment extends Fragment {
 
         List<GetBusinessModel.ResultBean.BusinessDocuments> documentList = searchDetails.getBusiness_documents();
 
-        for (GetBusinessModel.ResultBean.BusinessDocuments businessDocuments : documentList) {
-            businessDocumentList.add(new BusinessDocumentModel(businessDocuments.getDoc_type_id(),
-                    businessDocuments.getType(),
-                    businessDocuments.getDocument(),
-                    businessDocuments.getIs_verified()));
+        if (documentList.size() != 0) {
+            for (GetBusinessModel.ResultBean.BusinessDocuments businessDocuments : documentList) {
+                businessDocumentList.add(new BusinessDocumentModel(businessDocuments.getDoc_type_id(),
+                        businessDocuments.getType(),
+                        businessDocuments.getDocument(),
+                        businessDocuments.getIs_verified()));
+            }
+            documentAdapter.refreshData();
+        } else {
+            addDocument();
         }
-
-        documentAdapter.refreshData();
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("EditBusinessDocumentFragment");
@@ -143,7 +146,7 @@ public class EditBusinessDocumentFragment extends Fragment {
     }
 
     private void addDocument() {
-        businessDocumentList.add(new BusinessDocumentModel("", "", ""));
+        businessDocumentList.add(new BusinessDocumentModel("", "", "", "0"));
         documentAdapter.refreshData();
     }
 
@@ -156,14 +159,16 @@ public class EditBusinessDocumentFragment extends Fragment {
         JsonArray documentJsonArray = new JsonArray();
 
         for (BusinessDocumentModel businessDocument : businessDocumentList) {
-            if (businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
-                Utilities.showMessage("Please select document file", context, 2);
-                return;
+            if (!businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
+                if (businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
+                    Utilities.showMessage("Please select document file", context, 2);
+                    return;
+                }
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("doc_type_id", businessDocument.getId());
+                jsonObject.addProperty("document", businessDocument.getName());
+                documentJsonArray.add(jsonObject);
             }
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("doc_type_id", businessDocument.getId());
-            jsonObject.addProperty("document", businessDocument.getName());
-            documentJsonArray.add(jsonObject);
         }
 
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessDocumentActivity")
@@ -171,7 +176,6 @@ public class EditBusinessDocumentFragment extends Fragment {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessSettingsFragment"));
 
     }
-
 
     private class DocumentAdapter extends RecyclerView.Adapter<DocumentAdapter.MyViewHolder> {
 

@@ -55,7 +55,7 @@ public class AddBusinessContactFragment extends Fragment {
     private static ArrayList<LinearLayout> mobileLayoutsList, landlineLayoutsList;
     private String userId;
 
-    private LocalBroadcastManager localBroadcastManager;
+    private LocalBroadcastManager localBroadcastManager1, localBroadcastManager2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -96,9 +96,14 @@ public class AddBusinessContactFragment extends Fragment {
         addMobileLayout();
         addLandlineLayout();
 
-        localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("AddBusinessContactFragment");
-        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+        localBroadcastManager1 = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
+
+        IntentFilter intentFilter1 = new IntentFilter("AddBusinessContactFragment");
+        IntentFilter intentFilter2 = new IntentFilter("AddBusinessContactFragmentSkip");
+
+        localBroadcastManager1.registerReceiver(broadcastReceiver1, intentFilter1);
+        localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
     }
 
     private void setEventHandler() {
@@ -204,17 +209,33 @@ public class AddBusinessContactFragment extends Fragment {
                 .putExtra("website", edtWebsite.getText().toString().trim()));
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             submitData();
         }
     };
 
+    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            JsonArray mobileJSONArray = new JsonArray();
+            JsonArray landlineJSONArray = new JsonArray();
+
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessContactActivity")
+                    .putExtra("mobilesJsonArray", mobileJSONArray.toString())
+                    .putExtra("landlineJsonArray", landlineJSONArray.toString())
+                    .putExtra("email", "")
+                    .putExtra("website", ""));
+
+        }
+    };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        localBroadcastManager1.unregisterReceiver(broadcastReceiver1);
+        localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
     }
 
 

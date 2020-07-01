@@ -100,6 +100,8 @@ public class BookOrderGetMyOrdersModel implements Serializable {
         private String owner_business_longitude;
         private String user_address_latitude;
         private String user_address_longitude;
+        private String store_pickup_instructions;
+        private String home_delivery_instructions;
         private List<String> order_images;
         private List<ProductDetailsBean> product_details;
         private List<StatusDetailsBean> status_details;
@@ -390,6 +392,30 @@ public class BookOrderGetMyOrdersModel implements Serializable {
 
         public void setUser_address_longitude(String user_address_longitude) {
             this.user_address_longitude = user_address_longitude;
+        }
+
+        public String getStore_pickup_instructions() {
+            if (store_pickup_instructions != null) {
+                return store_pickup_instructions;
+            } else {
+                return "";
+            }
+        }
+
+        public void setStore_pickup_instructions(String store_pickup_instructions) {
+            this.store_pickup_instructions = store_pickup_instructions;
+        }
+
+        public String getHome_delivery_instructions() {
+            if (home_delivery_instructions != null) {
+                return home_delivery_instructions;
+            } else {
+                return "";
+            }
+        }
+
+        public void setHome_delivery_instructions(String home_delivery_instructions) {
+            this.home_delivery_instructions = home_delivery_instructions;
         }
 
         public List<String> getOrder_images() {

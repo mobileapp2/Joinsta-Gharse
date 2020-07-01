@@ -93,7 +93,13 @@ public class SettingsActivity extends AppCompatActivity {
     private void setEventHandler() {
         cv_password.setOnClickListener(v -> changePasswordAlert());
 
-        cv_invite.setOnClickListener(v -> inviteMessage(context, name, referral_code));
+        cv_invite.setOnClickListener(v -> {
+            if (Utilities.isNetworkAvailable(context)) {
+                new InviteMessage().execute();
+            } else {
+                Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        });
 
         cv_feedback.setOnClickListener(v -> startActivity(new Intent(context, UserFeedbackActivity.class)));
 
@@ -258,4 +264,59 @@ public class SettingsActivity extends AppCompatActivity {
         super.onPause();
         hideSoftKeyboard(SettingsActivity.this);
     }
+
+    private class InviteMessage extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            JSONObject obj = new JSONObject();
+            try {
+                obj.put("type", "inviteMsg");
+                obj.put("user_id", userId);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            res = APICall.JSONAPICall(ApplicationConstants.USERSAPI, obj.toString());
+            return res;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String type = "", message = "";
+            try {
+                pd.dismiss();
+                if (!result.equals("")) {
+                    JSONObject mainObj = new JSONObject(result);
+                    type = mainObj.getString("type");
+                    message = mainObj.getString("message");
+                    if (type.equalsIgnoreCase("success")) {
+                        String inviteMessage = mainObj.getString("result");
+
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, inviteMessage);
+                        context.startActivity(Intent.createChooser(sharingIntent, "Choose from following"));
+
+
+                    } else if (type.equalsIgnoreCase("failure")) {
+                        Utilities.showMessage(message, context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

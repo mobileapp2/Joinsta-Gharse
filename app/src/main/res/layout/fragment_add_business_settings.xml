@@ -3,116 +3,187 @@
     android:id="@+id/sv_scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="5dp"
     android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
             app:cardBackgroundColor="@android:color/white"
-            app:cardElevation="2dp"
-            app:cardUseCompatPadding="true">
+            app:cardUseCompatPadding="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="5dp">
+                android:paddingLeft="5dp"
+                android:paddingTop="10dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="10dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <CheckBox
-                        android:id="@+id/cb_is_enquiry_available"
-                        style="@style/CheckBox"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:text="Do you need enquiries?" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/icon_question"
-                        android:tint="@color/colorPrimary" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <CheckBox
-                        android:id="@+id/cb_is_pick_up_available"
-                        style="@style/CheckBox"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:checked="true"
-                        android:text="Do you allow store pickup?" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/icon_question"
-                        android:tint="@color/colorPrimary" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <CheckBox
-                        android:id="@+id/cb_is_home_delivery_available"
-                        style="@style/CheckBox"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:text="Do you do home delivery?" />
-
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/icon_question"
-                        android:tint="@color/colorPrimary" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:visibility="gone">
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
 
-                    <CheckBox
-                        android:id="@+id/cb_show_in_search"
-                        style="@style/CheckBox"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:text="Show business in business listing?" />
-
-                    <ImageButton
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Do you need enquiries?"
+                        android:textColor="@color/darkGray"
+                        android:textSize="14sp" />
+
+                    <ImageButton
+                        android:id="@+id/ib_is_enquiry_available"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:scaleType="fitXY"
-                        android:src="@drawable/icon_question"
-                        android:tint="@color/colorPrimary" />
+                        android:src="@drawable/icon_info"
+                        android:tint="@color/mediumGray" />
 
                 </LinearLayout>
+
+                <com.github.angads25.toggle.widget.LabeledSwitch
+                    android:id="@+id/sw_is_enquiry_available"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:textSize="14sp"
+                    app:colorBorder="@color/colorPrimary"
+                    app:on="false"
+                    app:textOff="No"
+                    app:textOn="Yes" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardUseCompatPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingTop="10dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Do you allow store pickup?"
+                        android:textColor="@color/darkGray"
+                        android:textSize="14sp" />
+
+                    <ImageButton
+                        android:id="@+id/ib_is_pick_up_available"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_info"
+                        android:tint="@color/mediumGray" />
+
+                </LinearLayout>
+
+                <com.github.angads25.toggle.widget.LabeledSwitch
+                    android:id="@+id/sw_is_pick_up_available"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:textSize="14sp"
+                    app:colorBorder="@color/colorPrimary"
+                    app:colorOn="@color/green"
+                    app:on="true"
+                    app:textOff="No"
+                    app:textOn="Yes" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardUseCompatPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingTop="10dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="10dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Do you do home delivery?"
+                        android:textColor="@color/darkGray"
+                        android:textSize="14sp" />
+
+                    <ImageButton
+                        android:id="@+id/ib_is_home_delivery_available"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/icon_info"
+                        android:tint="@color/mediumGray" />
+
+                </LinearLayout>
+
+                <com.github.angads25.toggle.widget.LabeledSwitch
+                    android:id="@+id/sw_is_home_delivery_available"
+                    android:layout_width="wrap_content"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:textSize="14sp"
+                    app:colorBorder="@color/colorPrimary"
+                    app:on="false"
+                    app:textOff="No"
+                    app:textOn="Yes" />
 
             </LinearLayout>
 

@@ -9,12 +9,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.github.angads25.toggle.widget.LabeledSwitch;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -29,16 +31,21 @@ import in.oriange.joinstagharse.utilities.Utilities;
 
 public class EditBusinessSettingsFragment extends Fragment {
 
-    @BindView(R.id.cb_is_enquiry_available)
-    CheckBox cbIsEnquiryAvailable;
-    @BindView(R.id.cb_is_pick_up_available)
-    CheckBox cbIsPickUpAvailable;
-    @BindView(R.id.cb_is_home_delivery_available)
-    CheckBox cbIsHomeDeliveryAvailable;
-    @BindView(R.id.cb_show_in_search)
-    CheckBox cbShowInSearch;
+
     @BindView(R.id.sv_scroll)
     NestedScrollView svScroll;
+    @BindView(R.id.sw_is_enquiry_available)
+    LabeledSwitch swIsEnquiryAvailable;
+    @BindView(R.id.ib_is_enquiry_available)
+    ImageButton ibIsEnquiryAvailable;
+    @BindView(R.id.sw_is_pick_up_available)
+    LabeledSwitch swIsPickUpAvailable;
+    @BindView(R.id.ib_is_pick_up_available)
+    ImageButton ibIsPickUpAvailable;
+    @BindView(R.id.sw_is_home_delivery_available)
+    LabeledSwitch swIsHomeDeliveryAvailable;
+    @BindView(R.id.ib_is_home_delivery_available)
+    ImageButton ibIsHomeDeliveryAvailable;
 
     private Context context;
     private ProgressDialog pd;
@@ -53,9 +60,9 @@ public class EditBusinessSettingsFragment extends Fragment {
 
         context = getActivity();
         init();
+        setEventHandler();
         setDefault();
         getSessionDetails();
-        setEventHandler();
         return rootView;
     }
 
@@ -67,17 +74,23 @@ public class EditBusinessSettingsFragment extends Fragment {
     private void setDefault() {
         GetBusinessModel.ResultBean searchDetails = (GetBusinessModel.ResultBean) this.getArguments().getSerializable("searchDetails");
 
-        if (searchDetails.getIs_visible().equals("1"))
-            cbShowInSearch.setChecked(true);
+        if (searchDetails.getIs_enquiry_available().equals("1")) {
+            swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.green));
+            swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.green));
+            swIsEnquiryAvailable.setOn(true);
+        }
 
-        if (searchDetails.getIs_enquiry_available().equals("1"))
-            cbIsEnquiryAvailable.setChecked(true);
+        if (searchDetails.getIs_pick_up_available().equals("1")) {
+            swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.green));
+            swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.green));
+            swIsPickUpAvailable.setOn(true);
+        }
 
-        if (searchDetails.getIs_pick_up_available().equals("1"))
-            cbIsPickUpAvailable.setChecked(true);
-
-        if (searchDetails.getIs_home_delivery_available().equals("1"))
-            cbIsHomeDeliveryAvailable.setChecked(true);
+        if (searchDetails.getIs_home_delivery_available().equals("1")) {
+            swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.green));
+            swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.green));
+            swIsHomeDeliveryAvailable.setOn(true);
+        }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("EditBusinessSettingsFragment");
@@ -96,15 +109,49 @@ public class EditBusinessSettingsFragment extends Fragment {
     }
 
     private void setEventHandler() {
+        swIsEnquiryAvailable.setOnToggledListener((toggleableView, isOn) -> {
+            if (isOn) {
+                swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.green));
+                swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.green));
+            } else {
+                swIsEnquiryAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
+                swIsEnquiryAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));
+            }
+        });
+
+        swIsPickUpAvailable.setOnToggledListener((toggleableView, isOn) -> {
+            if (isOn) {
+                swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.green));
+                swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.green));
+            } else {
+                swIsPickUpAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
+                swIsPickUpAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));
+            }
+        });
+
+        swIsHomeDeliveryAvailable.setOnToggledListener((toggleableView, isOn) -> {
+            if (isOn) {
+                swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.green));
+                swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.green));
+            } else {
+                swIsHomeDeliveryAvailable.setColorBorder(getResources().getColor(R.color.colorPrimary));
+                swIsHomeDeliveryAvailable.setColorOn(getResources().getColor(R.color.colorPrimary));
+            }
+        });
+
+        ibIsEnquiryAvailable.setOnClickListener(v -> Utilities.showAlertDialogNormal(context, "If you allow enquiries, Enquire will be enabled in Search Business section. Joinsta Gharse users will be able to send you enquiries. You can view enquiries in my business section."));
+
+        ibIsPickUpAvailable.setOnClickListener(v -> Utilities.showAlertDialogNormal(context, "If you enable store pickup, Joinsta Gharse users can choose store pickup option while placing order online for your business."));
+
+        ibIsHomeDeliveryAvailable.setOnClickListener(v -> Utilities.showAlertDialogNormal(context, "If you enable home delivery, Joinsta Gharse users can choose home delivery option while placing order online for your business. Enable this option only if you do home delivery for the placed orders."));
 
     }
 
     private void submitData() {
-
         String isVisible = "1";
-        String isEnquiryAvailable = cbIsEnquiryAvailable.isChecked() ? "1" : "0";
-        String isPickUpAvailable = cbIsPickUpAvailable.isChecked() ? "1" : "0";
-        String isHomeDeliveryAvailable = cbIsHomeDeliveryAvailable.isChecked() ? "1" : "0";
+        String isEnquiryAvailable = swIsEnquiryAvailable.isOn() ? "1" : "0";
+        String isPickUpAvailable = swIsPickUpAvailable.isOn() ? "1" : "0";
+        String isHomeDeliveryAvailable = swIsHomeDeliveryAvailable.isOn() ? "1" : "0";
 
         if (isPickUpAvailable.equals("0") && isHomeDeliveryAvailable.equals("0")) {
             Utilities.showMessage("Please select delivery type", context, 2);

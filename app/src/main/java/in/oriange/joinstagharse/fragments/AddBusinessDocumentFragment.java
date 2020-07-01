@@ -75,8 +75,7 @@ public class AddBusinessDocumentFragment extends Fragment {
     private int documentPosition;
     private final int DOCUMENT_REQUEST = 100;
 
-    private LocalBroadcastManager localBroadcastManager;
-
+    private LocalBroadcastManager localBroadcastManager1, localBroadcastManager2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -107,9 +106,14 @@ public class AddBusinessDocumentFragment extends Fragment {
     private void setDefault() {
         addDocument();
 
-        localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("AddBusinessDocumentFragment");
-        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+        localBroadcastManager1 = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
+
+        IntentFilter intentFilter1 = new IntentFilter("AddBusinessDocumentFragment");
+        IntentFilter intentFilter2 = new IntentFilter("AddBusinessDocumentFragmentSkip");
+
+        localBroadcastManager1.registerReceiver(broadcastReceiver1, intentFilter1);
+        localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
     }
 
     private void getSessionDetails() {
@@ -143,14 +147,17 @@ public class AddBusinessDocumentFragment extends Fragment {
         JsonArray documentJsonArray = new JsonArray();
 
         for (BusinessDocumentModel businessDocument : businessDocumentList) {
-            if (businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
-                Utilities.showMessage("Please select document file", context, 2);
-                return;
+
+            if (!businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
+                if (businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
+                    Utilities.showMessage("Please select document file", context, 2);
+                    return;
+                }
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("doc_type_id", businessDocument.getId());
+                jsonObject.addProperty("document", businessDocument.getName());
+                documentJsonArray.add(jsonObject);
             }
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("doc_type_id", businessDocument.getId());
-            jsonObject.addProperty("document", businessDocument.getName());
-            documentJsonArray.add(jsonObject);
         }
 
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessDocumentActivity")
@@ -380,16 +387,27 @@ public class AddBusinessDocumentFragment extends Fragment {
         }
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             submitData();
         }
     };
 
+    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            JsonArray documentJsonArray = new JsonArray();
+
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessDocumentActivity")
+                    .putExtra("documentJsonArray", documentJsonArray.toString()));
+        }
+    };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        localBroadcastManager1.unregisterReceiver(broadcastReceiver1);
+        localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
     }
 }

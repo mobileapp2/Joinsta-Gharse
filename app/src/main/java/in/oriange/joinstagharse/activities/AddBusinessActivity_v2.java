@@ -78,6 +78,8 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
     StateProgressBar statusProgressBar;
     @BindView(R.id.view_pager)
     NonSwipeableViewPager viewPager;
+    @BindView(R.id.btn_skip)
+    MaterialButton btnSkip;
 
     private Context context;
     private ProgressDialog pd;
@@ -172,6 +174,14 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessSettingFragment"));
             }
         });
+
+        btnSkip.setOnClickListener(v -> {
+            if (currentPosition == 2) {
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessContactFragmentSkip"));
+            } else if (currentPosition == 3) {
+                LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessDocumentFragmentSkip"));
+            }
+        });
     }
 
     private void updatePosition() {
@@ -179,22 +189,27 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
 
         switch (currentPosition) {
             case 0:
+                btnSkip.setVisibility(View.GONE);
                 btnSave.setText("Next");
                 statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.ONE);
                 break;
             case 1:
+                btnSkip.setVisibility(View.GONE);
                 btnSave.setText("Next");
                 statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
                 break;
             case 2:
+                btnSkip.setVisibility(View.VISIBLE);
                 btnSave.setText("Next");
                 statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.THREE);
                 break;
             case 3:
+                btnSkip.setVisibility(View.VISIBLE);
                 btnSave.setText("Next");
                 statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FOUR);
                 break;
             case 4:
+                btnSkip.setVisibility(View.GONE);
                 btnSave.setText("Save");
                 statusProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.FIVE);
                 break;
@@ -217,7 +232,7 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
-        toolbar.setNavigationOnClickListener(view -> finish());
+        toolbar.setNavigationOnClickListener(view -> exitScreenPopup());
     }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
@@ -249,11 +264,10 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
         }
     }
 
-
     @Override
     public void onBackPressed() {
         if (currentPosition == 0) {
-            finish();
+            exitScreenPopup();
         } else {
             currentPosition = currentPosition - 1;
             updatePosition();
@@ -501,4 +515,17 @@ public class AddBusinessActivity_v2 extends AppCompatActivity {
         }
     }
 
+    private void exitScreenPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+        builder.setTitle("Alert");
+        builder.setIcon(R.drawable.icon_alertred);
+        builder.setMessage("Are you sure you want to exit? Any unsaved data will be lost.");
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            finish();
+        });
+        builder.setNegativeButton("NO", (dialog, which) -> {
+
+        });
+        builder.create().show();
+    }
 }

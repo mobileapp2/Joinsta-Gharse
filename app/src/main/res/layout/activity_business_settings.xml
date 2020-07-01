@@ -49,37 +49,183 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
                 app:cardBackgroundColor="@android:color/white"
-                app:cardElevation="2dp"
-                app:cardUseCompatPadding="true">
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Allow all to book order"
+                            android:textColor="@color/darkGray"
+                            android:textSize="14sp" />
+
+                        <ImageButton
+                            android:id="@+id/ib_allow_book_order"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/icon_info"
+                            android:tint="@color/mediumGray" />
+
+                    </LinearLayout>
+
+                    <com.github.angads25.toggle.widget.LabeledSwitch
+                        android:id="@+id/sw_allow_book_order"
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:textSize="14sp"
+                        app:colorBorder="@color/colorPrimary"
+                        app:on="false"
+                        app:textOff="No"
+                        app:textOn="Yes" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Can product share"
+                            android:textColor="@color/darkGray"
+                            android:textSize="14sp" />
+
+                        <ImageButton
+                            android:id="@+id/ib_can_product_share"
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/icon_info"
+                            android:tint="@color/mediumGray" />
+
+                    </LinearLayout>
+
+                    <com.github.angads25.toggle.widget.LabeledSwitch
+                        android:id="@+id/sw_can_product_share"
+                        android:layout_width="wrap_content"
+                        android:layout_height="22dp"
+                        android:layout_gravity="center"
+                        android:textSize="14sp"
+                        app:colorBorder="@color/colorPrimary"
+                        app:on="false"
+                        app:textOff="No"
+                        app:textOn="Yes" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardUseCompatPadding="false">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:paddingLeft="5dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="10dp">
 
                     <LinearLayout
+                        android:id="@+id/ll_store_pickup_instructions"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                        <CheckBox
-                            android:id="@+id/cb_allow_book_order"
-                            style="@style/CheckBox"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:text="Allow all to book order" />
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Store Pickup Instructions"
+                            android:textColor="@color/mediumGray" />
 
-                        <ImageButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/icon_question"
-                            android:tint="@color/colorPrimary" />
+                        <EditText
+                            android:id="@+id/edt_store_pickup_instructions"
+                            style="@style/EditableEditText"
+                            android:backgroundTint="@color/mediumGray"
+                            android:inputType="textMultiLine|textCapSentences" />
 
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_home_delivery_instructions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TitleTextView"
+                            android:text="Home Delivery Instructions"
+                            android:textColor="@color/mediumGray" />
+
+                        <EditText
+                            android:id="@+id/edt_home_delivery_instructions"
+                            style="@style/EditableEditText"
+                            android:backgroundTint="@color/mediumGray"
+                            android:inputType="textMultiLine|textCapSentences" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save_instructions"
+                        style="@style/MaterialButton"
+                        android:layout_gravity="end"
+                        android:layout_marginRight="3dp"
+                        android:text="Save" />
 
                 </LinearLayout>
 

@@ -168,7 +168,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:src="@drawable/icon_products"
-                    android:tint="@color/darkGray" />
+                    android:tint="@color/mediumGray" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -176,7 +176,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Products"
-                    android:textColor="@color/darkGray"
+                    android:textColor="@color/mediumGray"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -198,7 +198,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:src="@drawable/icon_offer_1"
-                    android:tint="@color/darkGray" />
+                    android:tint="@color/mediumGray" />
 
                 <TextView
                     android:id="@+id/tv_offers"
@@ -207,7 +207,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Offers"
-                    android:textColor="@color/darkGray"
+                    android:textColor="@color/mediumGray"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -229,7 +229,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:src="@drawable/icon_cart"
-                    android:tint="@color/darkGray" />
+                    android:tint="@color/mediumGray" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -237,7 +237,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Orders"
-                    android:textColor="@color/darkGray"
+                    android:textColor="@color/mediumGray"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -267,7 +267,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:src="@drawable/icon_terms"
-                    android:tint="@color/darkGray" />
+                    android:tint="@color/mediumGray" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -275,7 +275,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Categories"
-                    android:textColor="@color/darkGray"
+                    android:textColor="@color/mediumGray"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -298,7 +298,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:src="@drawable/icon_enquiry"
-                    android:tint="@color/darkGray" />
+                    android:tint="@color/mediumGray" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -306,7 +306,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Enquiries"
-                    android:textColor="@color/darkGray"
+                    android:textColor="@color/mediumGray"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -329,7 +329,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
                     android:src="@drawable/icon_settings"
-                    android:tint="@color/darkGray" />
+                    android:tint="@color/mediumGray" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -337,7 +337,7 @@
                     android:layout_marginTop="2dp"
                     android:gravity="center"
                     android:text="Settings"
-                    android:textColor="@color/darkGray"
+                    android:textColor="@color/mediumGray"
                     android:textSize="12sp" />
 
             </LinearLayout>

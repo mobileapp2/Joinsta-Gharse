@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/cropper" />
             <option value="$PROJECT_DIR$/filepicker" />
+            <option value="$PROJECT_DIR$/stateprogressbar" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

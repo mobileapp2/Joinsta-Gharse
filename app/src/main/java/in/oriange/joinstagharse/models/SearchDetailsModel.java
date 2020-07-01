@@ -102,6 +102,9 @@ public class SearchDetailsModel implements Serializable {
             private String total_number_review;
             private String offer_count;
             private String common_groups_count;
+            private String can_product_share;
+            private String store_pickup_instructions;
+            private String home_delivery_instructions;
             private List<List<MobilesBeanXX>> mobiles;
             private List<List<SubCategoriesBean>> sub_categories;
             private List<List<LandlineBeanXX>> landline;
@@ -571,6 +574,42 @@ public class SearchDetailsModel implements Serializable {
                 } else {
                     return new ArrayList<>();
                 }
+            }
+
+            public String getCan_product_share() {
+                if (can_product_share != null) {
+                    return can_product_share;
+                } else {
+                    return "0";
+                }
+            }
+
+            public void setCan_product_share(String can_product_share) {
+                this.can_product_share = can_product_share;
+            }
+
+            public String getStore_pickup_instructions() {
+                if (store_pickup_instructions != null) {
+                    return store_pickup_instructions;
+                } else {
+                    return "";
+                }
+            }
+
+            public void setStore_pickup_instructions(String store_pickup_instructions) {
+                this.store_pickup_instructions = store_pickup_instructions;
+            }
+
+            public String getHome_delivery_instructions() {
+                if (home_delivery_instructions != null) {
+                    return home_delivery_instructions;
+                } else {
+                    return "";
+                }
+            }
+
+            public void setHome_delivery_instructions(String home_delivery_instructions) {
+                this.home_delivery_instructions = home_delivery_instructions;
             }
 
             public void setMobiles(List<List<MobilesBeanXX>> mobiles) {
