@@ -44,6 +44,7 @@ public class ApplicationConstants {
     public static final String SEARCHAPI = API_LINK + "SearchDetails.php";
     public static final String MASTERAPI = API_LINK + "master.php";
     public static final String BUSINESSAPI = API_LINK + "business.php";
+    public static final String SERVICESAPI = API_LINK + "services.php";
     public static final String ADDRESSAPI = API_LINK + "user_address.php";
     public static final String VENDORAPI = API_LINK + "vendor.php";
     public static final String CUSTOMERAPI = API_LINK + "customer.php";

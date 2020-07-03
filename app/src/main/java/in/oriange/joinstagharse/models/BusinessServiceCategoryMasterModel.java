@@ -2,7 +2,7 @@ package in.oriange.joinstagharse.models;
 
 import java.util.List;
 
-public class BusinessCategoryMasterModel {
+public class BusinessServiceCategoryMasterModel {
 
     /**
      * type : success

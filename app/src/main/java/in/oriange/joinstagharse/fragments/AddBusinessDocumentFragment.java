@@ -42,8 +42,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
-import in.oriange.joinstagharse.models.BusinessCategoryMasterModel;
-import in.oriange.joinstagharse.models.BusinessDocumentModel;
+import in.oriange.joinstagharse.models.BusinessServiceCategoryMasterModel;
+import in.oriange.joinstagharse.models.BusinessServiceDocumentModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.MultipartUtility;
@@ -68,8 +68,8 @@ public class AddBusinessDocumentFragment extends Fragment {
     private ProgressDialog pd;
     private UserSessionManager session;
     private String userId;
-    private List<BusinessDocumentModel> businessDocumentList;
-    private List<BusinessCategoryMasterModel.ResultBean> documentMasterList;
+    private List<BusinessServiceDocumentModel> businessDocumentList;
+    private List<BusinessServiceCategoryMasterModel.ResultBean> documentMasterList;
 
     private DocumentAdapter documentAdapter;
     private int documentPosition;
@@ -134,7 +134,7 @@ public class AddBusinessDocumentFragment extends Fragment {
     }
 
     private void addDocument() {
-        businessDocumentList.add(new BusinessDocumentModel("", "", ""));
+        businessDocumentList.add(new BusinessServiceDocumentModel("", "", ""));
         documentAdapter.refreshData();
     }
 
@@ -146,7 +146,7 @@ public class AddBusinessDocumentFragment extends Fragment {
     private void submitData() {
         JsonArray documentJsonArray = new JsonArray();
 
-        for (BusinessDocumentModel businessDocument : businessDocumentList) {
+        for (BusinessServiceDocumentModel businessDocument : businessDocumentList) {
 
             if (!businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
                 if (businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
@@ -178,7 +178,7 @@ public class AddBusinessDocumentFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull DocumentAdapter.MyViewHolder holder, int pos) {
             int position = holder.getAdapterPosition();
-            BusinessDocumentModel businessDetails = businessDocumentList.get(position);
+            BusinessServiceDocumentModel businessDetails = businessDocumentList.get(position);
 
             holder.edt_document_type.setText(businessDetails.getType());
             holder.edt_document_file.setText(businessDetails.getName());
@@ -278,7 +278,7 @@ public class AddBusinessDocumentFragment extends Fragment {
             try {
                 if (!result.equals("")) {
                     documentMasterList = new ArrayList<>();
-                    BusinessCategoryMasterModel pojoDetails = new Gson().fromJson(result, BusinessCategoryMasterModel.class);
+                    BusinessServiceCategoryMasterModel pojoDetails = new Gson().fromJson(result, BusinessServiceCategoryMasterModel.class);
                     type = pojoDetails.getType();
                     message = pojoDetails.getMessage();
 

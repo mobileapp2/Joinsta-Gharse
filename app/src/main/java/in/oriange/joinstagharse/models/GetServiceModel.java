@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetBusinessModel implements Serializable {
+public class GetServiceModel implements Serializable {
 
     /**
      * type : success
@@ -156,7 +156,6 @@ public class GetBusinessModel implements Serializable {
         private String can_product_share;
         private String store_pickup_instructions;
         private String home_delivery_instructions;
-        private String is_allow_book_order_by_admin;
         private List<List<MobilesBean>> mobiles;
         private List<List<LandlineBean>> landline;
         private List<List<SubCategoriesBean>> sub_categories;
@@ -653,18 +652,6 @@ public class GetBusinessModel implements Serializable {
             this.home_delivery_instructions = home_delivery_instructions;
         }
 
-        public String getIs_allow_book_order_by_admin() {
-            if (is_allow_book_order_by_admin != null) {
-                return is_allow_book_order_by_admin;
-            } else {
-                return "0";
-            }
-        }
-
-        public void setIs_allow_book_order_by_admin(String is_allow_book_order_by_admin) {
-            this.is_allow_book_order_by_admin = is_allow_book_order_by_admin;
-        }
-
         public boolean isChecked() {
             return isChecked;
         }
@@ -714,7 +701,7 @@ public class GetBusinessModel implements Serializable {
             String subTypeNameStr = "";
 
             if (getSub_categories().get(0) != null) {
-                for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0)) {
+                for (GetServiceModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0)) {
                     subTypeNameSb.append(subCategoriesBean.getSubtype_description()).append(" | ");
                 }
                 subTypeNameStr = subTypeNameSb.toString();
@@ -758,13 +745,13 @@ public class GetBusinessModel implements Serializable {
             if (type.equals("1"))
                 if (getSub_categories().get(0) != null)
                     if (getSub_categories().get(0).size() > 0)
-                        for (GetBusinessModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0))
+                        for (GetServiceModel.ResultBean.SubCategoriesBean subCategoriesBean : getSub_categories().get(0))
                             if (!subCategoriesBean.getSubtype_description().trim().equals(""))
                                 list.add(subCategoriesBean.getSubtype_description());
 
             if (getTag().get(0) != null)
                 if (getTag().get(0).size() > 0)
-                    for (GetBusinessModel.ResultBean.TagBean tags : getTag().get(0))
+                    for (GetServiceModel.ResultBean.TagBean tags : getTag().get(0))
                         if (!tags.getTag_name().trim().equals(""))
                             list.add(tags.getTag_name());
 

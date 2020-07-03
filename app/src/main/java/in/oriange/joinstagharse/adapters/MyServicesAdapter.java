@@ -25,55 +25,47 @@ import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.OffersForParticularRecordActivity;
 import in.oriange.joinstagharse.activities.ProductCategoriesActivity;
 import in.oriange.joinstagharse.activities.ViewMyBizDetailsActivity;
-import in.oriange.joinstagharse.models.GetBusinessModel;
+import in.oriange.joinstagharse.activities.ViewMyServiceDetailsActivity;
+import in.oriange.joinstagharse.models.GetServiceModel;
 
-public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusinessAdapter.MyViewHolder> {
+public class MyServicesAdapter extends RecyclerView.Adapter<MyServicesAdapter.MyViewHolder> {
 
-    private List<GetBusinessModel.ResultBean> resultArrayList;
+    private List<GetServiceModel.ResultBean> resultArrayList;
     private Context context;
 
-    public MyAddedBusinessAdapter(Context context, List<GetBusinessModel.ResultBean> resultArrayList) {
+    public MyServicesAdapter(Context context, List<GetServiceModel.ResultBean> resultArrayList) {
         this.context = context;
         this.resultArrayList = resultArrayList;
-
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyServicesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.list_row_my_business, parent, false);
-        return new MyViewHolder(view);
+        View view = inflater.inflate(R.layout.list_row_my_service, parent, false);
+        return new MyServicesAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, final int pos) {
+    public void onBindViewHolder(final MyServicesAdapter.MyViewHolder holder, final int pos) {
         final int position = holder.getAdapterPosition();
-        final GetBusinessModel.ResultBean searchDetails = resultArrayList.get(position);
+        final GetServiceModel.ResultBean searchDetails = resultArrayList.get(position);
 
         holder.tv_business_name.setText(searchDetails.getBusiness_code() + " - " + searchDetails.getBusiness_name());
-        holder.tv_address.setText(searchDetails.getAddressCityPincode());
+        holder.tv_service_name.setText(searchDetails.getAddressCityPincode());
 
         if (searchDetails.getIs_pick_up_available().equals("1")) {
-//            holder.tv_store_pickup.setTextColor(context.getResources().getColor(R.color.green));
             holder.imv_store_pickup.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_check));
-//            holder.ll_store_pickup.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
             holder.imv_store_pickup.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
         } else {
-//            holder.tv_store_pickup.setTextColor(context.getResources().getColor(R.color.red));
             holder.imv_store_pickup.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cross));
-//            holder.ll_store_pickup.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
             holder.imv_store_pickup.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
         if (searchDetails.getIs_home_delivery_available().equals("1")) {
-//            holder.tv_home_delivery.setTextColor(context.getResources().getColor(R.color.green));
             holder.imv_home_delivery.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_check));
-//            holder.ll_home_delivery.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_green));
             holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.green), android.graphics.PorterDuff.Mode.SRC_IN);
         } else {
-//            holder.tv_home_delivery.setTextColor(context.getResources().getColor(R.color.red));
             holder.imv_home_delivery.setImageDrawable(context.getResources().getDrawable(R.drawable.icon_cross));
-//            holder.ll_home_delivery.setBackground(context.getResources().getDrawable(R.drawable.button_focusfilled_red));
             holder.imv_home_delivery.setColorFilter(ContextCompat.getColor(context, R.color.red), android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
@@ -89,7 +81,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
 
         holder.container_tags.setTags(topFiveTagsList);
 
-        holder.cv_mainlayout.setOnClickListener(v -> context.startActivity(new Intent(context, ViewMyBizDetailsActivity.class)
+        holder.cv_mainlayout.setOnClickListener(v -> context.startActivity(new Intent(context, ViewMyServiceDetailsActivity.class)
                 .putExtra("searchDetails", searchDetails)));
 
         holder.ll_offer.setOnClickListener(v ->
@@ -130,7 +122,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
 
         private CardView cv_mainlayout;
         private TagContainerLayout container_tags;
-        private TextView tv_business_name, tv_address;
+        private TextView tv_business_name, tv_service_name;
         private LinearLayout ll_offer, ll_orders, ll_products, ll_enquire, ll_categories, ll_settings;
         private ImageView imv_store_pickup, imv_home_delivery;
 
@@ -139,7 +131,7 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
             cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
             container_tags = view.findViewById(R.id.container_tags);
             tv_business_name = view.findViewById(R.id.tv_business_name);
-            tv_address = view.findViewById(R.id.tv_address);
+            tv_service_name = view.findViewById(R.id.tv_service_name);
             imv_store_pickup = view.findViewById(R.id.imv_store_pickup);
             imv_home_delivery = view.findViewById(R.id.imv_home_delivery);
             ll_offer = view.findViewById(R.id.ll_offer);
@@ -155,4 +147,5 @@ public class MyAddedBusinessAdapter extends RecyclerView.Adapter<MyAddedBusiness
     public int getItemViewType(int position) {
         return position;
     }
+
 }

@@ -75,7 +75,7 @@ import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermi
 import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION;
 import static in.oriange.joinstagharse.utilities.RuntimePermissions.isCameraStoragePermissionGiven;
 
-public class AddBusinessGeneralFragment extends Fragment {
+public class AddServiceGeneralFragment extends Fragment {
 
     @BindView(R.id.imv_photo1)
     ImageView imvPhoto1;
@@ -118,7 +118,7 @@ public class AddBusinessGeneralFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_add_business_general, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_add_service_general, container, false);
         ButterKnife.bind(this, rootView);
 
         context = getActivity();
@@ -139,7 +139,7 @@ public class AddBusinessGeneralFragment extends Fragment {
         tagsListFromAPI = new ArrayList<>();
         subCategoryJsonArray = new JsonArray();
 
-        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Business");
+        profilPicFolder = new File(Environment.getExternalStorageDirectory() + "/Joinsta Gharse/" + "Service");
         if (!profilPicFolder.exists())
             profilPicFolder.mkdirs();
 
@@ -162,11 +162,11 @@ public class AddBusinessGeneralFragment extends Fragment {
 
     private void setDefault() {
         if (Utilities.isNetworkAvailable(context)) {
-            new GetTagsList().execute("0");
+            new GetTagsList().execute("5");
         }
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("AddBusinessGeneralFragment");
+        IntentFilter intentFilter = new IntentFilter("AddServiceGeneralFragment");
         localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
     }
 
@@ -182,7 +182,7 @@ public class AddBusinessGeneralFragment extends Fragment {
         edtNature.setOnClickListener(v -> {
             if (categotyList.size() == 0) {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetCategotyList().execute("0", "0", "1");
+                    new GetCategotyList().execute("0", "0", "5");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -194,13 +194,13 @@ public class AddBusinessGeneralFragment extends Fragment {
         edtSubtype.setOnClickListener(v -> {
 
             if (edtNature.getText().toString().trim().isEmpty()) {
-                Utilities.showMessage("Please select the nature of business", context, 2);
+                Utilities.showMessage("Please select the nature of service", context, 2);
                 return;
             }
 
             if (subCategoryList.size() == 0) {
                 if (Utilities.isNetworkAvailable(context)) {
-                    new GetSubCategotyList().execute(categoryId, "1", "1");
+                    new GetSubCategotyList().execute(categoryId, "1", "5");
                 } else {
                     Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
                 }
@@ -351,14 +351,14 @@ public class AddBusinessGeneralFragment extends Fragment {
 
     private void submitData() {
         if (edtName.getText().toString().trim().isEmpty()) {
-            edtName.setError("Please enter the name of business");
+            edtName.setError("Please enter the name of service");
             edtName.requestFocus();
             edtName.getParent().requestChildFocus(edtName, edtName);
             return;
         }
 
         if (edtNature.getText().toString().trim().isEmpty()) {
-            Utilities.showMessage("Please select the nature of business", context, 2);
+            Utilities.showMessage("Please select the nature of service", context, 2);
             return;
         }
 
@@ -372,9 +372,9 @@ public class AddBusinessGeneralFragment extends Fragment {
             tagJSONArray.add(tagsJSONObj);
         }
 
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddBusinessGeneralActivity")
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddServiceGeneralActivity")
                 .putExtra("imageName", imageName)
-                .putExtra("businessName", edtName.getText().toString().trim())
+                .putExtra("serviceName", edtName.getText().toString().trim())
                 .putExtra("categoryId", categoryId)
                 .putExtra("subCategoryJsonArray", subCategoryJsonArray.toString())
                 .putExtra("designation", edtDesignation.getText().toString().trim())
@@ -486,7 +486,7 @@ public class AddBusinessGeneralFragment extends Fragment {
 
     private void showCategoryListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-        builderSingle.setTitle("Select Nature of Business");
+        builderSingle.setTitle("Select Nature of Service");
         builderSingle.setCancelable(false);
 
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(context, R.layout.list_row);
@@ -631,14 +631,14 @@ public class AddBusinessGeneralFragment extends Fragment {
 
         @NonNull
         @Override
-        public SubCategoryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.list_row_checklist, parent, false);
-            return new SubCategoryAdapter.MyViewHolder(view);
+            return new MyViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull SubCategoryAdapter.MyViewHolder holder, int pos) {
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int pos) {
             final int position = holder.getAdapterPosition();
 
             holder.cb_select.setText(subCategoryList.get(position).getName());
@@ -791,7 +791,7 @@ public class AddBusinessGeneralFragment extends Fragment {
         Log.i("sourceuri1", "" + sourceuri);
         String sourceFilename = sourceuri.getPath();
         String destinationFile = Environment.getExternalStorageDirectory() + "/Joinsta Gharse/"
-                + "Business/" + "uplimg.png";
+                + "Service/" + "uplimg.png";
 
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
@@ -893,4 +893,5 @@ public class AddBusinessGeneralFragment extends Fragment {
         super.onDestroy();
         localBroadcastManager.unregisterReceiver(broadcastReceiver);
     }
+
 }

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -45,7 +44,6 @@ import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.models.BusinessServiceCategoryMasterModel;
 import in.oriange.joinstagharse.models.BusinessServiceDocumentModel;
-import in.oriange.joinstagharse.models.GetBusinessModel;
 import in.oriange.joinstagharse.utilities.APICall;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.MultipartUtility;
@@ -57,7 +55,7 @@ import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermi
 import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION;
 import static in.oriange.joinstagharse.utilities.RuntimePermissions.isStoragePermissionGiven;
 
-public class EditBusinessDocumentFragment extends Fragment {
+public class AddServiceDocumentFragment extends Fragment {
 
     @BindView(R.id.rv_documents)
     RecyclerView rvDocuments;
@@ -66,23 +64,22 @@ public class EditBusinessDocumentFragment extends Fragment {
     @BindView(R.id.sv_scroll)
     NestedScrollView svScroll;
 
-
     private Context context;
     private ProgressDialog pd;
     private UserSessionManager session;
     private String userId;
-    private List<BusinessServiceDocumentModel> businessDocumentList;
+    private List<BusinessServiceDocumentModel> documentList;
     private List<BusinessServiceCategoryMasterModel.ResultBean> documentMasterList;
 
     private DocumentAdapter documentAdapter;
     private int documentPosition;
     private final int DOCUMENT_REQUEST = 100;
 
-    private LocalBroadcastManager localBroadcastManager;
+    private LocalBroadcastManager localBroadcastManager1, localBroadcastManager2;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_edit_business_document, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_add_service_document, container, false);
         ButterKnife.bind(this, rootView);
 
         context = getActivity();
@@ -99,7 +96,7 @@ public class EditBusinessDocumentFragment extends Fragment {
 
         rvDocuments.setLayoutManager(new LinearLayoutManager(context));
 
-        businessDocumentList = new ArrayList<>();
+        documentList = new ArrayList<>();
         documentMasterList = new ArrayList<>();
 
         documentAdapter = new DocumentAdapter();
@@ -107,25 +104,16 @@ public class EditBusinessDocumentFragment extends Fragment {
     }
 
     private void setDefault() {
-        GetBusinessModel.ResultBean searchDetails = (GetBusinessModel.ResultBean) this.getArguments().getSerializable("searchDetails");
+        addDocument();
 
-        List<GetBusinessModel.ResultBean.BusinessDocuments> documentList = searchDetails.getBusiness_documents();
+        localBroadcastManager1 = LocalBroadcastManager.getInstance(context);
+        localBroadcastManager2 = LocalBroadcastManager.getInstance(context);
 
-        if (documentList.size() != 0) {
-            for (GetBusinessModel.ResultBean.BusinessDocuments businessDocuments : documentList) {
-                businessDocumentList.add(new BusinessServiceDocumentModel(businessDocuments.getDoc_type_id(),
-                        businessDocuments.getType(),
-                        businessDocuments.getDocument(),
-                        businessDocuments.getIs_verified()));
-            }
-            documentAdapter.refreshData();
-        } else {
-            addDocument();
-        }
+        IntentFilter intentFilter1 = new IntentFilter("AddServiceDocumentFragment");
+        IntentFilter intentFilter2 = new IntentFilter("AddServiceDocumentFragmentSkip");
 
-        localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        IntentFilter intentFilter = new IntentFilter("EditBusinessDocumentFragment");
-        localBroadcastManager.registerReceiver(broadcastReceiver, intentFilter);
+        localBroadcastManager1.registerReceiver(broadcastReceiver1, intentFilter1);
+        localBroadcastManager2.registerReceiver(broadcastReceiver2, intentFilter2);
     }
 
     private void getSessionDetails() {
@@ -146,19 +134,20 @@ public class EditBusinessDocumentFragment extends Fragment {
     }
 
     private void addDocument() {
-        businessDocumentList.add(new BusinessServiceDocumentModel("", "", "", "0"));
+        documentList.add(new BusinessServiceDocumentModel("", "", ""));
         documentAdapter.refreshData();
     }
 
     private void removeDocument(int position) {
-        businessDocumentList.remove(position);
+        documentList.remove(position);
         documentAdapter.refreshData();
     }
 
     private void submitData() {
         JsonArray documentJsonArray = new JsonArray();
 
-        for (BusinessServiceDocumentModel businessDocument : businessDocumentList) {
+        for (BusinessServiceDocumentModel businessDocument : documentList) {
+
             if (!businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
                 if (businessDocument.getName().equals("") && !businessDocument.getType().equals("")) {
                     Utilities.showMessage("Please select document file", context, 2);
@@ -171,9 +160,8 @@ public class EditBusinessDocumentFragment extends Fragment {
             }
         }
 
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessDocumentActivity")
+        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddServiceDocumentActivity")
                 .putExtra("documentJsonArray", documentJsonArray.toString()));
-        LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("EditBusinessSettingsFragment"));
 
     }
 
@@ -190,16 +178,7 @@ public class EditBusinessDocumentFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull DocumentAdapter.MyViewHolder holder, int pos) {
             int position = holder.getAdapterPosition();
-            BusinessServiceDocumentModel businessDetails = businessDocumentList.get(position);
-
-            if (businessDetails.getIsVerified().equals("1")) {
-                holder.imv_verified.setVisibility(View.VISIBLE);
-                holder.ib_remove_document.setVisibility(View.GONE);
-            } else {
-                holder.imv_verified.setVisibility(View.GONE);
-                holder.ib_remove_document.setVisibility(View.VISIBLE);
-            }
-
+            BusinessServiceDocumentModel businessDetails = documentList.get(position);
 
             holder.edt_document_type.setText(businessDetails.getType());
             holder.edt_document_file.setText(businessDetails.getName());
@@ -209,57 +188,49 @@ public class EditBusinessDocumentFragment extends Fragment {
             });
 
             holder.edt_document_type.setOnClickListener(v -> {
-                if (businessDetails.getIsVerified().equals("0")) {
-                    documentPosition = position;
-                    if (documentMasterList.size() == 0)
-                        if (Utilities.isNetworkAvailable(context))
-                            new GetDocumentList().execute();
-                        else
-                            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                documentPosition = position;
+                if (documentMasterList.size() == 0)
+                    if (Utilities.isNetworkAvailable(context))
+                        new GetDocumentList().execute();
                     else
-                        showBusinessListDialog();
-                } else {
-                    Utilities.showMessage("You cannot update verified document", context, 2);
-                }
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                else
+                    showDocumentListDialog();
             });
 
             holder.edt_document_file.setOnClickListener(v -> {
-                if (businessDetails.getIsVerified().equals("0")) {
-                    if (holder.edt_document_type.getText().toString().trim().isEmpty()) {
-                        Utilities.showMessage("Please select document type", context, 2);
+                if (holder.edt_document_type.getText().toString().trim().isEmpty()) {
+                    Utilities.showMessage("Please select document type", context, 2);
+                    return;
+                }
+
+                if (doesAppNeedPermissions()) {
+                    if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
                         return;
                     }
-
-                    if (doesAppNeedPermissions()) {
-                        if (!isStoragePermissionGiven(context, STORAGE_PERMISSION)) {
-                            return;
-                        }
-                    }
-
-                    documentPosition = position;
-                    if (Utilities.isNetworkAvailable(context)) {
-                        Intent intent = new Intent(context, NormalFilePickActivity.class);
-                        intent.putExtra(Constant.MAX_NUMBER, 1);
-                        intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
-                        startActivityForResult(intent, DOCUMENT_REQUEST);
-                    } else {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
-                    }
-                } else {
-                    Utilities.showMessage("You cannot update verified document", context, 2);
                 }
+
+                documentPosition = position;
+                if (Utilities.isNetworkAvailable(context)) {
+                    Intent intent = new Intent(context, NormalFilePickActivity.class);
+                    intent.putExtra(Constant.MAX_NUMBER, 1);
+                    intent.putExtra(NormalFilePickActivity.SUFFIX, new String[]{"xlsx", "xls", "doc", "docx", "ppt", "pptx", "pdf"});
+                    startActivityForResult(intent, DOCUMENT_REQUEST);
+                } else {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                }
+
             });
         }
 
         @Override
         public int getItemCount() {
-            return businessDocumentList.size();
+            return documentList.size();
         }
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
             private ImageButton ib_remove_document;
-            private ImageView imv_verified;
             private TextView edt_document_type, edt_document_file;
 
             public MyViewHolder(@NonNull View itemView) {
@@ -267,7 +238,6 @@ public class EditBusinessDocumentFragment extends Fragment {
                 ib_remove_document = itemView.findViewById(R.id.ib_remove_document);
                 edt_document_type = itemView.findViewById(R.id.edt_document_type);
                 edt_document_file = itemView.findViewById(R.id.edt_document_file);
-                imv_verified = itemView.findViewById(R.id.imv_verified);
             }
         }
 
@@ -295,8 +265,8 @@ public class EditBusinessDocumentFragment extends Fragment {
         protected String doInBackground(String... params) {
             String res = "[]";
             JsonObject obj = new JsonObject();
-            obj.addProperty("type", "getBusinessDocumentTypes");
-            res = APICall.JSONAPICall(ApplicationConstants.BUSINESSAPI, obj.toString());
+            obj.addProperty("type", "getServicesDocumentTypes");
+            res = APICall.JSONAPICall(ApplicationConstants.SERVICESAPI, obj.toString());
             return res.trim();
         }
 
@@ -315,7 +285,7 @@ public class EditBusinessDocumentFragment extends Fragment {
                     if (type.equalsIgnoreCase("success")) {
                         documentMasterList = pojoDetails.getResult();
                         if (documentMasterList.size() > 0) {
-                            showBusinessListDialog();
+                            showDocumentListDialog();
                         }
                     } else {
                         Utilities.showAlertDialog(context, message, false);
@@ -329,7 +299,7 @@ public class EditBusinessDocumentFragment extends Fragment {
         }
     }
 
-    private void showBusinessListDialog() {
+    private void showDocumentListDialog() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
         builderSingle.setTitle("Select Document Type");
         builderSingle.setCancelable(false);
@@ -343,8 +313,8 @@ public class EditBusinessDocumentFragment extends Fragment {
         builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
         builderSingle.setAdapter(arrayAdapter, (dialog, which) -> {
-            businessDocumentList.get(documentPosition).setId(documentMasterList.get(which).getId());
-            businessDocumentList.get(documentPosition).setType(documentMasterList.get(which).getType());
+            documentList.get(documentPosition).setId(documentMasterList.get(which).getId());
+            documentList.get(documentPosition).setType(documentMasterList.get(which).getType());
             documentAdapter.refreshData();
         });
         builderSingle.show();
@@ -405,7 +375,7 @@ public class EditBusinessDocumentFragment extends Fragment {
                     if (type.equalsIgnoreCase("success")) {
                         JSONObject jsonObject = mainObj.getJSONObject("result");
                         String imageName = jsonObject.getString("name");
-                        businessDocumentList.get(documentPosition).setName(imageName);
+                        documentList.get(documentPosition).setName(imageName);
                         documentAdapter.notifyDataSetChanged();
                     } else {
                         Utilities.showMessage("Image upload failed", context, 3);
@@ -417,16 +387,28 @@ public class EditBusinessDocumentFragment extends Fragment {
         }
     }
 
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             submitData();
         }
     };
 
+    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            JsonArray documentJsonArray = new JsonArray();
+
+            LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("AddServiceDocumentActivity")
+                    .putExtra("documentJsonArray", documentJsonArray.toString()));
+        }
+    };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        localBroadcastManager.unregisterReceiver(broadcastReceiver);
+        localBroadcastManager1.unregisterReceiver(broadcastReceiver1);
+        localBroadcastManager2.unregisterReceiver(broadcastReceiver2);
     }
+
 }

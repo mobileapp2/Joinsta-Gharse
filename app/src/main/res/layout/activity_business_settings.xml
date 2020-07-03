@@ -47,6 +47,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cv_allow_all_to_book_order"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
@@ -100,6 +101,61 @@
                         app:on="false"
                         app:textOff="No"
                         app:textOn="Yes" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cv_request_to_book_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:cardUseCompatPadding="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="7dp"
+                    android:paddingTop="4dp"
+                    android:paddingRight="7dp"
+                    android:paddingBottom="4dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="Request for book order"
+                            android:textColor="@color/darkGray"
+                            android:textSize="15sp" />
+
+                        <ImageButton
+                            android:id="@+id/ib_request_for_book_order"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center"
+                            android:layout_marginLeft="5dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:scaleType="fitXY"
+                            android:src="@drawable/icon_info"
+                            android:tint="@color/mediumGray" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_request"
+                        style="@style/MaterialButton"
+                        android:layout_gravity="end"
+                        android:text="Request" />
 
                 </LinearLayout>
 

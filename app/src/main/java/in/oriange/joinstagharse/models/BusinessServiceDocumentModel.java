@@ -1,22 +1,22 @@
 package in.oriange.joinstagharse.models;
 
-public class BusinessDocumentModel {
+public class BusinessServiceDocumentModel {
 
     private String id;
     private String type;
     private String name;
     private String isVerified;
 
-    public BusinessDocumentModel() {
+    public BusinessServiceDocumentModel() {
     }
 
-    public BusinessDocumentModel(String id, String type, String name) {
+    public BusinessServiceDocumentModel(String id, String type, String name) {
         this.id = id;
         this.type = type;
         this.name = name;
     }
 
-    public BusinessDocumentModel(String id, String type, String name, String isVerified) {
+    public BusinessServiceDocumentModel(String id, String type, String name, String isVerified) {
         this(id, type, name);
         this.isVerified = isVerified;
     }

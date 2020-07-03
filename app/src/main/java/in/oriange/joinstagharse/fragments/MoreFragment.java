@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,12 +15,15 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import in.oriange.joinstagharse.R;
 import in.oriange.joinstagharse.activities.ContactUsActivity;
 import in.oriange.joinstagharse.activities.EnquiriesActivity;
 import in.oriange.joinstagharse.activities.MyAddedOffersActivity;
 import in.oriange.joinstagharse.activities.MyAddressActivity;
 import in.oriange.joinstagharse.activities.MyBusinessActivity;
+import in.oriange.joinstagharse.activities.MyServicesActivity;
 import in.oriange.joinstagharse.activities.NotificationActivity;
 import in.oriange.joinstagharse.activities.PolicyActivity;
 import in.oriange.joinstagharse.activities.SettingsActivity;
@@ -27,10 +31,30 @@ import in.oriange.joinstagharse.activities.ViewBasicInformationActivity;
 
 public class MoreFragment extends Fragment {
 
+    @BindView(R.id.ib_notifications)
+    ImageButton ibNotifications;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.cv_basicinfo)
+    CardView cvBasicinfo;
+    @BindView(R.id.cv_mybusiness)
+    CardView cvMybusiness;
+    @BindView(R.id.cv_myservice)
+    CardView cvMyservice;
+    @BindView(R.id.cv_myoffres)
+    CardView cvMyoffres;
+    @BindView(R.id.cv_myaddress)
+    CardView cvMyaddress;
+    @BindView(R.id.cv_enquires)
+    CardView cvEnquires;
+    @BindView(R.id.cv_contactus)
+    CardView cvContactus;
+    @BindView(R.id.cv_policies)
+    CardView cvPolicies;
+    @BindView(R.id.cv_settings)
+    CardView cvSettings;
+
     private Context context;
-    private CardView cv_basicinfo, cv_mybusiness, cv_myaddress, cv_settings, cv_enquires, cv_contactus,
-            cv_myoffres, cv_policies;
-    private ImageButton ib_notifications;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,27 +65,18 @@ public class MoreFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_more, container, false);
+        ButterKnife.bind(this, rootView);
+
         context = getActivity();
-        init(rootView);
+        init();
         setDefault();
         setEventHandler();
         return rootView;
     }
 
-    private void init(View rootView) {
-        Toolbar toolbar = rootView.findViewById(R.id.toolbar);
+    private void init() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        cv_basicinfo = rootView.findViewById(R.id.cv_basicinfo);
-        cv_mybusiness = rootView.findViewById(R.id.cv_mybusiness);
-        cv_myaddress = rootView.findViewById(R.id.cv_myaddress);
-        cv_settings = rootView.findViewById(R.id.cv_settings);
-        cv_enquires = rootView.findViewById(R.id.cv_enquires);
-        cv_contactus = rootView.findViewById(R.id.cv_contactus);
-        cv_myoffres = rootView.findViewById(R.id.cv_myoffres);
-        cv_policies = rootView.findViewById(R.id.cv_policies);
-        ib_notifications = rootView.findViewById(R.id.ib_notifications);
     }
 
     private void setDefault() {
@@ -69,23 +84,25 @@ public class MoreFragment extends Fragment {
     }
 
     private void setEventHandler() {
-        cv_basicinfo.setOnClickListener(v -> startActivity(new Intent(context, ViewBasicInformationActivity.class)));
+        cvBasicinfo.setOnClickListener(v -> startActivity(new Intent(context, ViewBasicInformationActivity.class)));
 
-        cv_myaddress.setOnClickListener(v -> startActivity(new Intent(context, MyAddressActivity.class)));
+        cvMyaddress.setOnClickListener(v -> startActivity(new Intent(context, MyAddressActivity.class)));
 
-        cv_mybusiness.setOnClickListener(v -> startActivity(new Intent(context, MyBusinessActivity.class)));
+        cvMybusiness.setOnClickListener(v -> startActivity(new Intent(context, MyBusinessActivity.class)));
 
-        cv_settings.setOnClickListener(v -> startActivity(new Intent(context, SettingsActivity.class)));
+        cvSettings.setOnClickListener(v -> startActivity(new Intent(context, SettingsActivity.class)));
 
-        cv_enquires.setOnClickListener(v -> startActivity(new Intent(context, EnquiriesActivity.class)));
+        cvEnquires.setOnClickListener(v -> startActivity(new Intent(context, EnquiriesActivity.class)));
 
-        cv_contactus.setOnClickListener(v -> startActivity(new Intent(context, ContactUsActivity.class)));
+        cvContactus.setOnClickListener(v -> startActivity(new Intent(context, ContactUsActivity.class)));
 
-        cv_myoffres.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffersActivity.class)));
+        cvMyoffres.setOnClickListener(v -> startActivity(new Intent(context, MyAddedOffersActivity.class)));
 
-        cv_policies.setOnClickListener(v -> startActivity(new Intent(context, PolicyActivity.class)));
+        cvPolicies.setOnClickListener(v -> startActivity(new Intent(context, PolicyActivity.class)));
 
-        ib_notifications.setOnClickListener(v -> startActivity(new Intent(context, NotificationActivity.class)));
+        cvMyservice.setOnClickListener(v -> startActivity(new Intent(context, MyServicesActivity.class)));
+
+        ibNotifications.setOnClickListener(v -> startActivity(new Intent(context, NotificationActivity.class)));
 
     }
 }
