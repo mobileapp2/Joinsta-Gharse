@@ -2,8 +2,6 @@ package in.oriange.joinstagharse.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +10,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.List;
 
 import in.oriange.joinstagharse.R;
@@ -29,9 +26,7 @@ import in.oriange.joinstagharse.models.BookOrderGetMyOrdersModel;
 import in.oriange.joinstagharse.utilities.ApplicationConstants;
 import in.oriange.joinstagharse.utilities.UserSessionManager;
 
-import static android.Manifest.permission.CALL_PHONE;
 import static in.oriange.joinstagharse.utilities.Utilities.getCommaSeparatedNumber;
-import static in.oriange.joinstagharse.utilities.Utilities.provideCallPremission;
 import static in.oriange.joinstagharse.utilities.Utilities.showCallDialog;
 
 public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOrdersAdapter.MyViewHolder> {
@@ -168,7 +163,8 @@ public class BookOrderMyOrdersAdapter extends RecyclerView.Adapter<BookOrderMyOr
         holder.cv_mainlayout.setOnClickListener(v -> {
             selectedOrderId = orderDetails.getId();
             context.startActivity(new Intent(context, ViewBookOrderMyOrderActivity.class)
-                    .putExtra("orderDetails", orderDetails));
+                    .putExtra("orderDetails", orderDetails)
+                    .putExtra("ordersList", (Serializable) orderList));
         });
     }
 

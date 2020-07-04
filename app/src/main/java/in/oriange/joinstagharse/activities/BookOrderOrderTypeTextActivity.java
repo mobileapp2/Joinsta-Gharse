@@ -63,6 +63,8 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
         businessOwnerName = getIntent().getStringExtra("businessOwnerName");
         storePickUpInstructions = getIntent().getStringExtra("storePickUpInstructions");
         homeDeliveryInstructions = getIntent().getStringExtra("homeDeliveryInstructions");
+        String orderText = getIntent().getStringExtra("orderText");
+        edtOrderText.setText(orderText);
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("BookOrderOrderTypeTextActivity");
@@ -87,9 +89,12 @@ public class BookOrderOrderTypeTextActivity extends AppCompatActivity {
                     .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
                     .putExtra("orderType", "3")
                     .putExtra("orderText", edtOrderText.getText().toString().trim())
+                    .putExtra("purchaseType", getIntent().getStringExtra("purchaseType"))
+                    .putExtra("deliveryType", getIntent().getStringExtra("deliveryType"))
+                    .putExtra("userAddressId", getIntent().getStringExtra("userAddressId"))
+                    .putExtra("userBusinessId", getIntent().getStringExtra("userBusinessId"))
                     .putExtra("orderImageArray", new JsonArray().toString()));
         });
-
     }
 
     private void setUpToolbar() {

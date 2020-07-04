@@ -175,6 +175,10 @@ public class BookOrderCartProductsActivity extends AppCompatActivity {
                         .putExtra("homeDeliveryInstructions", orderDetails.getOwner_home_delivery_instructions())
                         .putExtra("orderType", "1")
                         .putExtra("orderText", "")
+                        .putExtra("purchaseType", "")
+                        .putExtra("deliveryType", "")
+                        .putExtra("userAddressId", "")
+                        .putExtra("userBusinessId", "")
                         .putExtra("orderDetails", orderDetails)
                         .putExtra("orderImageArray", new JsonArray().toString()));
             });

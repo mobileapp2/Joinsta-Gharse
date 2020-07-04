@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -24,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -69,6 +72,20 @@ import in.oriange.joinstagharse.utilities.UserSessionManager;
 import in.oriange.joinstagharse.utilities.Utilities;
 
 import static in.oriange.joinstagharse.utilities.ApplicationConstants.IMAGE_LINK;
+import static in.oriange.joinstagharse.utilities.PermissionUtil.doesAppNeedPermissions;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CALL_PHONE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.CAMERA_AND_STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.LOCATION_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.READ_CONTACTS_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.STORAGE_PERMISSION_REQUEST;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.callPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.cameraStoragePermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.isCameraStoragePermissionGiven;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.locationPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.manualPermission;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.readContactsPermissionMsg;
+import static in.oriange.joinstagharse.utilities.RuntimePermissions.storagePermissionMsg;
 import static in.oriange.joinstagharse.utilities.Utilities.changeStatusBar;
 import static in.oriange.joinstagharse.utilities.Utilities.setPaddingForView;
 
@@ -130,13 +147,12 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
     private ProgressDialog pd;
     private String userId, businessOwnerId, businessOwnerAddress, isHomeDeliveryAvailable, isPickUpAvailable,
             orderType, orderText = "", customerBusinessId = "0", customerAddressId = "0", customerAddress = "", orderImageArray = "",
-            businessOwnerCode, businessOwnerName, storePickUpInstructions, homeDeliveryInstructions;
+            businessOwnerCode, businessOwnerName, storePickUpInstructions, homeDeliveryInstructions, purchaseType, deliveryType, userAddressId, userBusinessId;
 
     private List<GetBusinessModel.ResultBean> businessList;
     private List<AddressModel.ResultBean> addressList;
     private GetBusinessModel.ResultBean businessDetails;
     private ArrayList<MasterModel> imageList;
-    private AddressModel.ResultBean addressDetails;
     private LocalBroadcastManager localBroadcastManager, localBroadcastManager1, localBroadcastManager2;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
 
@@ -224,13 +240,15 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
         businessOwnerName = getIntent().getStringExtra("businessOwnerName");
         isHomeDeliveryAvailable = getIntent().getStringExtra("isHomeDeliveryAvailable");
         isPickUpAvailable = getIntent().getStringExtra("isPickUpAvailable");
-//        isHomeDeliveryAvailable = "1";
-//        isPickUpAvailable = "1";
         orderType = getIntent().getStringExtra("orderType");  //order_type = 'order_with_product' - 1, 'order_by_image' - 2,'order_by_text' - 3
         orderText = getIntent().getStringExtra("orderText");
         orderImageArray = getIntent().getStringExtra("orderImageArray");
         storePickUpInstructions = getIntent().getStringExtra("storePickUpInstructions");
         homeDeliveryInstructions = getIntent().getStringExtra("homeDeliveryInstructions");
+        purchaseType = getIntent().getStringExtra("purchaseType");
+        deliveryType = getIntent().getStringExtra("deliveryType");
+        userAddressId = getIntent().getStringExtra("userAddressId");
+        userBusinessId = getIntent().getStringExtra("userBusinessId");
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
 
         if (orderDetails == null) {
@@ -245,11 +263,69 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
             tvStoreAddress.setTextColor(context.getResources().getColor(R.color.red));
         }
 
+        if (purchaseType.equals("1")) {
+            llInd.setBackgroundColor(context.getResources().getColor(R.color.lightred));
+            llBiz.setBackgroundColor(context.getResources().getColor(R.color.white));
+
+            rbIndividual.setChecked(true);
+            rbBusiness.setChecked(false);
+
+            llIndividualDetails.setVisibility(View.VISIBLE);
+            llBusiness.setVisibility(View.GONE);
+        } else if (purchaseType.equals("2")) {
+            rbIndividual.setChecked(false);
+            rbBusiness.setChecked(true);
+            llBiz.setBackgroundColor(context.getResources().getColor(R.color.lightred));
+            llInd.setBackgroundColor(context.getResources().getColor(R.color.white));
+            llIndividualDetails.setVisibility(View.GONE);
+            if (businessList.size() == 0) {
+                if (Utilities.isNetworkAvailable(context))
+                    new GetBusiness().execute();
+                else
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            } else {
+                llBusiness.setVisibility(View.VISIBLE);
+                rvBusiness.setAdapter(new BusinessAdapter());
+            }
+        }
+
         if (isHomeDeliveryAvailable.equals("0"))
             llHome.setVisibility(View.GONE);
+        else {
+            if (deliveryType.equals("home_delivery")) {
+                llHome.setBackgroundColor(context.getResources().getColor(R.color.lightred));
+                llStore.setBackgroundColor(context.getResources().getColor(R.color.white));
+
+                rbStorePickup.setChecked(false);
+                rbHomeDelivery.setChecked(true);
+
+                llStorePickup.setVisibility(View.GONE);
+                if (addressList.size() == 0) {
+                    if (Utilities.isNetworkAvailable(context))
+                        new GetAddress().execute();
+                    else
+                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                } else {
+                    llHomeDelivery.setVisibility(View.VISIBLE);
+                    rvAddress.setAdapter(new AddressAdapter());
+                }
+            }
+        }
 
         if (isPickUpAvailable.equals("0"))
             llStore.setVisibility(View.GONE);
+        else {
+            if (deliveryType.equals("store_pickup")) {
+                llStore.setBackgroundColor(context.getResources().getColor(R.color.lightred));
+                llHome.setBackgroundColor(context.getResources().getColor(R.color.white));
+
+                rbHomeDelivery.setChecked(false);
+                rbStorePickup.setChecked(true);
+
+                llStorePickup.setVisibility(View.VISIBLE);
+                llHomeDelivery.setVisibility(View.GONE);
+            }
+        }
 
         if (!orderType.equals("1"))
             cvImages.setVisibility(View.GONE);
@@ -469,6 +545,13 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                             llInd.setBackgroundColor(context.getResources().getColor(R.color.white));
                             llIndividualDetails.setVisibility(View.GONE);
 
+                            for (int i = 0; i < businessList.size(); i++)
+                                if (businessList.get(i).getId().equals(userBusinessId)) {
+                                    businessList.get(i).setChecked(true);
+                                    customerBusinessId = userBusinessId;
+                                    businessDetails = businessList.get(i);
+                                }
+
                             rvBusiness.setAdapter(new BusinessAdapter());
                         } else {
                             showAddBusinessDialog();
@@ -600,6 +683,14 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                             llStore.setBackgroundColor(context.getResources().getColor(R.color.white));
 
                             llStorePickup.setVisibility(View.GONE);
+
+                            for (int i = 0; i < addressList.size(); i++)
+                                if (addressList.get(i).getUser_address_id().equals(userAddressId)) {
+                                    addressList.get(i).setChecked(true);
+                                    customerAddressId = addressList.get(i).getUser_address_id();
+                                    customerAddress = addressList.get(i).getAddress_line1();
+                                }
+
                             rvAddress.setAdapter(new AddressAdapter());
                         } else {
                             showAddAddressDialog();
@@ -648,7 +739,6 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 for (int i = 0; i < addressList.size(); i++) {
                     addressList.get(i).setChecked(false);
                 }
-                addressDetails = addressList.get(position);
                 customerAddressId = addressList.get(position).getUser_address_id();
                 customerAddress = addressList.get(position).getAddress_line1();
                 addressList.get(position).setChecked(true);
@@ -741,52 +831,52 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 holder.imv_image_delete.bringToFront();
             }
 
-            holder.imv_image.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!Utilities.isNetworkAvailable(context)) {
-                        Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            holder.imv_image.setOnClickListener(v -> {
+                if (doesAppNeedPermissions()) {
+                    if (!isCameraStoragePermissionGiven(context, CAMERA_AND_STORAGE_PERMISSION)) {
                         return;
                     }
-
-                    latestPosition = position;
-
-                    final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
-                    builder.setCancelable(false);
-                    builder.setItems(options, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int item) {
-                            if (options[item].equals("Take a Photo")) {
-                                File file = new File(orderFileFolder, "doc_image.png");
-                                photoURI = Uri.fromFile(file);
-                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                                startActivityForResult(intent, CAMERA_REQUEST);
-                            } else if (options[item].equals("Choose from Gallery")) {
-                                Intent intent = new Intent(Intent.ACTION_PICK);
-                                intent.setType("image/*");
-                                startActivityForResult(intent, GALLERY_REQUEST);
-                            }
-                        }
-                    });
-                    builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertD = builder.create();
-                    alertD.show();
                 }
+
+                if (!Utilities.isNetworkAvailable(context)) {
+                    Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+                    return;
+                }
+
+                latestPosition = position;
+
+                final CharSequence[] options = {"Take a Photo", "Choose from Gallery"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                builder.setCancelable(false);
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        if (options[item].equals("Take a Photo")) {
+                            File file = new File(orderFileFolder, "doc_image.png");
+                            photoURI = Uri.fromFile(file);
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                            startActivityForResult(intent, CAMERA_REQUEST);
+                        } else if (options[item].equals("Choose from Gallery")) {
+                            Intent intent = new Intent(Intent.ACTION_PICK);
+                            intent.setType("image/*");
+                            startActivityForResult(intent, GALLERY_REQUEST);
+                        }
+                    }
+                });
+                builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertD = builder.create();
+                alertD.show();
             });
 
-            holder.imv_image_delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    imageList.set(position, new MasterModel("", ""));
-                    rvImages.setAdapter(new ImagesAdapter());
-                }
+            holder.imv_image_delete.setOnClickListener(v -> {
+                imageList.set(position, new MasterModel("", ""));
+                rvImages.setAdapter(new ImagesAdapter());
             });
         }
 
@@ -949,5 +1039,46 @@ public class BookOrderSelectDeliveryTypeActivity extends AppCompatActivity {
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
         }
     };
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CAMERA_AND_STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, cameraStoragePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case STORAGE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, storagePermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case CALL_PHONE_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, callPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case LOCATION_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, locationPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+            case READ_CONTACTS_PERMISSION_REQUEST: {
+                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    manualPermission(context, readContactsPermissionMsg, permissions, requestCode);
+                }
+            }
+            break;
+        }
+    }
 
 }

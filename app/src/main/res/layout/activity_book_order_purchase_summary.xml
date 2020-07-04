@@ -72,21 +72,20 @@
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/tv_business_owner_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="2dp"
-                        android:text="Vendor - L0001 - Business Name"
-                        android:textColor="@color/black"
-                        android:textSize="16sp" />
-
-
-                    <TextView
                         android:id="@+id/tv_order_by"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="2dp"
                         android:text="Ordered By – Product/Image/text"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <TextView
+                        android:id="@+id/tv_business_owner_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="2dp"
+                        android:text="Vendor - L0001 - Business Name"
                         android:textColor="@color/black"
                         android:textSize="16sp" />
 

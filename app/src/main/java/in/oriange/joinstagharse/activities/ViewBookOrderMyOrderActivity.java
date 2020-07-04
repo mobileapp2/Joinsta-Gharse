@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -39,6 +40,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -133,12 +135,15 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
     ImageButton ibAddress;
     @BindView(R.id.tv_delivery_instructions)
     TextView tvDeliveryInstructions;
+    @BindView(R.id.btn_repeat_order)
+    MaterialButton btnRepeatOrder;
 
     private Context context;
     private UserSessionManager session;
     private ProgressDialog pd;
     private String userId, latitude, longitude;
     private BookOrderGetMyOrdersModel.ResultBean orderDetails;
+    private List<BookOrderGetMyOrdersModel.ResultBean> ordersList;
     private LocalBroadcastManager localBroadcastManager;
     private boolean isOrderImagesExpanded = true;
 
@@ -164,9 +169,10 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         rvImages.setLayoutManager(new GridLayoutManager(context, 3));
         rvProducts.setLayoutManager(new LinearLayoutManager(context));
         rvStatus.setLayoutManager(new LinearLayoutManager(context));
-
+        ordersList = new ArrayList<>();
 
         orderDetails = (BookOrderGetMyOrdersModel.ResultBean) getIntent().getSerializableExtra("orderDetails");
+        ordersList = (List<BookOrderGetMyOrdersModel.ResultBean>) getIntent().getSerializableExtra("ordersList");
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         IntentFilter intentFilter = new IntentFilter("ViewBookOrderMyOrderActivity");
@@ -298,7 +304,6 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         if (latitude.equals("") || longitude.equals("") || latitude.equals("0") || longitude.equals("0"))
             ibAddress.setVisibility(View.GONE);
 
-
         if (orderDetails.getCustomer_unread_msg_count().equals("0")) {
             tvUnreadCount.setVisibility(View.GONE);
         } else {
@@ -383,6 +388,7 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
             tvAddress.setVisibility(View.GONE);
             flCart.setVisibility(View.GONE);
             tvDeliveryInstructions.setVisibility(View.GONE);
+            btnRepeatOrder.setVisibility(View.GONE);
         }
     }
 
@@ -410,6 +416,10 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                     .putExtra("homeDeliveryInstructions", orderDetails.getOwner_home_delivery_instructions())
                     .putExtra("orderType", "1")
                     .putExtra("orderText", "")
+                    .putExtra("purchaseType", "")
+                    .putExtra("deliveryType", "")
+                    .putExtra("userAddressId", "")
+                    .putExtra("userBusinessId", "")
                     .putExtra("orderDetails", orderDetails)
                     .putExtra("orderImageArray", new JsonArray().toString()));
 
@@ -451,6 +461,58 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
                 tvMoreOrderImages.setText("View Less");
                 rvImages.setLayoutManager(new GridLayoutManager(context, 3));
             }
+        });
+
+        btnRepeatOrder.setOnClickListener(v -> {
+            switch (orderDetails.getOrder_type()) {
+                case "1": {
+                    findPendingOrderId();
+                }
+                break;
+                case "2": {
+                    JsonArray imageJsonArray = new JsonArray();
+
+                    for (int i = 0; i < orderDetails.getOrder_images().size(); i++) {
+                        if (!orderDetails.getOrder_images().get(i).equals("")) {
+                            imageJsonArray.add(orderDetails.getOrder_images().get(i));
+                        }
+                    }
+
+                    startActivity(new Intent(context, BookOrderOrderTypeImageActivity.class)
+                            .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
+                            .putExtra("businessOwnerAddress", orderDetails.getOwner_address())
+                            .putExtra("businessOwnerCode", orderDetails.getOwner_business_code())
+                            .putExtra("businessOwnerName", orderDetails.getOwner_business_name())
+                            .putExtra("storePickUpInstructions", orderDetails.getOwner_store_pickup_instructions())
+                            .putExtra("homeDeliveryInstructions", orderDetails.getOwner_home_delivery_instructions())
+                            .putExtra("purchaseType", orderDetails.getPurchase_order_type())
+                            .putExtra("deliveryType", orderDetails.getDelivery_option())
+                            .putExtra("userAddressId", orderDetails.getUser_address_id())
+                            .putExtra("userBusinessId", orderDetails.getBusiness_id())
+                            .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
+                            .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
+                            .putExtra("orderImages", imageJsonArray.toString()));
+                }
+                break;
+                case "3": {
+                    startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
+                            .putExtra("businessOwnerId", orderDetails.getOwner_business_id())
+                            .putExtra("businessOwnerAddress", orderDetails.getOwner_address())
+                            .putExtra("businessOwnerCode", orderDetails.getOwner_business_code())
+                            .putExtra("businessOwnerName", orderDetails.getOwner_business_name())
+                            .putExtra("storePickUpInstructions", orderDetails.getOwner_store_pickup_instructions())
+                            .putExtra("homeDeliveryInstructions", orderDetails.getOwner_home_delivery_instructions())
+                            .putExtra("purchaseType", orderDetails.getPurchase_order_type())
+                            .putExtra("deliveryType", orderDetails.getDelivery_option())
+                            .putExtra("userAddressId", orderDetails.getUser_address_id())
+                            .putExtra("userBusinessId", orderDetails.getBusiness_id())
+                            .putExtra("isHomeDeliveryAvailable", orderDetails.getIs_home_delivery_available())
+                            .putExtra("isPickUpAvailable", orderDetails.getIs_pick_up_available())
+                            .putExtra("orderText", orderDetails.getOrder_text()));
+                }
+                break;
+            }
+
         });
     }
 
@@ -524,6 +586,121 @@ public class ViewBookOrderMyOrderActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.drawable.icon_backarrow_black);
         toolbar.setNavigationOnClickListener(view -> finish());
+    }
+
+    private void findPendingOrderId() {
+        if (ordersList.size() == 0) {
+            addOrderJsonCreation();
+        } else {
+            boolean isPendingOrderAvailable = false;
+
+            for (BookOrderGetMyOrdersModel.ResultBean resultBean : ordersList) {
+                if (resultBean.getStatus_details().size() == 1) {
+                    if (resultBean.getStatus_details().get(0).getStatus().equals("1")) {
+                        if (resultBean.getOwner_business_id().equals(orderDetails.getOwner_business_id())) {
+                            isPendingOrderAvailable = true;
+                            AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.CustomDialogTheme);
+                            builder.setTitle("Alert");
+                            builder.setMessage("You already have a pending order for this vendor. Please complete that before placing a new order");
+                            builder.setPositiveButton("Go to cart", (dialog, id) -> {
+                                startActivity(new Intent(context, BookOrderCartProductsActivity.class)
+                                        .putExtra("particularBusinessId", "0"));
+                            });
+                            builder.setNegativeButton("Later", (dialog, which) -> {
+                            });
+                            builder.create();
+                            AlertDialog alertD = builder.create();
+                            alertD.show();
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!isPendingOrderAvailable) {
+                addOrderJsonCreation();
+            }
+        }
+    }
+
+    private void addOrderJsonCreation() {
+        JsonObject mainObj = new JsonObject();
+
+        JsonArray productsDetailsArray = new JsonArray();
+        JsonArray imageJsonArray = new JsonArray();
+
+        for (int i = 0; i < orderDetails.getOrder_images().size(); i++) {
+            if (!orderDetails.getOrder_images().get(i).equals("")) {
+                imageJsonArray.add(orderDetails.getOrder_images().get(i));
+            }
+        }
+
+        for (int i = 0; i < orderDetails.getProduct_details().size(); i++) {
+            JsonObject productObject = new JsonObject();
+            productObject.addProperty("product_id", orderDetails.getProduct_details().get(i).getProduct_id());
+            productObject.addProperty("quantity", orderDetails.getProduct_details().get(i).getQuantity());
+            productObject.addProperty("amount", orderDetails.getProduct_details().get(i).getAmount());
+            productsDetailsArray.add(productObject);
+        }
+
+        mainObj.addProperty("type", "addOrder");
+        mainObj.addProperty("owner_business_id", orderDetails.getOwner_business_id());
+        mainObj.addProperty("order_type", "1");
+        mainObj.addProperty("order_text", "");
+        mainObj.add("product_details", productsDetailsArray);
+        mainObj.addProperty("status", "1");    // status = 'IN CART'-2
+        mainObj.addProperty("purchase_order_type", "1");
+        mainObj.addProperty("business_id", "0");
+        mainObj.addProperty("delivery_option", "home_delivery");
+        mainObj.addProperty("user_address_id", "0");
+        mainObj.add("order_image", imageJsonArray);
+        mainObj.addProperty("user_id", userId);
+
+        if (Utilities.isNetworkAvailable(context)) {
+            new AddOrder().execute(mainObj.toString().replace("\'", Matcher.quoteReplacement("\\\'")));
+        } else {
+            Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+        }
+    }
+
+    private class AddOrder extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pd.setMessage("Please wait ...");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String res = "[]";
+            res = APICall.JSONAPICall(ApplicationConstants.BOOKORDERAPI, params[0]);
+            return res.trim();
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            pd.dismiss();
+            String type = "", message = "";
+            try {
+                if (!result.equals("")) {
+                    BookOrderGetMyOrdersModel pojoDetails = new Gson().fromJson(result, BookOrderGetMyOrdersModel.class);
+                    type = pojoDetails.getType();
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("HomeFragment"));
+                    if (type.equalsIgnoreCase("success")) {
+                        startActivity(new Intent(context, BookOrderCartProductsActivity.class)
+                                .putExtra("particularBusinessId", "0"));
+                    } else {
+                        Utilities.showMessage(message, context, 3);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {

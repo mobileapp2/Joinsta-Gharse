@@ -241,15 +241,21 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
             }
         });
 
-        cvText.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
-                .putExtra("businessOwnerId", businessOwnerId)
-                .putExtra("businessOwnerAddress", businessOwnerAddress)
-                .putExtra("businessOwnerCode", businessOwnerCode)
-                .putExtra("businessOwnerName", businessOwnerName)
-                .putExtra("storePickUpInstructions", storePickUpInstructions)
-                .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
-                .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
-                .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
+        cvText.setOnClickListener(v ->
+                startActivity(new Intent(context, BookOrderOrderTypeTextActivity.class)
+                        .putExtra("businessOwnerId", businessOwnerId)
+                        .putExtra("businessOwnerAddress", businessOwnerAddress)
+                        .putExtra("businessOwnerCode", businessOwnerCode)
+                        .putExtra("businessOwnerName", businessOwnerName)
+                        .putExtra("storePickUpInstructions", storePickUpInstructions)
+                        .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
+                        .putExtra("purchaseType", "")
+                        .putExtra("deliveryType", "")
+                        .putExtra("userAddressId", "")
+                        .putExtra("userBusinessId", "")
+                        .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
+                        .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))
+                        .putExtra("orderText", "")));
 
         cvImage.setOnClickListener(v -> startActivity(new Intent(context, BookOrderOrderTypeImageActivity.class)
                 .putExtra("businessOwnerId", businessOwnerId)
@@ -258,8 +264,13 @@ public class BookOrderProductsListActivity_v2 extends AppCompatActivity {
                 .putExtra("businessOwnerName", businessOwnerName)
                 .putExtra("storePickUpInstructions", storePickUpInstructions)
                 .putExtra("homeDeliveryInstructions", homeDeliveryInstructions)
+                .putExtra("purchaseType", "")
+                .putExtra("deliveryType", "")
+                .putExtra("userAddressId", "")
+                .putExtra("userBusinessId", "")
                 .putExtra("isHomeDeliveryAvailable", getIntent().getStringExtra("isHomeDeliveryAvailable"))
-                .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))));
+                .putExtra("isPickUpAvailable", getIntent().getStringExtra("isPickUpAvailable"))
+                .putExtra("orderImages", new JsonArray().toString())));
 
     }
 
