@@ -217,6 +217,17 @@
 
     </androidx.cardview.widget.CardView>
 
+    <com.polyak.iconswitch.IconSwitch
+        android:id="@+id/icon_product_list_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="5dp"
+        android:visibility="gone"
+        app:isw_background_color="@color/white"
+        app:isw_icon_left="@drawable/icon_product_list"
+        app:isw_icon_right="@drawable/icon_product_image" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

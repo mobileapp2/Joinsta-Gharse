@@ -34,6 +34,7 @@ import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.polyak.iconswitch.IconSwitch;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -81,6 +82,8 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
     SpinKitView progressBar;
     @BindView(R.id.ll_nopreview)
     LinearLayout llNopreview;
+    @BindView(R.id.icon_product_list_switch)
+    IconSwitch iconProductListSwitch;
 
     private Context context;
     private UserSessionManager session;
@@ -92,6 +95,7 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
     private BookOrderProductsListAdapter bookOrderProductsListAdapter;
 
     private LocalBroadcastManager localBroadcastManager;
+    private boolean showImagesInList = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,6 +220,18 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
             } else {
                 swipeRefreshLayout.setRefreshing(false);
                 Utilities.showMessage(R.string.msgt_nointernetconnection, context, 2);
+            }
+        });
+
+        iconProductListSwitch.setCheckedChangeListener(new IconSwitch.CheckedChangeListener() {
+            @Override
+            public void onCheckChanged(IconSwitch.Checked current) {
+                if (current == IconSwitch.Checked.LEFT) {
+                    showImagesInList = false;
+                } else if (current == IconSwitch.Checked.RIGHT) {
+                    showImagesInList = true;
+                }
+                bookOrderProductsListAdapter.notifyDataSet();
             }
         });
     }
@@ -412,6 +428,22 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
                 holder.imv_productimage.setVisibility(View.GONE);
             }
 
+            if (showImagesInList) {
+                holder.tv_product_name.setMaxLines(1);
+                holder.cv_image_layout.setVisibility(View.VISIBLE);
+
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.ll_product_info.getLayoutParams();
+                params.weight = 0.55f;
+                holder.ll_product_info.setLayoutParams(params);
+            } else {
+                holder.tv_product_name.setMaxLines(2);
+                holder.cv_image_layout.setVisibility(View.GONE);
+
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) holder.ll_product_info.getLayoutParams();
+                params.weight = 0.9f;
+                holder.ll_product_info.setLayoutParams(params);
+            }
+
             holder.tv_product_name.setText(productDetails.getName());
 
             float maxRetailPrice = Float.parseFloat(productDetails.getMax_retail_price());
@@ -493,9 +525,9 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
 
-            private CardView cv_mainlayout;
+            private CardView cv_mainlayout, cv_image_layout;
             private ImageView imv_productimage, imv_image_not_available;
-            private LinearLayout ll_prices;
+            private LinearLayout ll_prices, ll_product_info;
             private TextView tv_added_in_cart, tv_product_name, tv_selling_price, tv_max_retail_price,
                     tv_precentage_off, tv_quantity, tv_no_price_available, tv_you_save, tv_out_of_stock;
             private ImageButton btn_remove, btn_add;
@@ -504,7 +536,9 @@ public class BookOrderCategoryWiseProductsActivity extends AppCompatActivity {
             public MyViewHolder(@NonNull View view) {
                 super(view);
                 cv_mainlayout = view.findViewById(R.id.cv_mainlayout);
+                cv_image_layout = view.findViewById(R.id.cv_image_layout);
                 imv_productimage = view.findViewById(R.id.imv_productimage);
+                ll_product_info = view.findViewById(R.id.ll_product_info);
                 ll_prices = view.findViewById(R.id.ll_prices);
                 imv_image_not_available = view.findViewById(R.id.imv_image_not_available);
                 tv_added_in_cart = view.findViewById(R.id.tv_added_in_cart);

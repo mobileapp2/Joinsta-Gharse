@@ -86,6 +86,7 @@ dependencies {
     implementation 'com.github.siyamed:android-shape-imageview:0.9.3@aar'
     implementation 'com.github.stfalcon:chatkit:0.3.3'
     implementation 'com.github.angads25:toggle:1.1.0'
+    implementation 'com.polyak:icon-switch:1.0.0'
     implementation('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true
     }
